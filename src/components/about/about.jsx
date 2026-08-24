@@ -58,7 +58,7 @@ const About = (props) => {
                         <div className="col-lg-6 col-md-12 col-12">
                             <div className="wpo-about-text">
                                 <div className="wpo-section-title">
-                                    <span>About Politian</span>
+                                    <span>About Vincent Kafula</span>
                                     <h2>We Can Work Together For Create a Better Future.</h2>
                                 </div>
                                 <p>The leader is eager to listen to the needs of the youth generation and to hear what

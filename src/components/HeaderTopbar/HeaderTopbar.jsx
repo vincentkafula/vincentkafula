@@ -27,7 +27,7 @@ const HeaderTopbar = () => {
                                 </div>
                                 <div className="info-text">
                                     <span>E-mail Now:</span>
-                                    <p>politian@gmail.com</p>
+                                    <p>vincent.kafula@gmail.com</p>
                                 </div>
                             </div>
                             <div className="contact-info">

@@ -51,7 +51,7 @@ const LoginPage = (props) => {
             const email = value.email;
 
             if (email.match(userRegex)) {
-                toast.success('You successfully Login on Politian !');
+                toast.success('You successfully Login on Vincent Kafula !');
                 push('/home');
             }
         } else {

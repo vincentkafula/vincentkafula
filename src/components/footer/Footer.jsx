@@ -109,7 +109,7 @@ const Footer = (props) => {
                     <div className="row align-items-center">
                         <div className="col col-lg-6 col-md-12 col-12">
                             <ul>
-                                <li>&copy; 2026 <Link onClick={ClickHandler} to="/">Politian</Link>. All rights reserved.</li>
+                                <li>&copy; 2026 <Link onClick={ClickHandler} to="/">Vincent Kafula</Link>. All rights reserved.</li>
                             </ul>
                         </div>
                         <div className="col col-lg-6 col-md-12 col-12">
