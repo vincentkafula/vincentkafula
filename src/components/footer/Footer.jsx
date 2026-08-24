@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Logo from '../../images/logo.svg'
+import Logo from '../../images/logo-vk-full.png'
 import Services from '../../api/service';
 
 const ClickHandler = () => {

@@ -8,7 +8,7 @@ import FunFactVideo from '../../components/FunFactVideo/FunFactVideo';
 import BlogSection from '../../components/BlogSection/BlogSection';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
-import Logo from '../../images/logo.svg'
+import Logo from '../../images/logo-vk-mono.png'
 
 const HomePage2 =() => {
     return(
