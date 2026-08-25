@@ -12,7 +12,7 @@ const CampaignPage = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} bgSrc={campaignBanner} bgPosition={'right center'} />
+            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} bgSrc={campaignBanner} />
             <CampaignSection cmClass={'wpo-campaign-area-s5'}/>
             <Donors />
             <PartnerSection/>
