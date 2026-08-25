@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Logo from '../../images/logo-vk-mono.png'
+import Logo from '../../images/logo-vk-full.png'
 
 const HeaderTopbar = () => {
     return (

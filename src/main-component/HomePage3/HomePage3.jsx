@@ -13,7 +13,7 @@ import Footer from '../../components/footer/Footer';
 import PartnerSection from '../../components/PartnerSection/PartnerSection';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import abimg from '../../images/about.png'
-import Logo from '../../images/logo-vk-mono.png'
+import Logo from '../../images/logo-vk-full.png'
 
 const HomePage2 =() => {
     return(

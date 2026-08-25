@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import HeaderTopbar from '../HeaderTopbar/HeaderTopbar'
 import MobileMenu from '../MobileMenu/MobileMenu'
-import Logo from '../../images/logo-vk-mono.png'
+import Logo from '../../images/logo-vk-full.png'
 
 const Header2 = (props) => {
     const [menuActive, setMenuState] = useState(false);
