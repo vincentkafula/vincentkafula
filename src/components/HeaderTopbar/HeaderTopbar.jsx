@@ -18,7 +18,7 @@ const HeaderTopbar = () => {
                                 </div>
                                 <div className="info-text">
                                     <span>Call Us:</span>
-                                    <p>+(684) 555-0102</p>
+                                    <p>+260955548500</p>
                                 </div>
                             </div>
                             <div className="contact-info">
