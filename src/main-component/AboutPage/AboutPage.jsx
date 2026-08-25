@@ -12,12 +12,13 @@ import Donors from '../../components/Donors/Donors';
 import PartnerSection from '../../components/PartnerSection/PartnerSection';
 import Footer from '../../components/footer/Footer';
 import abimg from '../../images/about.jpg'
+import aboutBanner from '../../images/about-banner.jpg'
 
 const AboutPage = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'About Us'} pagesub={'About'} />
+            <PageTitle pageTitle={'About Us'} pagesub={'About'} bgSrc={aboutBanner} />
             <About abimg={abimg} abClass={"pt-padding"}/>
             <ServiceSection />
             <CampaignSection />
