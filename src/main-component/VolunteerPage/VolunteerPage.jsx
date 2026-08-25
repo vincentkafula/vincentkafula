@@ -12,6 +12,11 @@ const VolunteerPage = (props) => {
 
     const [forms, setForms] = useState({
         name: '',
+        province: '',
+        district: '',
+        constituency: '',
+        ward: '',
+        pollingStation: '',
         email: '',
         subject: '',
         file: '',
@@ -35,6 +40,11 @@ const VolunteerPage = (props) => {
             validator.hideMessages();
             setForms({
                 name: '',
+                province: '',
+                district: '',
+                constituency: '',
+                ward: '',
+                pollingStation: '',
                 email: '',
                 subject: '',
                 file: '',
@@ -76,6 +86,66 @@ const VolunteerPage = (props) => {
                                                             onChange={(e) => changeHandler(e)}
                                                             placeholder="Your Name" />
                                                         {validator.message('name', forms.name, 'required|alpha_space')}
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+                                                    <div className="form-field">
+                                                        <input
+                                                            value={forms.province}
+                                                            type="text"
+                                                            name="province"
+                                                            onBlur={(e) => changeHandler(e)}
+                                                            onChange={(e) => changeHandler(e)}
+                                                            placeholder="Province" />
+                                                        {validator.message('province', forms.province, 'required|alpha_space')}
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
+                                                    <div className="form-field">
+                                                        <input
+                                                            value={forms.district}
+                                                            type="text"
+                                                            name="district"
+                                                            onBlur={(e) => changeHandler(e)}
+                                                            onChange={(e) => changeHandler(e)}
+                                                            placeholder="District" />
+                                                        {validator.message('district', forms.district, 'required|alpha_space')}
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+                                                    <div className="form-field">
+                                                        <input
+                                                            value={forms.constituency}
+                                                            type="text"
+                                                            name="constituency"
+                                                            onBlur={(e) => changeHandler(e)}
+                                                            onChange={(e) => changeHandler(e)}
+                                                            placeholder="Constituency" />
+                                                        {validator.message('constituency', forms.constituency, 'required|alpha_space')}
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
+                                                    <div className="form-field">
+                                                        <input
+                                                            value={forms.ward}
+                                                            type="text"
+                                                            name="ward"
+                                                            onBlur={(e) => changeHandler(e)}
+                                                            onChange={(e) => changeHandler(e)}
+                                                            placeholder="Ward" />
+                                                        {validator.message('ward', forms.ward, 'required|alpha_space')}
+                                                    </div>
+                                                </div>
+                                                <div className="col-lg-12 col-12 form-group">
+                                                    <div className="form-field">
+                                                        <input
+                                                            value={forms.pollingStation}
+                                                            type="text"
+                                                            name="pollingStation"
+                                                            onBlur={(e) => changeHandler(e)}
+                                                            onChange={(e) => changeHandler(e)}
+                                                            placeholder="Polling Station" />
+                                                        {validator.message('pollingStation', forms.pollingStation, 'required')}
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
