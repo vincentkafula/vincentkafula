@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, } from "react-router-dom";
 import Homepage from '../HomePage/HomePage'
 import HomePage2 from '../HomePage2/HomePage2';
@@ -31,7 +32,7 @@ import LoginPage from '../LoginPage';
 import SignUpPage from '../SignUpPage';
 import ForgotPassword from '../ForgotPassword';
 import FaqPage from '../FaqPage';
-import VolunteerPage from '../VolunteerPage/VolunteerPage';
+const VolunteerPage = lazy(() => import('../VolunteerPage/VolunteerPage'));
 import DonatePage from '../DonatePage/DonatePage';
 import PrivacyPage from '../PrivacyPage/PrivacyPage';
 import TermsPage from '../TermsPage/TermsPage';
@@ -65,7 +66,7 @@ const AllRoute = () => {
           <Route path='checkout' element={<CheckoutPage/>} />
           <Route path='order_received' element={<OrderRecived/>} />
           <Route path='faq' element={<FaqPage/>} />
-          <Route path='volunteer' element={<VolunteerPage/>} />
+          <Route path='volunteer' element={<Suspense fallback={<div />}><VolunteerPage/></Suspense>} />
           <Route path='donate' element={<DonatePage/>} />
           <Route path='contact' element={<ContactPage/>}/>
           <Route path='blog' element={<BlogPage />} />

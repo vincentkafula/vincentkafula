@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import SimpleReactValidator from 'simple-react-validator';
 import Navbar2 from '../../components/Navbar2/Navbar2'
 import PageTitle from '../../components/pagetitle/PageTitle'
@@ -6,7 +6,9 @@ import Footer from '../../components/footer/Footer'
 import Scrollbar from '../../components/scrollbar/scrollbar'
 import vImg from '../../images/volunteer.jpg'
 import TeamSection from '../../components/TeamSection/TeamSection';
+import eczData from '../../data/ecz-locations.json'
 
+const titleCase = (str) => str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase());
 
 const VolunteerPage = (props) => {
 
@@ -25,8 +27,48 @@ const VolunteerPage = (props) => {
     const [validator] = useState(new SimpleReactValidator({
         className: 'errorMessage'
     }));
+
+    const provinces = useMemo(() => Object.keys(eczData).sort(), []);
+
+    const districts = useMemo(() => {
+        if (!forms.province || !eczData[forms.province]) return [];
+        return Object.keys(eczData[forms.province]).sort();
+    }, [forms.province]);
+
+    const constituencies = useMemo(() => {
+        if (!forms.province || !forms.district) return [];
+        const d = eczData[forms.province]?.[forms.district];
+        return d ? Object.keys(d).sort() : [];
+    }, [forms.province, forms.district]);
+
+    const wards = useMemo(() => {
+        if (!forms.province || !forms.district || !forms.constituency) return [];
+        const c = eczData[forms.province]?.[forms.district]?.[forms.constituency];
+        return c ? Object.keys(c).sort() : [];
+    }, [forms.province, forms.district, forms.constituency]);
+
+    const pollingStations = useMemo(() => {
+        if (!forms.province || !forms.district || !forms.constituency || !forms.ward) return [];
+        const stations = eczData[forms.province]?.[forms.district]?.[forms.constituency]?.[forms.ward];
+        return stations ? [...stations].sort() : [];
+    }, [forms.province, forms.district, forms.constituency, forms.ward]);
+
     const changeHandler = e => {
-        setForms({ ...forms, [e.target.name]: e.target.value })
+        const { name, value } = e.target;
+        let updated = { ...forms, [name]: value };
+
+        // reset dependent fields when a parent location field changes
+        if (name === 'province') {
+            updated = { ...updated, district: '', constituency: '', ward: '', pollingStation: '' };
+        } else if (name === 'district') {
+            updated = { ...updated, constituency: '', ward: '', pollingStation: '' };
+        } else if (name === 'constituency') {
+            updated = { ...updated, ward: '', pollingStation: '' };
+        } else if (name === 'ward') {
+            updated = { ...updated, pollingStation: '' };
+        }
+
+        setForms(updated);
         if (validator.allValid()) {
             validator.hideMessages();
         } else {
@@ -90,61 +132,80 @@ const VolunteerPage = (props) => {
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
                                                     <div className="form-field">
-                                                        <input
+                                                        <select
                                                             value={forms.province}
-                                                            type="text"
                                                             name="province"
                                                             onBlur={(e) => changeHandler(e)}
-                                                            onChange={(e) => changeHandler(e)}
-                                                            placeholder="Province" />
-                                                        {validator.message('province', forms.province, 'required|alpha_space')}
+                                                            onChange={(e) => changeHandler(e)}>
+                                                            <option value="">Select Province</option>
+                                                            {provinces.map((p) => (
+                                                                <option key={p} value={p}>{titleCase(p)}</option>
+                                                            ))}
+                                                        </select>
+                                                        {validator.message('province', forms.province, 'required')}
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
                                                     <div className="form-field">
-                                                        <input
+                                                        <select
                                                             value={forms.district}
-                                                            type="text"
                                                             name="district"
+                                                            disabled={!forms.province}
                                                             onBlur={(e) => changeHandler(e)}
-                                                            onChange={(e) => changeHandler(e)}
-                                                            placeholder="District" />
-                                                        {validator.message('district', forms.district, 'required|alpha_space')}
+                                                            onChange={(e) => changeHandler(e)}>
+                                                            <option value="">Select District</option>
+                                                            {districts.map((d) => (
+                                                                <option key={d} value={d}>{titleCase(d)}</option>
+                                                            ))}
+                                                        </select>
+                                                        {validator.message('district', forms.district, 'required')}
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
                                                     <div className="form-field">
-                                                        <input
+                                                        <select
                                                             value={forms.constituency}
-                                                            type="text"
                                                             name="constituency"
+                                                            disabled={!forms.district}
                                                             onBlur={(e) => changeHandler(e)}
-                                                            onChange={(e) => changeHandler(e)}
-                                                            placeholder="Constituency" />
-                                                        {validator.message('constituency', forms.constituency, 'required|alpha_space')}
+                                                            onChange={(e) => changeHandler(e)}>
+                                                            <option value="">Select Constituency</option>
+                                                            {constituencies.map((c) => (
+                                                                <option key={c} value={c}>{titleCase(c)}</option>
+                                                            ))}
+                                                        </select>
+                                                        {validator.message('constituency', forms.constituency, 'required')}
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
                                                     <div className="form-field">
-                                                        <input
+                                                        <select
                                                             value={forms.ward}
-                                                            type="text"
                                                             name="ward"
+                                                            disabled={!forms.constituency}
                                                             onBlur={(e) => changeHandler(e)}
-                                                            onChange={(e) => changeHandler(e)}
-                                                            placeholder="Ward" />
-                                                        {validator.message('ward', forms.ward, 'required|alpha_space')}
+                                                            onChange={(e) => changeHandler(e)}>
+                                                            <option value="">Select Ward</option>
+                                                            {wards.map((w) => (
+                                                                <option key={w} value={w}>{titleCase(w)}</option>
+                                                            ))}
+                                                        </select>
+                                                        {validator.message('ward', forms.ward, 'required')}
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-12 col-12 form-group">
                                                     <div className="form-field">
-                                                        <input
+                                                        <select
                                                             value={forms.pollingStation}
-                                                            type="text"
                                                             name="pollingStation"
+                                                            disabled={!forms.ward}
                                                             onBlur={(e) => changeHandler(e)}
-                                                            onChange={(e) => changeHandler(e)}
-                                                            placeholder="Polling Station" />
+                                                            onChange={(e) => changeHandler(e)}>
+                                                            <option value="">Select Polling Station</option>
+                                                            {pollingStations.map((s) => (
+                                                                <option key={s} value={s}>{titleCase(s)}</option>
+                                                            ))}
+                                                        </select>
                                                         {validator.message('pollingStation', forms.pollingStation, 'required')}
                                                     </div>
                                                 </div>
