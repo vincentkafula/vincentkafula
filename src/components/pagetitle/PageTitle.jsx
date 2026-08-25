@@ -5,7 +5,7 @@ const PageTitle = (props) => {
     return (
         <section
             className="wpo-page-title"
-            style={props.bgSrc ? { backgroundImage: `url(${props.bgSrc})` } : undefined}>
+            style={props.bgSrc ? { backgroundImage: `url(${props.bgSrc})`, backgroundPosition: props.bgPosition || 'center top' } : undefined}>
             <div className="container">
                 <div className="row">
                     <div className="col col-xs-12">

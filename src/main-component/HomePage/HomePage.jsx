@@ -25,7 +25,7 @@ const HomePage =() => {
             <Features/>
             <About abimg={abimg}/>
             <ServiceSection/>
-            <CampaignSection cmClass={'wpo-campaign-area-zm'}/>
+            <CampaignSection/>
             <Testimonial/>
             <FunFact/>
             <TeamSection/>
