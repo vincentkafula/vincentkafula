@@ -6,12 +6,13 @@ import Scrollbar from '../../components/scrollbar/scrollbar'
 import Donors from '../../components/Donors/Donors';
 import PartnerSection from '../../components/PartnerSection/PartnerSection';
 import Footer from '../../components/footer/Footer';
+import campaignBanner from '../../images/campaign-banner.jpg';
 
 const CampaignPageS3 = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} />
+            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} bgSrc={campaignBanner} />
             <CampaignSectionS2 cmClass={'wpo-campaign-area-s3'}/>
             <Donors />
             <PartnerSection/>

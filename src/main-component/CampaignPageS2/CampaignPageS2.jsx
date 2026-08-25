@@ -6,12 +6,13 @@ import Scrollbar from '../../components/scrollbar/scrollbar'
 import Donors from '../../components/Donors/Donors';
 import PartnerSection from '../../components/PartnerSection/PartnerSection';
 import Footer from '../../components/footer/Footer';
+import campaignBanner from '../../images/campaign-banner.jpg';
 
 const CampaignPageS2 = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} />
+            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} bgSrc={campaignBanner} />
             <CampaignSectionS2/>
             <Donors />
             <PartnerSection/>

@@ -7,6 +7,7 @@ import Campaign from '../../api/campaign'
 import Footer from '../../components/footer/Footer';
 import ServiceSidebar from './sidebar';
 import CampaignTab from './Tabs/CampaignTab';
+import campaignBanner from '../../images/campaign-banner.jpg';
 
 const CampaignSinglePage = (props) => {
     const { slug } = useParams()
@@ -21,7 +22,7 @@ const CampaignSinglePage = (props) => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={CampaignDetails.title} pagesub={'Campaign'} />
+            <PageTitle pageTitle={CampaignDetails.title} pagesub={'Campaign'} bgSrc={campaignBanner} />
             <div className="wpo-Campaign-single-area">
                 <div className="wpo-campaign-details-area section-padding">
                     <div className="container">
