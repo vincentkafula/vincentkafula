@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import HeaderTopbar from '../HeaderTopbar/HeaderTopbar'
 import MobileMenu from '../MobileMenu/MobileMenu'
 import Logo from '../../images/logo-vk-full.png'
 
 const Header2 = (props) => {
     const [menuActive, setMenuState] = useState(false);
+    const cartItems = useSelector((state) => state.cart.cart);
+    const cartCount = cartItems.reduce((acc, item) => acc + (item.qty || 1), 0);
     const SubmitHandler = (e) => {
         e.preventDefault()
     }
@@ -107,6 +110,29 @@ const Header2 = (props) => {
                                 <div className="header-right">
                                     <div className="header-search-form-wrapper">
                                         <div className="cart-search-contact">
+                                            <Link onClick={ClickHandler} to="/cart" className="cart-toggle-btn" style={{ position: 'relative' }}>
+                                                <i className="fi ti-shopping-cart"></i>
+                                                {cartCount > 0 && (
+                                                    <span
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '-6px',
+                                                            right: '4px',
+                                                            background: '#ff5e14',
+                                                            color: '#fff',
+                                                            borderRadius: '50%',
+                                                            width: '16px',
+                                                            height: '16px',
+                                                            fontSize: '10px',
+                                                            lineHeight: '16px',
+                                                            textAlign: 'center',
+                                                            fontWeight: 700,
+                                                        }}
+                                                    >
+                                                        {cartCount}
+                                                    </span>
+                                                )}
+                                            </Link>
                                             <button onClick={() => setMenuState(!menuActive)} className="search-toggle-btn"><i
                                                 className={`fi ti-search ${menuActive ? "ti-close" : "fi "}`}></i></button>
                                             <div className={`header-search-form ${menuActive ? "header-search-content-toggle" : ""}`}>

@@ -541,8 +541,17 @@
 }
 
 .wpo-site-header .header-right .cart-toggle-btn {
+	display: inline-block;
+	margin-right: 15px;
+
 	@media(max-width:450px) {
 		display: none;
+	}
+
+	.fi {
+		&:before {
+			font-size: 18px;
+		}
 	}
 }
 
@@ -1689,6 +1698,7 @@
 			margin-right: 0;
 		}
 
+		.cart-toggle-btn .fi,
 		.search-toggle-btn .fi {
 			color: $dark-gray;
 		}
@@ -1760,6 +1770,7 @@
 		padding: 0 0px;
 	}
 
+	.header-right .cart-toggle-btn .fi,
 	.header-right .search-toggle-btn .fi {
 		color: $dark-gray;
 	}
