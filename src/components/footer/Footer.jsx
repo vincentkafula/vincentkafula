@@ -22,10 +22,10 @@ const Footer = (props) => {
                                     <Link onClick={ClickHandler} className="navbar-brand" to="/index"><img src={Logo} alt="" /></Link>
                                 </div>
                                 <ul className="info">
-                                    <li>Phone: 111-222-333-2155</li>
-                                    <li>Email: contact@mail.com</li>
-                                    <li>Address: 22/1 Melborane city austria,
-                                        human resoerch, Canada</li>
+                                    <li>Phone: 0614615035</li>
+                                    <li>Email: vincent.kafula@gmail.com</li>
+                                    <li>Address: 37 Chiappini Street, St Andrew's Presbyterian Church,
+                                        Cape Town</li>
                                 </ul>
                                 <div className="social">
                                     <ul>
