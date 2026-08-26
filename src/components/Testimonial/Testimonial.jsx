@@ -84,7 +84,15 @@ const Testimonial = (props) => {
                         <div className="col-lg-6 col-12 order-lg-1 order-1">
                             <div className="wpo-testimonial-items">
                                 <div className="right-slide">
-                                    <Slider asNavFor={nav2} ref={(slider1) => setNav1(slider1)} dots={true} arrows={false}>
+                                    <Slider
+                                        asNavFor={nav2}
+                                        ref={(slider1) => setNav1(slider1)}
+                                        dots={true}
+                                        arrows={false}
+                                        autoplay={true}
+                                        autoplaySpeed={4000}
+                                        pauseOnHover={true}
+                                    >
                                         {
                                             testimonial.map((tesmnl, tsm) => (
                                                 <div className="wpo-testimonial-item" key={tsm}>
