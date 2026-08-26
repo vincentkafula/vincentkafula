@@ -19,7 +19,7 @@ const AboutPage = () => {
         <Fragment>
             <Navbar2 />
             <PageTitle pageTitle={'About Us'} pagesub={'About'} bgSrc={aboutBanner} />
-            <About abimg={abimg} abClass={"pt-padding"}/>
+            <About abimg={abimg} abClass={"pt-padding"} fullBio={true} />
             <ServiceSection />
             <CampaignSection />
             <Testimonial />
