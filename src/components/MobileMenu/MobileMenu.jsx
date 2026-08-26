@@ -108,21 +108,6 @@ const menus = [
                 link: '/shop',
             },
             {
-                id: 375,
-                title: 'Shop Single',
-                link: '/product-single/The-Audacity-of-Hope'
-            },
-            {
-                id: 376,
-                title: 'Cart',
-                link: '/cart'
-            },
-            {
-                id: 377,
-                title: 'Checkout',
-                link: '/checkout'
-            },
-            {
                 id: 33,
                 title: 'FAQ',
                 link: '/faq'

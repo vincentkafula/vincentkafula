@@ -73,9 +73,6 @@ const Header2 = (props) => {
                                                     </ul>
                                                 </li>
                                                 <li><Link onClick={ClickHandler} to="/shop">Shop</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/product-single/The-Audacity-of-Hope">Shop Single</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/cart">Cart</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/checkout">Checkout</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/faq">FAQ</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/volunteer">Volunteer</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/404">404 Error</Link></li>
