@@ -23,7 +23,7 @@ const HomePage =() => {
             <Navbar hclass={'wpo-site-header-s1'} topbarNone={'topbar-none'} Logo={Logo}/>
             <Hero/>
             <Features/>
-            <About abimg={abimg}/>
+            <About abimg={abimg} fullBio={true}/>
             <ServiceSection/>
             <CampaignSection/>
             <Testimonial/>
