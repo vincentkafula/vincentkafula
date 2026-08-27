@@ -114,8 +114,8 @@ const About = (props) => {
                                 <div className="wpo-about-left-info">
                                     <div className="wpo-about-left-inner">
                                         <div className="wpo-about-left-text">
-                                            <h5>Robert Willum</h5>
-                                            <span>CEO & Founder of Manit</span>
+                                            <h5>Vincent Kafula</h5>
+                                            <span>Founder of Build One Zambia</span>
                                         </div>
                                     </div>
                                     <div className="signeture">
