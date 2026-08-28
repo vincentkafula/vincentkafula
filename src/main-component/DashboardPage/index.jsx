@@ -4,6 +4,10 @@ import Navbar2 from '../../components/Navbar2/Navbar2';
 import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
+import PartnerDashboard from '../PartnerDashboardPage';
+import OpManagementDashboard from '../OpManagementDashboardPage';
+import OperationOfficeDashboard from '../OperationOfficeDashboardPage';
+import ManagerDashboard from '../ManagerDashboardPage';
 
 const roleLabels = {
     'teams': 'Teams',
@@ -18,10 +22,16 @@ const roleLabels = {
     'team-member': 'Team Member',
 };
 
-const DashboardPage = () => {
-    const { role } = useParams();
-    const label = roleLabels[role] || 'Dashboard';
+// Roles with a real, built-out dashboard. Everything else falls back to the placeholder below.
+const builtDashboards = {
+    'partner': PartnerDashboard,
+    'op-management': OpManagementDashboard,
+    'operation-office': OperationOfficeDashboard,
+    'project-manager': ManagerDashboard,
+};
 
+const DashboardPlaceholder = ({ role }) => {
+    const label = roleLabels[role] || 'Dashboard';
     return (
         <Fragment>
             <Navbar2 />
@@ -37,6 +47,13 @@ const DashboardPage = () => {
             <Scrollbar />
         </Fragment>
     );
+};
+
+const DashboardPage = () => {
+    const { role } = useParams();
+    const Built = builtDashboards[role];
+    if (Built) return <Built />;
+    return <DashboardPlaceholder role={role} />;
 };
 
 export default DashboardPage;
