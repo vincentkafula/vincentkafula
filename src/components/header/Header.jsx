@@ -117,14 +117,14 @@ const Header = (props) => {
                                         </div>
                                     </div>
                                     <div className="close-form">
-                                        <Link onClick={ClickHandler} className="theme-btn" to="/donate"><span className="text">Donate Now</span>
+                                        <Link onClick={ClickHandler} className="theme-btn" to="/donate"><span className="text">Donate</span>
                                             <span className="mobile">
                                                 <i className="fi flaticon-charity"></i>
                                             </span></Link>
                                     </div>
                                     <div className="login-icon-wrap" style={{ marginLeft: '15px', display: 'flex', alignItems: 'center', height: '100%' }}>
-                                        <Link onClick={ClickHandler} to="/login" style={{ display: 'inline-flex', color: 'inherit' }}>
-                                            <i className="fi flaticon-user" style={{ fontSize: '20px' }}></i>
+                                        <Link onClick={ClickHandler} to="/login" style={{ display: 'inline-flex', color: '#fff', fontWeight: 600 }}>
+                                            Login
                                         </Link>
                                     </div>
                                 </div>

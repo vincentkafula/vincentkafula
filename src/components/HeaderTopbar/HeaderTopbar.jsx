@@ -31,9 +31,9 @@ const HeaderTopbar = () => {
                                 </div>
                             </div>
                             <div className="contact-info">
-                                <Link className="theme-btn" to="/donate">Donate Now</Link>
-                                <Link to="/login" style={{ marginLeft: '15px', display: 'inline-flex', alignItems: 'center', color: 'inherit' }}>
-                                    <i className="fi flaticon-user" style={{ fontSize: '20px' }}></i>
+                                <Link className="theme-btn" to="/donate">Donate</Link>
+                                <Link to="/login" style={{ marginLeft: '15px', display: 'inline-flex', alignItems: 'center', color: 'inherit', fontWeight: 600 }}>
+                                    Login
                                 </Link>
                             </div>
                         </div>
