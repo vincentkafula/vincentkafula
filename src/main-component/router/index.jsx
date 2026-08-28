@@ -29,6 +29,7 @@ import BlogDetailsLeftSiide from '../BlogDetailsLeftSiide/BlogDetailsLeftSiide'
 import ContactPage from '../ContactPage/ContactPage';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import LoginPage from '../LoginPage';
+import DashboardPage from '../DashboardPage';
 import SignUpPage from '../SignUpPage';
 import ForgotPassword from '../ForgotPassword';
 import FaqPage from '../FaqPage';
@@ -79,6 +80,7 @@ const AllRoute = () => {
           <Route path='terms' element={<TermsPage />} />
           <Route path='404' element={<ErrorPage/>}/> 
           <Route path='login' element={<LoginPage />} />
+          <Route path='dashboard/:role' element={<DashboardPage />} />
           <Route path='register' element={<SignUpPage />} />
           <Route path='forgot-password' element={<ForgotPassword />} />
         </Routes>

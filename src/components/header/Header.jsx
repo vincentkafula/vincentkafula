@@ -122,6 +122,11 @@ const Header = (props) => {
                                                 <i className="fi flaticon-charity"></i>
                                             </span></Link>
                                     </div>
+                                    <div className="login-icon-wrap" style={{ marginLeft: '15px', display: 'flex', alignItems: 'center', height: '100%' }}>
+                                        <Link onClick={ClickHandler} to="/login" style={{ display: 'inline-flex', color: 'inherit' }}>
+                                            <i className="fi flaticon-user" style={{ fontSize: '20px' }}></i>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>

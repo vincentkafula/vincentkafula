@@ -10,6 +10,19 @@ import {Link, useNavigate} from "react-router-dom";
 
 import './style.scss';
 
+const demoAccounts = [
+    { label: 'Teams', slug: 'teams' },
+    { label: 'Foreman', slug: 'foreman' },
+    { label: 'Day Admin', slug: 'day-admin' },
+    { label: 'Operation Office', slug: 'operation-office' },
+    { label: 'Op. Management', slug: 'op-management' },
+    { label: 'Store', slug: 'store' },
+    { label: 'Project Manager', slug: 'project-manager' },
+    { label: 'Head Office', slug: 'head-office' },
+    { label: 'Partner', slug: 'partner' },
+    { label: 'Team Member', slug: 'team-member' },
+];
+
 
 
 const LoginPage = (props) => {
@@ -122,6 +135,22 @@ const LoginPage = (props) => {
                         </Grid>
                     </Grid>
                 </form>
+                <div className="demo-accounts" style={{ marginTop: '30px', paddingTop: '25px', borderTop: '1px solid #eee' }}>
+                    <p style={{ fontWeight: 600, marginBottom: '15px' }}>Demo Accounts</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                        {demoAccounts.map((acc) => (
+                            <Button
+                                key={acc.slug}
+                                variant="outlined"
+                                size="small"
+                                onClick={() => push(`/dashboard/${acc.slug}`)}
+                                style={{ textTransform: 'none' }}
+                            >
+                                {acc.label}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
                 <div className="shape-img">
                     <i className="fi flaticon-honeycomb"></i>
                 </div>
