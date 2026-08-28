@@ -12,6 +12,8 @@ import TeamsDashboard from '../TeamsDashboardPage';
 import DayAdminDashboard from '../DayAdminDashboardPage';
 import ForemanDashboard from '../ForemanDashboardPage';
 import StoreDashboard from '../StoreDashboardPage';
+import HeadOfficeDashboard from '../HeadOfficeDashboardPage';
+import TeamMemberDashboard from '../TeamMemberDashboardPage';
 import RequireDashboardAuth from '../../components/ops-dashboards/RequireDashboardAuth';
 
 const roleLabels = {
@@ -37,6 +39,8 @@ const builtDashboards = {
     'day-admin': DayAdminDashboard,
     'foreman': ForemanDashboard,
     'store': StoreDashboard,
+    'head-office': HeadOfficeDashboard,
+    'team-member': TeamMemberDashboard,
 };
 
 const DashboardPlaceholder = ({ role }) => {
