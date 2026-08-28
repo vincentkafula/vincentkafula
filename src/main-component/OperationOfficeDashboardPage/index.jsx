@@ -10,6 +10,7 @@ import { quotationsApi } from '../../api/quotationsApi';
 import { scheduledJobsApi } from '../../api/scheduledJobsApi';
 import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
+import WeeklyDeploymentBoard from '../../components/ops-dashboards/WeeklyDeploymentBoard';
 
 const streamLabel = (s) => ({ pre_school: 'Pre-School', school: 'School', technical_services: 'Technical Services' }[s] || s);
 
@@ -119,6 +120,8 @@ const OperationOfficeDashboard = () => {
                 <div style={{ marginBottom: '24px' }}>
                     <p style={{ color: '#555', fontSize: '14px' }}>Approving as <strong>{getAuth()?.display_name}</strong></p>
                 </div>
+
+                <WeeklyDeploymentBoard />
 
                 <h3 style={{ marginBottom: '18px' }}>Awaiting Amount Approval ({pending.length})</h3>
                 {loading ? <p>Loading...</p> : pending.length === 0 ? (
