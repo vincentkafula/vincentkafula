@@ -9,6 +9,7 @@ import StatusBadge from '../../components/ops-dashboards/StatusBadge';
 import { quotationsApi } from '../../api/quotationsApi';
 import { scheduledJobsApi } from '../../api/scheduledJobsApi';
 import { jobsheetsApi } from '../../api/jobsheetsApi';
+import { teamBookingsApi } from '../../api/teamBookingsApi';
 import { getAuth } from '../../api/authApi';
 import WeeklyDeploymentBoard from '../../components/ops-dashboards/WeeklyDeploymentBoard';
 import LeaveRegister from '../../components/ops-dashboards/LeaveRegister';
@@ -45,6 +46,11 @@ const OperationOfficeDashboard = () => {
     const [confirmedJobsheets, setConfirmedJobsheets] = useState([]);
     const [serialedJobsheets, setSerialedJobsheets] = useState([]);
     const [jsBusyId, setJsBusyId] = useState(null);
+
+    const [allBookings, setAllBookings] = useState([]);
+    const loadBookings = () => {
+        teamBookingsApi.list().then(setAllBookings).catch((err) => toast.error(err.message));
+    };
 
     const loadJobsheets = () => {
         Promise.all([jobsheetsApi.list('confirmed'), jobsheetsApi.list('serialed')])
@@ -99,7 +105,7 @@ const OperationOfficeDashboard = () => {
             .finally(() => setLoading(false));
     };
 
-    useEffect(() => { load(); loadSchedules(); loadJobsheets(); }, []);
+    useEffect(() => { load(); loadSchedules(); loadJobsheets(); loadBookings(); }, []);
 
     const act = async (id, approved) => {
         if (approved && !amounts[id]) {
@@ -130,6 +136,66 @@ const OperationOfficeDashboard = () => {
             <div className="container" style={{ padding: '80px 15px' }}>
                 <div style={{ marginBottom: '24px' }}>
                     <p style={{ color: '#555', fontSize: '14px' }}>Approving as <strong>{getAuth()?.display_name}</strong></p>
+                </div>
+
+                <h3 style={{ marginBottom: '18px' }}>Overview</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+                    {[
+                        ['Active Schedules', approvedSchedules.length],
+                        ['Total Shifts Booked', allBookings.length],
+                        ['Shifts Completed', allBookings.filter((b) => b.status === 'completed').length],
+                        ['Pending Approvals', pendingSchedules.length + confirmedJobsheets.length],
+                    ].map(([label, value]) => (
+                        <div key={label} style={{ border: '1px solid #eee', borderRadius: '8px', padding: '16px', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
+                            <div style={{ fontSize: '24px', fontWeight: 700, color: '#1565C0' }}>{value}</div>
+                            <div style={{ fontSize: '13px', color: '#777' }}>{label}</div>
+                        </div>
+                    ))}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
+                    <div style={{ border: '1px solid #eee', borderRadius: '8px', padding: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
+                        <h4 style={{ marginBottom: '12px' }}>KPI Scorecard</h4>
+                        {(() => {
+                            const totalShifts = allBookings.length;
+                            const completedShifts = allBookings.filter((b) => b.status === 'completed').length;
+                            const completionRate = totalShifts ? Math.round((completedShifts / totalShifts) * 100) : 0;
+                            const totalInvoiced = serialedJobsheets.reduce((s, j) => s + Number(j.invoiceAmount || 0), 0);
+                            const totalProfit = serialedJobsheets.reduce((s, j) => s + Number(j.adminFee || 0), 0);
+                            const avgInvoice = serialedJobsheets.length ? totalInvoiced / serialedJobsheets.length : 0;
+                            const kpis = [
+                                ['Shift Completion Rate', `${completionRate}%`],
+                                ['Total Invoiced', fmtR(totalInvoiced)],
+                                ['Total Profit (Admin Fee)', fmtR(totalProfit)],
+                                ['Average Invoice / Jobsheet', fmtR(avgInvoice)],
+                            ];
+                            return kpis.map(([label, value]) => (
+                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f0f0', fontSize: '14px' }}>
+                                    <span style={{ color: '#666' }}>{label}</span>
+                                    <strong>{value}</strong>
+                                </div>
+                            ));
+                        })()}
+                    </div>
+                    <div style={{ border: '1px solid #eee', borderRadius: '8px', padding: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
+                        <h4 style={{ marginBottom: '12px' }}>Shifts by Stream</h4>
+                        {(() => {
+                            const counts = { pre_school: 0, school: 0, technical_services: 0 };
+                            approvedSchedules.forEach((j) => { if (counts[j.stream] !== undefined) counts[j.stream]++; });
+                            const max = Math.max(1, ...Object.values(counts));
+                            const colors = { pre_school: '#7c5a1e', school: '#0d6d4f', technical_services: '#0277bd' };
+                            return Object.entries(counts).map(([stream, count]) => (
+                                <div key={stream} style={{ marginBottom: '12px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
+                                        <span>{streamLabel(stream)}</span><span>{count}</span>
+                                    </div>
+                                    <div style={{ background: '#f0f0f0', borderRadius: '4px', height: '10px' }}>
+                                        <div style={{ width: `${(count / max) * 100}%`, background: colors[stream], height: '10px', borderRadius: '4px' }} />
+                                    </div>
+                                </div>
+                            ));
+                        })()}
+                    </div>
                 </div>
 
                 <WeeklyDeploymentBoard title="WEEKLY DEPLOYMENT SCHEDULE" subtitle="ALL STREAMS" badgeLabel="WD" />
@@ -313,6 +379,37 @@ const OperationOfficeDashboard = () => {
                                         <td style={{ padding: '10px' }}>{j.serial_number}</td>
                                         <td style={{ padding: '10px' }}>{j.team_name}</td>
                                         <td style={{ padding: '10px' }}>R{Number(j.invoiceAmount).toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                <h3 style={{ margin: '10px 0 8px' }}>Operations — All Shifts</h3>
+                <p style={{ color: '#777', fontSize: '13px', marginBottom: '18px' }}>Every team booking across every status, for shift management at a glance.</p>
+                {allBookings.length === 0 ? (
+                    <p style={{ color: '#777', marginBottom: '30px' }}>No shifts booked yet.</p>
+                ) : (
+                    <div style={{ overflowX: 'auto', marginBottom: '30px' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                            <thead>
+                                <tr style={{ textAlign: 'left', borderBottom: '2px solid #eee' }}>
+                                    <th style={{ padding: '8px' }}>Team</th>
+                                    <th style={{ padding: '8px' }}>Foreman</th>
+                                    <th style={{ padding: '8px' }}>Workers</th>
+                                    <th style={{ padding: '8px' }}>Session</th>
+                                    <th style={{ padding: '8px' }}>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allBookings.map((b) => (
+                                    <tr key={b.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                        <td style={{ padding: '8px' }}>{b.team_name}</td>
+                                        <td style={{ padding: '8px' }}>{b.foreman_name}</td>
+                                        <td style={{ padding: '8px' }}>{b.worker1_name}, {b.worker2_name}</td>
+                                        <td style={{ padding: '8px' }}>{b.roll_call_session}</td>
+                                        <td style={{ padding: '8px', textTransform: 'capitalize' }}>{b.status}</td>
                                     </tr>
                                 ))}
                             </tbody>
