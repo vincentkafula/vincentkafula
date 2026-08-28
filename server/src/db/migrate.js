@@ -75,6 +75,41 @@ CREATE TABLE IF NOT EXISTS invoices (
 );
 
 CREATE INDEX IF NOT EXISTS idx_invoices_quotation ON invoices(quotation_id);
+
+CREATE TABLE IF NOT EXISTS scheduled_jobs (
+  id SERIAL PRIMARY KEY,
+  quotation_id INTEGER NOT NULL REFERENCES quotations(id),
+  stream TEXT NOT NULL CHECK (stream IN ('pre_school','school','technical_services')),
+  account_name TEXT,
+  scheduled_date DATE,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved')),
+  approved_by TEXT,
+  approved_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_scheduled_jobs_status ON scheduled_jobs(status);
+CREATE INDEX IF NOT EXISTS idx_scheduled_jobs_quotation ON scheduled_jobs(quotation_id);
+
+CREATE TABLE IF NOT EXISTS team_bookings (
+  id SERIAL PRIMARY KEY,
+  scheduled_job_id INTEGER NOT NULL REFERENCES scheduled_jobs(id),
+  team_name TEXT NOT NULL,
+  foreman_name TEXT NOT NULL,
+  worker1_name TEXT NOT NULL,
+  worker2_name TEXT NOT NULL,
+  roll_call_session TEXT NOT NULL CHECK (roll_call_session IN ('07:30','12:30')),
+  status TEXT NOT NULL DEFAULT 'booked' CHECK (status IN ('booked','deployed','completed')),
+  no_show_names TEXT[] NOT NULL DEFAULT '{}',
+  replacements JSONB NOT NULL DEFAULT '[]',
+  deployed_by TEXT,
+  deployed_at TIMESTAMPTZ,
+  booked_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_team_bookings_job ON team_bookings(scheduled_job_id);
+CREATE INDEX IF NOT EXISTS idx_team_bookings_status ON team_bookings(status);
 `;
 
 const DEMO_USERS = [

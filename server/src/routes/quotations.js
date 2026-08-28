@@ -138,6 +138,14 @@ router.post('/:id/manager-approve', requireAuth(['project-manager']), async (req
       );
     }
 
+    // Approved quotations enter Shift Scheduling under their assigned stream.
+    if (approved) {
+      await pool.query(
+        `INSERT INTO scheduled_jobs (quotation_id, stream) VALUES ($1, $2)`,
+        [quotation.id, quotation.final_stream || quotation.requested_stream]
+      );
+    }
+
     res.json(quotation);
   } catch (err) {
     console.error(err);
