@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import './quotationBuilder.css';
+import TaskSheetModal, { emptyTaskSheet } from './TaskSheetModal';
 
 // Qualified team rates (per shift). Operation Supervisor rate is not yet defined in the
 // spec, so it's shown as "TBC" and left out of the indicative total rather than guessed.
@@ -11,7 +12,6 @@ const emptyForm = {
     partner_email: '',
     partner_phone: '',
     task_title: '',
-    task_detail: '',
     considerations: '',
     location_address: '',
     num_foremen: 1,
@@ -34,6 +34,11 @@ const todayDisplay = () =>
 
 const QuotationBuilder = ({ onSubmit, submitting }) => {
     const [form, setForm] = useState(emptyForm);
+    const [taskSheetOpen, setTaskSheetOpen] = useState(false);
+    const [taskSheetComplete, setTaskSheetComplete] = useState(false);
+    const [taskSheetSummary, setTaskSheetSummary] = useState('');
+    const [taskSheetData, setTaskSheetData] = useState(emptyTaskSheet());
+    const [attention, setAttention] = useState(false);
 
     const change = (e) => {
         const { name, value } = e.target;
@@ -54,13 +59,34 @@ const QuotationBuilder = ({ onSubmit, submitting }) => {
 
     const indicativeTotal = rows.reduce((sum, r) => sum + (r.total || 0), 0);
 
-    const reset = () => setForm(emptyForm);
+    const reset = () => {
+        setForm(emptyForm);
+        setTaskSheetComplete(false);
+        setTaskSheetSummary('');
+        setTaskSheetData(emptyTaskSheet());
+    };
+
+    const openTaskSheet = () => setTaskSheetOpen(true);
+    const closeTaskSheet = () => setTaskSheetOpen(false);
+
+    const saveTaskSheet = (summaryText, data) => {
+        setTaskSheetSummary(summaryText);
+        setTaskSheetData(data);
+        setTaskSheetComplete(true);
+        setTaskSheetOpen(false);
+    };
 
     const handleSubmit = () => {
         if (!form.partner_name.trim()) return;
+        if (!taskSheetComplete) {
+            setAttention(true);
+            setTimeout(() => setAttention(false), 900);
+            document.getElementById('qb-tasksheet-trigger')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
         const combinedDetails = [
             form.task_title && `Task: ${form.task_title}`,
-            form.task_detail,
+            taskSheetSummary,
             form.considerations && `Considerations: ${form.considerations}`,
         ].filter(Boolean).join('\n\n');
 
@@ -120,8 +146,23 @@ const QuotationBuilder = ({ onSubmit, submitting }) => {
                         <input name="task_title" value={form.task_title} onChange={change} placeholder="e.g. Grounds clean-up & refuse removal" />
                     </div>
                     <div className="qb-field">
-                        <label>Task detail</label>
-                        <textarea name="task_detail" value={form.task_detail} onChange={change} placeholder="Describe the scope of work in full" />
+                        <label>
+                            Task detail <span className="qb-required-flag">required — opens Task Sheet</span>
+                        </label>
+                        <button
+                            id="qb-tasksheet-trigger"
+                            type="button"
+                            className={`qb-tasksheet-trigger ${taskSheetComplete ? 'qb-is-complete' : ''} ${attention ? 'qb-attention' : ''}`}
+                            onClick={openTaskSheet}
+                        >
+                            <span className="qb-tasksheet-trigger-icon" aria-hidden="true">📄</span>
+                            <span className="qb-tasksheet-trigger-text">
+                                {taskSheetComplete
+                                    ? `Task Sheet completed — "${taskSheetData.shiftTitle}" (${taskSheetData.tasks.length} task${taskSheetData.tasks.length === 1 ? '' : 's'}). Click to review or edit.`
+                                    : 'Click to open the Task Sheet and enter task detail'}
+                            </span>
+                            <span className="qb-tasksheet-trigger-arrow" aria-hidden="true">→</span>
+                        </button>
                     </div>
                     <div className="qb-field">
                         <label>Considerations</label>
@@ -209,7 +250,7 @@ const QuotationBuilder = ({ onSubmit, submitting }) => {
                         </dl>
                         <dl className="qb-doc-field-row">
                             <dt>Task detail</dt>
-                            <dd className={form.task_detail ? '' : 'qb-placeholder'}>{form.task_detail || 'Not yet entered'}</dd>
+                            <dd className={taskSheetSummary ? '' : 'qb-placeholder'}>{taskSheetSummary || 'Not yet entered'}</dd>
                         </dl>
                         <dl className="qb-doc-field-row">
                             <dt>Considerations</dt>
@@ -280,6 +321,15 @@ const QuotationBuilder = ({ onSubmit, submitting }) => {
                     </div>
                 </div>
             </div>
+
+            <TaskSheetModal
+                open={taskSheetOpen}
+                onClose={closeTaskSheet}
+                onSave={saveTaskSheet}
+                initial={taskSheetData}
+                defaultTitle={form.task_title}
+                defaultDate=""
+            />
         </div>
     );
 };
