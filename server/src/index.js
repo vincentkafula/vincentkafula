@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.js";
 import invoicesRouter from "./routes/invoices.js";
 import scheduledJobsRouter from "./routes/scheduledJobs.js";
 import teamBookingsRouter from "./routes/teamBookings.js";
+import jobsheetsRouter from "./routes/jobsheets.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -23,6 +24,7 @@ app.use("/api/quotations", quotationsRouter);
 app.use("/api/invoices", invoicesRouter);
 app.use("/api/scheduled-jobs", scheduledJobsRouter);
 app.use("/api/team-bookings", teamBookingsRouter);
+app.use("/api/jobsheets", jobsheetsRouter);
 
 async function start() {
   try {

@@ -10,6 +10,8 @@ import OperationOfficeDashboard from '../OperationOfficeDashboardPage';
 import ManagerDashboard from '../ManagerDashboardPage';
 import TeamsDashboard from '../TeamsDashboardPage';
 import DayAdminDashboard from '../DayAdminDashboardPage';
+import ForemanDashboard from '../ForemanDashboardPage';
+import StoreDashboard from '../StoreDashboardPage';
 import RequireDashboardAuth from '../../components/ops-dashboards/RequireDashboardAuth';
 
 const roleLabels = {
@@ -33,6 +35,8 @@ const builtDashboards = {
     'project-manager': ManagerDashboard,
     'teams': TeamsDashboard,
     'day-admin': DayAdminDashboard,
+    'foreman': ForemanDashboard,
+    'store': StoreDashboard,
 };
 
 const DashboardPlaceholder = ({ role }) => {

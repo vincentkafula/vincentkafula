@@ -8,6 +8,7 @@ import Scrollbar from '../../components/scrollbar/scrollbar';
 import StatusBadge from '../../components/ops-dashboards/StatusBadge';
 import { quotationsApi } from '../../api/quotationsApi';
 import { scheduledJobsApi } from '../../api/scheduledJobsApi';
+import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
 
 const streamLabel = (s) => ({ pre_school: 'Pre-School', school: 'School', technical_services: 'Technical Services' }[s] || s);
@@ -28,6 +29,29 @@ const OperationOfficeDashboard = () => {
     const [accountNames, setAccountNames] = useState({});
     const [scheduledDates, setScheduledDates] = useState({});
     const [schedBusyId, setSchedBusyId] = useState(null);
+
+    const [confirmedJobsheets, setConfirmedJobsheets] = useState([]);
+    const [serialedJobsheets, setSerialedJobsheets] = useState([]);
+    const [jsBusyId, setJsBusyId] = useState(null);
+
+    const loadJobsheets = () => {
+        Promise.all([jobsheetsApi.list('confirmed'), jobsheetsApi.list('serialed')])
+            .then(([c, s]) => { setConfirmedJobsheets(c); setSerialedJobsheets(s); })
+            .catch((err) => toast.error(err.message));
+    };
+
+    const assignSerial = async (id) => {
+        setJsBusyId(id);
+        try {
+            const updated = await jobsheetsApi.assignSerial(id);
+            toast.success(`Serial number assigned: ${updated.serial_number}`);
+            loadJobsheets();
+        } catch (err) {
+            toast.error(err.message);
+        } finally {
+            setJsBusyId(null);
+        }
+    };
 
     const loadSchedules = () => {
         Promise.all([scheduledJobsApi.list('pending'), scheduledJobsApi.list('approved')])
@@ -63,7 +87,7 @@ const OperationOfficeDashboard = () => {
             .finally(() => setLoading(false));
     };
 
-    useEffect(() => { load(); loadSchedules(); }, []);
+    useEffect(() => { load(); loadSchedules(); loadJobsheets(); }, []);
 
     const act = async (id, approved) => {
         if (approved && !amounts[id]) {
@@ -223,6 +247,51 @@ const OperationOfficeDashboard = () => {
                                         <td style={{ padding: '10px' }}>{job.account_name}</td>
                                         <td style={{ padding: '10px' }}>{streamLabel(job.stream)}</td>
                                         <td style={{ padding: '10px' }}>{job.scheduled_date ? new Date(job.scheduled_date).toLocaleDateString() : '—'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                <h3 style={{ margin: '40px 0 18px' }}>Jobsheet Review — Confirmed, Awaiting Serial Number</h3>
+                <p style={{ color: '#777', fontSize: '13px', marginBottom: '18px' }}>
+                    Day Admin has confirmed these shifts complete. Review the cash/EFT split and materials, then assign a serial number to move it into the accounting ledger.
+                </p>
+                {confirmedJobsheets.length === 0 ? (
+                    <p style={{ color: '#777' }}>Nothing awaiting a serial number.</p>
+                ) : confirmedJobsheets.map((j) => (
+                    <div key={j.id} style={cardStyle}>
+                        <strong>{j.team_name}</strong> — {j.partner_name} ({j.account_name})
+                        <p style={{ margin: '6px 0', color: '#555', fontSize: '14px' }}>
+                            {j.foreman_name}, {j.worker1_name}, {j.worker2_name} — Cash R{Number(j.totalCash).toFixed(2)} / EFT R{Number(j.totalEft).toFixed(2)}
+                        </p>
+                        <p style={{ margin: '6px 0', fontSize: '13px', color: '#888' }}>
+                            Bags: {j.bags_issued} issued / {j.bags_returned} returned / {j.bags_used} used &nbsp;·&nbsp;
+                            Gloves: {j.gloves_issued} issued / {j.gloves_returned} returned / {j.gloves_used} used
+                        </p>
+                        <p style={{ margin: '6px 0', fontWeight: 600 }}>Invoice Amount: R{Number(j.invoiceAmount).toFixed(2)}</p>
+                        <button className="theme-btn" disabled={jsBusyId === j.id} onClick={() => assignSerial(j.id)}>Assign Serial Number</button>
+                    </div>
+                ))}
+
+                <h3 style={{ margin: '40px 0 18px' }}>Serialed Jobsheets</h3>
+                {serialedJobsheets.length === 0 ? <p style={{ color: '#777' }}>None yet.</p> : (
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                            <thead>
+                                <tr style={{ textAlign: 'left', borderBottom: '2px solid #eee' }}>
+                                    <th style={{ padding: '10px' }}>Serial No.</th>
+                                    <th style={{ padding: '10px' }}>Team</th>
+                                    <th style={{ padding: '10px' }}>Invoice Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {serialedJobsheets.map((j) => (
+                                    <tr key={j.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                        <td style={{ padding: '10px' }}>{j.serial_number}</td>
+                                        <td style={{ padding: '10px' }}>{j.team_name}</td>
+                                        <td style={{ padding: '10px' }}>R{Number(j.invoiceAmount).toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -6,6 +6,7 @@ import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { teamBookingsApi } from '../../api/teamBookingsApi';
+import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
 
 const cardStyle = { border: '1px solid #eee', borderRadius: '8px', padding: '22px', marginBottom: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' };
@@ -15,6 +16,7 @@ const DayAdminDashboard = () => {
     const [booked, setBooked] = useState([]);
     const [deployed, setDeployed] = useState([]);
     const [completed, setCompleted] = useState([]);
+    const [submittedJobsheets, setSubmittedJobsheets] = useState([]);
     const [loading, setLoading] = useState(false);
     const [noShows, setNoShows] = useState({}); // { bookingId: { foreman_name: true/false, ... } }
     const [replacementNames, setReplacementNames] = useState({}); // { bookingId: { foreman_name: 'text' } }
@@ -22,8 +24,8 @@ const DayAdminDashboard = () => {
 
     const load = () => {
         setLoading(true);
-        Promise.all([teamBookingsApi.list('booked'), teamBookingsApi.list('deployed'), teamBookingsApi.list('completed')])
-            .then(([b, d, c]) => { setBooked(b); setDeployed(d); setCompleted(c); })
+        Promise.all([teamBookingsApi.list('booked'), teamBookingsApi.list('deployed'), teamBookingsApi.list('completed'), jobsheetsApi.list('submitted')])
+            .then(([b, d, c, j]) => { setBooked(b); setDeployed(d); setCompleted(c); setSubmittedJobsheets(j); })
             .catch((err) => toast.error(err.message))
             .finally(() => setLoading(false));
     };
@@ -63,6 +65,19 @@ const DayAdminDashboard = () => {
         try {
             await teamBookingsApi.complete(id);
             toast.success('Shift marked complete');
+            load();
+        } catch (err) {
+            toast.error(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
+
+    const confirmJobsheet = async (jobsheetId) => {
+        setBusyId(jobsheetId);
+        try {
+            await jobsheetsApi.confirm(jobsheetId);
+            toast.success('Jobsheet confirmed — shift complete');
             load();
         } catch (err) {
             toast.error(err.message);
@@ -138,17 +153,26 @@ const DayAdminDashboard = () => {
                 })}
 
                 <h3 style={{ margin: '40px 0 18px' }}>Deployed — Awaiting Completion ({deployed.length})</h3>
-                {deployed.length === 0 ? <p style={{ color: '#777' }}>Nothing currently deployed.</p> : deployed.map((b) => (
-                    <div key={b.id} style={cardStyle}>
-                        <strong>{b.team_name}</strong> — {b.foreman_name}, {b.worker1_name}, {b.worker2_name}
-                        {b.no_show_names?.length > 0 && (
-                            <p style={{ margin: '6px 0', fontSize: '13px', color: '#b26a00' }}>No-shows replaced: {b.no_show_names.join(', ')}</p>
-                        )}
-                        <div style={{ marginTop: '10px' }}>
-                            <button className="theme-btn" disabled={busyId === b.id} onClick={() => complete(b.id)}>Confirm Shift Complete</button>
+                {deployed.length === 0 ? <p style={{ color: '#777' }}>Nothing currently deployed.</p> : deployed.map((b) => {
+                    const jobsheet = submittedJobsheets.find((j) => j.team_booking_id === b.id);
+                    return (
+                        <div key={b.id} style={cardStyle}>
+                            <strong>{b.team_name}</strong> — {b.foreman_name}, {b.worker1_name}, {b.worker2_name}
+                            {b.no_show_names?.length > 0 && (
+                                <p style={{ margin: '6px 0', fontSize: '13px', color: '#b26a00' }}>No-shows replaced: {b.no_show_names.join(', ')}</p>
+                            )}
+                            <div style={{ marginTop: '10px' }}>
+                                {jobsheet ? (
+                                    <button className="theme-btn" disabled={busyId === jobsheet.id} onClick={() => confirmJobsheet(jobsheet.id)}>
+                                        Confirm Shift Complete (Jobsheet R{Number(jobsheet.invoiceAmount).toFixed(2)})
+                                    </button>
+                                ) : (
+                                    <p style={{ color: '#b26a00', fontSize: '13px' }}>Waiting on Foreman to submit the Jobsheet before this can be confirmed.</p>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
 
                 <h3 style={{ margin: '40px 0 18px' }}>Completed Shifts</h3>
                 {completed.length === 0 ? <p style={{ color: '#777' }}>None completed yet.</p> : (

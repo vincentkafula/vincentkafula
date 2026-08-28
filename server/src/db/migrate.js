@@ -110,6 +110,51 @@ CREATE TABLE IF NOT EXISTS team_bookings (
 
 CREATE INDEX IF NOT EXISTS idx_team_bookings_job ON team_bookings(scheduled_job_id);
 CREATE INDEX IF NOT EXISTS idx_team_bookings_status ON team_bookings(status);
+
+CREATE TABLE IF NOT EXISTS jobsheets (
+  id SERIAL PRIMARY KEY,
+  team_booking_id INTEGER NOT NULL REFERENCES team_bookings(id),
+
+  shift_hours INTEGER NOT NULL DEFAULT 4 CHECK (shift_hours IN (4,8)),
+  qualified BOOLEAN NOT NULL DEFAULT true,
+  labour_total_contracted NUMERIC(12,2) NOT NULL DEFAULT 385,
+
+  -- Per-member payment method + amount (matches spec 3.8: each member's method/amount, segregated cash/EFT totals)
+  foreman_payment_method TEXT NOT NULL DEFAULT 'cash' CHECK (foreman_payment_method IN ('cash','eft')),
+  foreman_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  worker1_payment_method TEXT NOT NULL DEFAULT 'cash' CHECK (worker1_payment_method IN ('cash','eft')),
+  worker1_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  worker2_payment_method TEXT NOT NULL DEFAULT 'cash' CHECK (worker2_payment_method IN ('cash','eft')),
+  worker2_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+
+  extra_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  six_x_reward NUMERIC(12,2) NOT NULL DEFAULT 0,
+  transport_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+
+  charge_materials BOOLEAN NOT NULL DEFAULT true,
+  bags_issued INTEGER NOT NULL DEFAULT 0,
+  bags_returned INTEGER NOT NULL DEFAULT 0,
+  bags_used INTEGER NOT NULL DEFAULT 0,
+  gloves_issued INTEGER NOT NULL DEFAULT 0,
+  gloves_returned INTEGER NOT NULL DEFAULT 0,
+  gloves_used INTEGER NOT NULL DEFAULT 0,
+
+  other_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  other_notes TEXT,
+
+  serial_number TEXT UNIQUE,
+  status TEXT NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted','confirmed','serialed')),
+  submitted_by TEXT,
+  confirmed_by TEXT,
+  confirmed_at TIMESTAMPTZ,
+  serialed_by TEXT,
+  serialed_at TIMESTAMPTZ,
+
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_jobsheets_booking ON jobsheets(team_booking_id);
+CREATE INDEX IF NOT EXISTS idx_jobsheets_status ON jobsheets(status);
 `;
 
 const DEMO_USERS = [
