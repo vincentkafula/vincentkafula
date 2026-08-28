@@ -155,6 +155,23 @@ CREATE TABLE IF NOT EXISTS jobsheets (
 
 CREATE INDEX IF NOT EXISTS idx_jobsheets_booking ON jobsheets(team_booking_id);
 CREATE INDEX IF NOT EXISTS idx_jobsheets_status ON jobsheets(status);
+
+CREATE TABLE IF NOT EXISTS leave_requests (
+  id SERIAL PRIMARY KEY,
+  employee_name TEXT NOT NULL,
+  employee_role TEXT,
+  leave_type TEXT NOT NULL DEFAULT 'annual' CHECK (leave_type IN ('annual','sick','family','unpaid','other')),
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  reason TEXT,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','declined')),
+  requested_by TEXT,
+  decided_by TEXT,
+  decided_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_leave_requests_status ON leave_requests(status);
 `;
 
 const DEMO_USERS = [

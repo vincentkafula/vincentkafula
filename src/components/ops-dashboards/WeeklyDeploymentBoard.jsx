@@ -18,7 +18,7 @@ const dayLabel = (dateStr) => {
     };
 };
 
-const WeeklyDeploymentBoard = () => {
+const WeeklyDeploymentBoard = ({ streamFilter, title, subtitle, badgeLabel }) => {
     const [jobs, setJobs] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -27,10 +27,13 @@ const WeeklyDeploymentBoard = () => {
     useEffect(() => {
         setLoading(true);
         Promise.all([scheduledJobsApi.list('approved'), teamBookingsApi.list()])
-            .then(([j, b]) => { setJobs(j); setBookings(b); })
+            .then(([j, b]) => {
+                setJobs(streamFilter ? j.filter((job) => job.stream === streamFilter) : j);
+                setBookings(b);
+            })
             .catch((err) => toast.error(err.message))
             .finally(() => setLoading(false));
-    }, []);
+    }, [streamFilter]);
 
     const jobsById = useMemo(() => Object.fromEntries(jobs.map((j) => [j.id, j])), [jobs]);
 
@@ -60,16 +63,16 @@ const WeeklyDeploymentBoard = () => {
                     <div style={{
                         width: 44, height: 44, borderRadius: '50%', background: '#A97D2C', color: '#fff',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0,
-                    }}>SD</div>
+                    }}>{badgeLabel || 'SD'}</div>
                     <div>
-                        <h3 style={{ margin: 0, fontSize: '20px', letterSpacing: '0.02em' }}>WEEKLY DEPLOYMENT SCHEDULE</h3>
+                        <h3 style={{ margin: 0, fontSize: '20px', letterSpacing: '0.02em' }}>{title || 'WEEKLY DEPLOYMENT SCHEDULE'}</h3>
                         <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#48605B', fontFamily: 'monospace', letterSpacing: '0.08em' }}>
-                            WEEKLY DEPLOYMENT BOARD
+                            {subtitle || 'WEEKLY DEPLOYMENT BOARD'}
                         </p>
                     </div>
                 </div>
                 <p style={{ margin: '14px 0 0', fontSize: '13px', color: '#555' }}>
-                    {bookings.length} total shifts booked · Issued for depot dispatch &amp; foremen sign-in
+                    {bookings.filter((b) => jobsById[b.scheduled_job_id]).length} total shifts booked · Issued for depot dispatch &amp; foremen sign-in
                 </p>
             </div>
 

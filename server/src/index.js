@@ -8,6 +8,7 @@ import invoicesRouter from "./routes/invoices.js";
 import scheduledJobsRouter from "./routes/scheduledJobs.js";
 import teamBookingsRouter from "./routes/teamBookings.js";
 import jobsheetsRouter from "./routes/jobsheets.js";
+import leaveRequestsRouter from "./routes/leaveRequests.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -25,6 +26,7 @@ app.use("/api/invoices", invoicesRouter);
 app.use("/api/scheduled-jobs", scheduledJobsRouter);
 app.use("/api/team-bookings", teamBookingsRouter);
 app.use("/api/jobsheets", jobsheetsRouter);
+app.use("/api/leave-requests", leaveRequestsRouter);
 
 async function start() {
   try {

@@ -11,6 +11,7 @@ import { scheduledJobsApi } from '../../api/scheduledJobsApi';
 import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
 import WeeklyDeploymentBoard from '../../components/ops-dashboards/WeeklyDeploymentBoard';
+import LeaveRegister from '../../components/ops-dashboards/LeaveRegister';
 
 const streamLabel = (s) => ({ pre_school: 'Pre-School', school: 'School', technical_services: 'Technical Services' }[s] || s);
 
@@ -121,7 +122,14 @@ const OperationOfficeDashboard = () => {
                     <p style={{ color: '#555', fontSize: '14px' }}>Approving as <strong>{getAuth()?.display_name}</strong></p>
                 </div>
 
-                <WeeklyDeploymentBoard />
+                <WeeklyDeploymentBoard title="WEEKLY DEPLOYMENT SCHEDULE" subtitle="ALL STREAMS" badgeLabel="WD" />
+
+                <WeeklyDeploymentBoard
+                    streamFilter="pre_school"
+                    title="PRE-SCHOOL DEPLOYMENT SCHEDULE"
+                    subtitle="PRE-SCHOOL DEPLOYMENT BOARD"
+                    badgeLabel="PS"
+                />
 
                 <h3 style={{ marginBottom: '18px' }}>Awaiting Amount Approval ({pending.length})</h3>
                 {loading ? <p>Loading...</p> : pending.length === 0 ? (
@@ -301,6 +309,8 @@ const OperationOfficeDashboard = () => {
                         </table>
                     </div>
                 )}
+
+                <LeaveRegister canDecide={true} />
             </div>
             <Footer />
             <Scrollbar />
