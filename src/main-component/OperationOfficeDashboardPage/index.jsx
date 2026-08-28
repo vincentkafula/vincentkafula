@@ -12,6 +12,16 @@ import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
 import WeeklyDeploymentBoard from '../../components/ops-dashboards/WeeklyDeploymentBoard';
 import LeaveRegister from '../../components/ops-dashboards/LeaveRegister';
+import SimpleLedgerModule from '../../components/ops-dashboards/SimpleLedgerModule';
+import { paymentAuthorisationsApi, payrollApi, weeklyRegistersApi, oasysChecksApi } from '../../api/opsModulesApi';
+
+const fmtR = (n) => `R${Number(n || 0).toFixed(2)}`;
+const badge = (status, map) => {
+    const m = map[status] || { color: '#555', bg: '#eee' };
+    return <span style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '12px', fontWeight: 600, color: m.color, background: m.bg }}>{status}</span>;
+};
+const approvalColors = { pending: { color: '#b26a00', bg: '#fff3e0' }, approved: { color: '#2e7d32', bg: '#e8f5e9' }, declined: { color: '#c62828', bg: '#ffebee' } };
+const oasysColors = { ok: { color: '#2e7d32', bg: '#e8f5e9' }, discrepancy: { color: '#c62828', bg: '#ffebee' } };
 
 const streamLabel = (s) => ({ pre_school: 'Pre-School', school: 'School', technical_services: 'Technical Services' }[s] || s);
 
@@ -311,6 +321,84 @@ const OperationOfficeDashboard = () => {
                 )}
 
                 <LeaveRegister canDecide={true} />
+
+                <SimpleLedgerModule
+                    title="Payment Authorisations"
+                    subtitle="Authorise ad-hoc payments outside the normal Jobsheet payroll flow."
+                    api={paymentAuthorisationsApi}
+                    decidable
+                    fields={[
+                        { name: 'payee_name', label: 'Payee name', required: true },
+                        { name: 'amount', label: 'Amount (R)', type: 'number', required: true },
+                        { name: 'purpose', label: 'Purpose', type: 'textarea', fullWidth: true },
+                    ]}
+                    columns={[
+                        { key: 'payee_name', label: 'Payee' },
+                        { key: 'amount', label: 'Amount', render: (r) => fmtR(r.amount) },
+                        { key: 'purpose', label: 'Purpose' },
+                        { key: 'status', label: 'Status', render: (r) => badge(r.status, approvalColors) },
+                    ]}
+                />
+
+                <SimpleLedgerModule
+                    title="Payroll"
+                    subtitle="Log payroll entries per pay period."
+                    api={payrollApi}
+                    fields={[
+                        { name: 'employee_name', label: 'Employee name', required: true },
+                        { name: 'employee_role', label: 'Role' },
+                        { name: 'period_start', label: 'Period start', type: 'date', required: true },
+                        { name: 'period_end', label: 'Period end', type: 'date', required: true },
+                        { name: 'hours_worked', label: 'Hours worked', type: 'number' },
+                        { name: 'gross_pay', label: 'Gross pay (R)', type: 'number' },
+                        { name: 'deductions', label: 'Deductions (R)', type: 'number' },
+                    ]}
+                    columns={[
+                        { key: 'employee_name', label: 'Employee' },
+                        { key: 'period', label: 'Period', render: (r) => `${new Date(r.period_start).toLocaleDateString()} – ${new Date(r.period_end).toLocaleDateString()}` },
+                        { key: 'hours_worked', label: 'Hours' },
+                        { key: 'gross_pay', label: 'Gross', render: (r) => fmtR(r.gross_pay) },
+                        { key: 'deductions', label: 'Deductions', render: (r) => fmtR(r.deductions) },
+                        { key: 'net_pay', label: 'Net Pay', render: (r) => fmtR(r.net_pay) },
+                    ]}
+                />
+
+                <SimpleLedgerModule
+                    title="Weekly Registers"
+                    subtitle="Weekly attendance register per employee."
+                    api={weeklyRegistersApi}
+                    fields={[
+                        { name: 'employee_name', label: 'Employee name', required: true },
+                        { name: 'week_ending', label: 'Week ending', type: 'date', required: true },
+                        { name: 'days_worked', label: 'Days worked', type: 'number' },
+                        { name: 'hours_worked', label: 'Hours worked', type: 'number' },
+                        { name: 'notes', label: 'Notes', type: 'textarea', fullWidth: true },
+                    ]}
+                    columns={[
+                        { key: 'employee_name', label: 'Employee' },
+                        { key: 'week_ending', label: 'Week Ending', render: (r) => new Date(r.week_ending).toLocaleDateString() },
+                        { key: 'days_worked', label: 'Days' },
+                        { key: 'hours_worked', label: 'Hours' },
+                        { key: 'notes', label: 'Notes' },
+                    ]}
+                />
+
+                <SimpleLedgerModule
+                    title="OASys Reconciliation"
+                    subtitle="Reconcile expected vs. actual amounts for a line item."
+                    api={oasysChecksApi}
+                    fields={[
+                        { name: 'description', label: 'Description', required: true, fullWidth: true },
+                        { name: 'expected_amount', label: 'Expected amount (R)', type: 'number' },
+                        { name: 'actual_amount', label: 'Actual amount (R)', type: 'number' },
+                    ]}
+                    columns={[
+                        { key: 'description', label: 'Description' },
+                        { key: 'expected_amount', label: 'Expected', render: (r) => fmtR(r.expected_amount) },
+                        { key: 'actual_amount', label: 'Actual', render: (r) => fmtR(r.actual_amount) },
+                        { key: 'status', label: 'Status', render: (r) => badge(r.status, oasysColors) },
+                    ]}
+                />
             </div>
             <Footer />
             <Scrollbar />

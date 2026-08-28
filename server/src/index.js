@@ -9,6 +9,10 @@ import scheduledJobsRouter from "./routes/scheduledJobs.js";
 import teamBookingsRouter from "./routes/teamBookings.js";
 import jobsheetsRouter from "./routes/jobsheets.js";
 import leaveRequestsRouter from "./routes/leaveRequests.js";
+import paymentAuthorisationsRouter from "./routes/paymentAuthorisations.js";
+import payrollRouter from "./routes/payroll.js";
+import weeklyRegistersRouter from "./routes/weeklyRegisters.js";
+import oasysChecksRouter from "./routes/oasysChecks.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -27,6 +31,10 @@ app.use("/api/scheduled-jobs", scheduledJobsRouter);
 app.use("/api/team-bookings", teamBookingsRouter);
 app.use("/api/jobsheets", jobsheetsRouter);
 app.use("/api/leave-requests", leaveRequestsRouter);
+app.use("/api/payment-authorisations", paymentAuthorisationsRouter);
+app.use("/api/payroll", payrollRouter);
+app.use("/api/weekly-registers", weeklyRegistersRouter);
+app.use("/api/oasys-checks", oasysChecksRouter);
 
 async function start() {
   try {

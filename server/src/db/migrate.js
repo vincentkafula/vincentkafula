@@ -172,6 +172,54 @@ CREATE TABLE IF NOT EXISTS leave_requests (
 );
 
 CREATE INDEX IF NOT EXISTS idx_leave_requests_status ON leave_requests(status);
+
+CREATE TABLE IF NOT EXISTS payment_authorisations (
+  id SERIAL PRIMARY KEY,
+  payee_name TEXT NOT NULL,
+  amount NUMERIC(12,2) NOT NULL,
+  purpose TEXT,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','declined')),
+  requested_by TEXT,
+  decided_by TEXT,
+  decided_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_payment_auth_status ON payment_authorisations(status);
+
+CREATE TABLE IF NOT EXISTS payroll_entries (
+  id SERIAL PRIMARY KEY,
+  employee_name TEXT NOT NULL,
+  employee_role TEXT,
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+  hours_worked NUMERIC(8,2) NOT NULL DEFAULT 0,
+  gross_pay NUMERIC(12,2) NOT NULL DEFAULT 0,
+  deductions NUMERIC(12,2) NOT NULL DEFAULT 0,
+  net_pay NUMERIC(12,2) NOT NULL DEFAULT 0,
+  entered_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS weekly_register_entries (
+  id SERIAL PRIMARY KEY,
+  employee_name TEXT NOT NULL,
+  week_ending DATE NOT NULL,
+  days_worked INTEGER NOT NULL DEFAULT 0,
+  hours_worked NUMERIC(8,2) NOT NULL DEFAULT 0,
+  notes TEXT,
+  entered_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS oasys_checks (
+  id SERIAL PRIMARY KEY,
+  description TEXT NOT NULL,
+  expected_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  actual_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'ok' CHECK (status IN ('ok','discrepancy')),
+  checked_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 `;
 
 const DEMO_USERS = [
