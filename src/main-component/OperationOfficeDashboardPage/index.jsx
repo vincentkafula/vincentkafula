@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Navbar2 from '../../components/Navbar2/Navbar2';
+import DashboardTopbar from '../../components/ops-dashboards/DashboardTopbar';
 import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import StatusBadge from '../../components/ops-dashboards/StatusBadge';
 import { quotationsApi } from '../../api/quotationsApi';
+import { getAuth } from '../../api/authApi';
 
 const cardStyle = { border: '1px solid #eee', borderRadius: '8px', padding: '22px', marginBottom: '18px', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' };
 const inputStyle = { width: '100%', padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px' };
@@ -16,7 +18,6 @@ const OperationOfficeDashboard = () => {
     const [loading, setLoading] = useState(false);
     const [amounts, setAmounts] = useState({});
     const [notes, setNotes] = useState({});
-    const [approver, setApprover] = useState('');
     const [busyId, setBusyId] = useState(null);
 
     const load = () => {
@@ -41,7 +42,6 @@ const OperationOfficeDashboard = () => {
         try {
             await quotationsApi.officeApprove(id, {
                 approved,
-                approver_name: approver || 'Operation Office',
                 approved_amount: amounts[id] ? Number(amounts[id]) : null,
                 notes: notes[id] || '',
             });
@@ -57,11 +57,11 @@ const OperationOfficeDashboard = () => {
     return (
         <Fragment>
             <Navbar2 />
+            <DashboardTopbar />
             <PageTitle pageTitle={'Operation Office Dashboard'} pagesub={'Dashboard'} />
             <div className="container" style={{ padding: '80px 15px' }}>
-                <div style={{ marginBottom: '24px', maxWidth: '360px' }}>
-                    <label style={{ display: 'block', fontWeight: 600, fontSize: '13px', marginBottom: '4px' }}>Approving as</label>
-                    <input style={inputStyle} placeholder="Your name" value={approver} onChange={(e) => setApprover(e.target.value)} />
+                <div style={{ marginBottom: '24px' }}>
+                    <p style={{ color: '#555', fontSize: '14px' }}>Approving as <strong>{getAuth()?.display_name}</strong></p>
                 </div>
 
                 <h3 style={{ marginBottom: '18px' }}>Awaiting Amount Approval ({pending.length})</h3>

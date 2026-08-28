@@ -8,6 +8,7 @@ import PartnerDashboard from '../PartnerDashboardPage';
 import OpManagementDashboard from '../OpManagementDashboardPage';
 import OperationOfficeDashboard from '../OperationOfficeDashboardPage';
 import ManagerDashboard from '../ManagerDashboardPage';
+import RequireDashboardAuth from '../../components/ops-dashboards/RequireDashboardAuth';
 
 const roleLabels = {
     'teams': 'Teams',
@@ -52,7 +53,13 @@ const DashboardPlaceholder = ({ role }) => {
 const DashboardPage = () => {
     const { role } = useParams();
     const Built = builtDashboards[role];
-    if (Built) return <Built />;
+    if (Built) {
+        return (
+            <RequireDashboardAuth>
+                <Built />
+            </RequireDashboardAuth>
+        );
+    }
     return <DashboardPlaceholder role={role} />;
 };
 

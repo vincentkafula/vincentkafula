@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Navbar2 from '../../components/Navbar2/Navbar2';
+import DashboardTopbar from '../../components/ops-dashboards/DashboardTopbar';
 import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import StatusBadge from '../../components/ops-dashboards/StatusBadge';
 import { quotationsApi } from '../../api/quotationsApi';
+import { invoicesApi } from '../../api/invoicesApi';
 
 const emptyForm = {
     partner_name: '',
@@ -34,18 +36,36 @@ const fieldWrap = { marginBottom: '18px' };
 const PartnerDashboard = () => {
     const [form, setForm] = useState(emptyForm);
     const [quotations, setQuotations] = useState([]);
+    const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [payingId, setPayingId] = useState(null);
 
     const load = () => {
         setLoading(true);
-        quotationsApi.list()
-            .then(setQuotations)
+        Promise.all([quotationsApi.list(), invoicesApi.list()])
+            .then(([q, inv]) => {
+                setQuotations(q);
+                setInvoices(inv);
+            })
             .catch((err) => toast.error(err.message))
             .finally(() => setLoading(false));
     };
 
     useEffect(() => { load(); }, []);
+
+    const pay = async (id) => {
+        setPayingId(id);
+        try {
+            await invoicesApi.pay(id);
+            toast.success('Invoice paid');
+            load();
+        } catch (err) {
+            toast.error(err.message);
+        } finally {
+            setPayingId(null);
+        }
+    };
 
     const change = (e) => {
         const { name, value } = e.target;
@@ -79,6 +99,7 @@ const PartnerDashboard = () => {
     return (
         <Fragment>
             <Navbar2 />
+            <DashboardTopbar />
             <PageTitle pageTitle={'Partner Dashboard'} pagesub={'Dashboard'} />
             <div className="container" style={{ padding: '80px 15px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 420px) 1fr', gap: '40px', alignItems: 'start' }}>
@@ -177,6 +198,63 @@ const PartnerDashboard = () => {
                             </div>
                         )}
                     </div>
+                </div>
+
+                <div style={{ marginTop: '50px' }}>
+                    <h3 style={{ marginBottom: '10px' }}>Invoices</h3>
+                    <p style={{ color: '#777', fontSize: '13px', marginBottom: '20px' }}>
+                        An invoice is generated automatically once a quotation with upfront payment terms receives final approval.
+                        For monthly-terms accounts, invoicing is consolidated at month end.
+                    </p>
+                    {invoices.length === 0 ? (
+                        <p style={{ color: '#777' }}>No invoices yet.</p>
+                    ) : (
+                        <div style={{ overflowX: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                                <thead>
+                                    <tr style={{ textAlign: 'left', borderBottom: '2px solid #eee' }}>
+                                        <th style={{ padding: '10px' }}>Invoice #</th>
+                                        <th style={{ padding: '10px' }}>Quotation</th>
+                                        <th style={{ padding: '10px' }}>Amount</th>
+                                        <th style={{ padding: '10px' }}>Status</th>
+                                        <th style={{ padding: '10px' }}>Issued</th>
+                                        <th style={{ padding: '10px' }}></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {invoices.map((inv) => (
+                                        <tr key={inv.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                            <td style={{ padding: '10px' }}>#{inv.id}</td>
+                                            <td style={{ padding: '10px' }}>#{inv.quotation_id} — {inv.partner_name}</td>
+                                            <td style={{ padding: '10px' }}>R{Number(inv.amount).toFixed(2)}</td>
+                                            <td style={{ padding: '10px' }}>
+                                                <span style={{
+                                                    padding: '4px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 600,
+                                                    color: inv.status === 'paid' ? '#2e7d32' : '#b26a00',
+                                                    background: inv.status === 'paid' ? '#e8f5e9' : '#fff3e0',
+                                                }}>
+                                                    {inv.status === 'paid' ? 'Paid' : 'Unpaid'}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '10px' }}>{new Date(inv.created_at).toLocaleDateString()}</td>
+                                            <td style={{ padding: '10px' }}>
+                                                {inv.status === 'unpaid' && (
+                                                    <button
+                                                        className="theme-btn"
+                                                        disabled={payingId === inv.id}
+                                                        onClick={() => pay(inv.id)}
+                                                        style={{ padding: '6px 16px', fontSize: '13px' }}
+                                                    >
+                                                        {payingId === inv.id ? 'Processing...' : 'Pay Now'}
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
             <Footer />

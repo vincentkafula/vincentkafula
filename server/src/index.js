@@ -3,6 +3,8 @@ import cors from "cors";
 import "dotenv/config";
 import { runMigrations } from "./db/migrate.js";
 import quotationsRouter from "./routes/quotations.js";
+import authRouter from "./routes/auth.js";
+import invoicesRouter from "./routes/invoices.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -14,7 +16,9 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "politian-backend" });
 });
 
+app.use("/api/auth", authRouter);
 app.use("/api/quotations", quotationsRouter);
+app.use("/api/invoices", invoicesRouter);
 
 async function start() {
   try {
