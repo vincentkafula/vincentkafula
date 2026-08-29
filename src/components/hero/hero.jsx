@@ -18,7 +18,7 @@ const Hero = () => {
                                 <span>We Are Waiting For You</span>
                             </div>
                             <div data-swiper-parallax="300" className="slide-title">
-                                <h2>Lets Make our justice system work for all</h2>
+                                <h2>The justice system must work for all</h2>
                             </div>
                             <div data-swiper-parallax="400" className="slide-text">
                                 <p>We can start by taking small steps and making small changes that can have a big
