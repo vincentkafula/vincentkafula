@@ -161,9 +161,14 @@ const ComposeEmailPanel = ({ emailConfigured }) => {
                         type="text"
                         value={recipients}
                         onChange={(e) => setRecipients(e.target.value)}
-                        placeholder="Add recipients — comma or new-line separated"
+                        placeholder='e.g. "Jane Mwansa <jane@example.com>, John Banda <john@example.com>"'
                     />
                     <div className="cep-note">{list.length} recipient{list.length === 1 ? '' : 's'}</div>
+                </div>
+                <div style={{ padding: '0 26px 6px', marginTop: '-8px' }}>
+                    <p style={{ fontSize: '11.5px', color: 'var(--ink-400, #a39a8d)', margin: 0 }}>
+                        Add a name in front of each address — <code>Name &lt;email&gt;</code> — and that person's email will open with "Dear Name,". A bare email still sends, just addressed to "Dear Supporter,".
+                    </p>
                 </div>
 
                 <div className="cep-field-row">

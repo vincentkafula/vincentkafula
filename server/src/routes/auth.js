@@ -5,6 +5,7 @@ import { pool } from '../db/pool.js';
 import { signToken } from '../auth/jwt.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { sendSingleEmail, isEmailConfigured } from '../utils/resend.js';
+import { buildLetterheadEmail } from '../utils/letterhead.js';
 
 const router = express.Router();
 
@@ -171,16 +172,19 @@ router.post('/forgot-password', async (req, res) => {
     const baseUrl = process.env.FRONTEND_URL || 'https://frontend-production-82b9c.up.railway.app';
     const resetUrl = `${baseUrl}/reset-password/${token}`;
 
+    const subject = 'Reset your password';
+    const bodyHtml = `
+      <p style="margin:0 0 20px 0;">Click the link below to set a new password for your dashboard account. This link expires in 1 hour.</p>
+      <p style="margin:0 0 20px 0;">
+        <a href="${resetUrl}" style="background:#d9720f;color:#fff;padding:11px 22px;border-radius:6px;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:14px;display:inline-block;">Reset Password</a>
+      </p>
+      <p style="margin:0; color:#888; font-size:13px;">If you didn't request this, you can safely ignore this email.</p>
+    `;
+
     await sendSingleEmail({
       to: user.email,
-      subject: 'Reset your password',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
-          <h2>Reset your password</h2>
-          <p>Hi ${user.display_name}, click the link below to set a new password. This link expires in 1 hour.</p>
-          <p><a href="${resetUrl}" style="background:#12351b;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;">Reset Password</a></p>
-          <p style="color:#888;font-size:12px;">If you didn't request this, you can safely ignore this email.</p>
-        </div>`,
+      subject,
+      html: buildLetterheadEmail({ recipientName: user.display_name, subject, bodyHtml }),
     });
 
     res.json(genericResponse);

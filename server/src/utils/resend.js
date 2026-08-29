@@ -15,13 +15,16 @@ export function isEmailConfigured() {
 }
 
 // Sends one email per recipient (rather than one email with everyone in `to`) so that
-// recipients never see each other's addresses. Returns { sent, failed, errors }.
-export async function sendBulkEmail({ recipients, subject, html, text }) {
+// recipients never see each other's addresses. `recipients` may be an array of email
+// strings, or an array of { email, name } objects when `buildHtml` is provided so each
+// recipient gets their own personalized version (e.g. "Dear Jane," vs "Dear John,").
+// Returns { sent, failed, errors }.
+export async function sendBulkEmail({ recipients, subject, html, text, buildHtml }) {
   const { apiKey, from } = getConfig();
   if (!apiKey) {
     throw new Error('Email is not configured on the server (missing RESEND_API_KEY)');
   }
-  const list = (recipients || []).map((r) => String(r).trim()).filter(Boolean);
+  const list = (recipients || []).filter(Boolean);
   if (!list.length) {
     throw new Error('At least one recipient email is required');
   }
@@ -30,19 +33,23 @@ export async function sendBulkEmail({ recipients, subject, html, text }) {
   const errors = [];
 
   await Promise.all(
-    list.map(async (to) => {
+    list.map(async (entry) => {
+      const isObject = typeof entry === 'object' && entry !== null;
+      const to = (isObject ? entry.email : entry)?.trim();
       try {
+        if (!to) throw new Error('Missing email address');
+        const body = buildHtml ? buildHtml(entry) : html;
         const res = await fetch(RESEND_API_URL, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ from, to, subject, html, text }),
+          body: JSON.stringify({ from, to, subject, html: body, text }),
         });
         if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || `Resend responded with ${res.status}`);
+          const body2 = await res.json().catch(() => ({}));
+          throw new Error(body2.message || `Resend responded with ${res.status}`);
         }
         sent += 1;
       } catch (err) {
