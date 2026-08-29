@@ -2,19 +2,15 @@ import React, {Fragment} from 'react';
 import PageTitle from '../../components/pagetitle/PageTitle.jsx'
 import BlogSingle from '../../components/BlogDetails/BlogSingle.jsx'
 import Scrollbar from '../../components/scrollbar/scrollbar.jsx'
-import { useParams } from 'react-router-dom'
-import blogs from '../../api/blogs.js'
 import Navbar2 from '../../components/Navbar2/Navbar2.jsx';
 import Footer from '../../components/footer/Footer.jsx';
 
 const BlogDetailsLeftSiide =() => {
 
-    const { slug } = useParams()
-    const BlogDetails = blogs.find(item => item.slug === slug)
     return(
         <Fragment>
             <Navbar2/>
-            <PageTitle pageTitle={BlogDetails.title} pagesub={'Blog'}/> 
+            <PageTitle pageTitle={'Latest News'} pagesub={'Blog'}/> 
             <BlogSingle blLeft={'order-lg-1'} blRight={'order-lg-2'}/>
             <Footer/>
             <Scrollbar/>
