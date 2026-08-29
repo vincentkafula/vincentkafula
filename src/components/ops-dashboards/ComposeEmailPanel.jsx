@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { newsApi } from '../../api/newsApi';
+import { emailApi } from '../../api/emailApi';
 
-// A faithful recreation of the "compose" pane from the VinkBank Mail reference design,
-// repurposed to email a published article to a list of recipients.
+// A faithful recreation of the "compose" pane from the reference design —
+// a general-purpose email composer, not tied to any specific article.
 
 const styles = `
 .cep{
@@ -48,7 +48,7 @@ const styles = `
 .cep-body{ padding:20px 30px; display:flex; flex-direction:column; }
 .cep-body textarea{
   border:none; outline:none; resize:vertical; font-family:'Poppins',sans-serif;
-  font-size:14.5px; color:var(--ink-900); min-height:80px; margin-bottom:22px;
+  font-size:14.5px; color:var(--ink-900); min-height:140px; margin-bottom:22px;
 }
 .cep-body textarea::placeholder{ color:#b7ac9c; }
 
@@ -83,10 +83,6 @@ const styles = `
   display:flex; align-items:center; gap:8px; box-shadow:0 6px 16px rgba(212,160,31,0.35);
 }
 .cep-send:disabled{ opacity:0.55; cursor:not-allowed; }
-.cep-schedule{
-  background:#fff; border:1px solid var(--line); border-radius:10px; padding:11px 18px;
-  font-weight:600; font-size:14px; color:var(--ink-900); display:flex; align-items:center; gap:8px;
-}
 .cep-footer-right{ display:flex; align-items:center; gap:16px; color:var(--ink-600); font-size:15px; }
 .cep-count{ font-size:12.5px; color:var(--ink-600); }
 
@@ -103,39 +99,34 @@ const SIGNATURE = {
     location: 'Lusaka, Zambia',
 };
 
-const ComposeEmailPanel = ({ articles = [], emailConfigured }) => {
-    const publishable = articles;
-    const [articleId, setArticleId] = useState('');
+const ComposeEmailPanel = ({ emailConfigured }) => {
     const [recipients, setRecipients] = useState('');
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
     const [sending, setSending] = useState(false);
 
-    const article = publishable.find((a) => String(a.id) === String(articleId)) || null;
-
-    const pickArticle = (id) => {
-        setArticleId(id);
-        const found = publishable.find((a) => String(a.id) === String(id));
-        setSubject(found ? found.title : '');
-    };
-
     const list = recipients.split(/[,\n]/).map((r) => r.trim()).filter(Boolean);
 
     const send = async (e) => {
         e.preventDefault();
-        if (!article) {
-            toast.error('Choose an article to send');
-            return;
-        }
         if (!list.length) {
             toast.error('Add at least one recipient email');
             return;
         }
+        if (!subject.trim()) {
+            toast.error('Add a subject');
+            return;
+        }
+        if (!message.trim()) {
+            toast.error('Write a message');
+            return;
+        }
         setSending(true);
         try {
-            const result = await newsApi.sendEmail(article.id, list, { subject, intro: message });
+            const result = await emailApi.send(list, subject, message);
             toast.success(`Sent to ${result.sent} recipient${result.sent === 1 ? '' : 's'}${result.failed ? `, ${result.failed} failed` : ''}`);
             setRecipients('');
+            setSubject('');
             setMessage('');
         } catch (err) {
             toast.error(err.message);
@@ -164,16 +155,6 @@ const ComposeEmailPanel = ({ articles = [], emailConfigured }) => {
             )}
 
             <form onSubmit={send}>
-                <div className="cep-field-row">
-                    <label>Article</label>
-                    <select value={articleId} onChange={(e) => pickArticle(e.target.value)}>
-                        <option value="">Choose an article to send…</option>
-                        {publishable.map((a) => (
-                            <option key={a.id} value={a.id}>{a.title} {a.status === 'draft' ? '(draft)' : ''}</option>
-                        ))}
-                    </select>
-                </div>
-
                 <div className="cep-field-row">
                     <label>To</label>
                     <input
@@ -213,7 +194,7 @@ const ComposeEmailPanel = ({ articles = [], emailConfigured }) => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Write your message here..."
-                        rows={4}
+                        rows={8}
                     />
 
                     <div className="cep-sig">
@@ -245,12 +226,11 @@ const ComposeEmailPanel = ({ articles = [], emailConfigured }) => {
                         <button type="submit" className="cep-send" disabled={sending || !emailConfigured}>
                             <i className="fa-solid fa-paper-plane"></i> {sending ? 'Sending…' : 'Send'}
                         </button>
-                        <span className="cep-count">{article ? `Sending: ${article.title}` : 'Choose an article above'}</span>
                     </div>
                     <div className="cep-footer-right">
                         <i className="fa-regular fa-paperclip"></i>
                         <i className="fa-regular fa-image"></i>
-                        <i className="fa-regular fa-trash-can" onClick={() => { setRecipients(''); setMessage(''); }} style={{ cursor: 'pointer' }}></i>
+                        <i className="fa-regular fa-trash-can" onClick={() => { setRecipients(''); setSubject(''); setMessage(''); }} style={{ cursor: 'pointer' }}></i>
                     </div>
                 </div>
             </form>

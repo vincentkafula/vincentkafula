@@ -7,6 +7,7 @@ import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { newsApi } from '../../api/newsApi';
+import { emailApi } from '../../api/emailApi';
 import { getAuth } from '../../api/authApi';
 import ComposeEmailPanel from '../../components/ops-dashboards/ComposeEmailPanel';
 import {
@@ -53,9 +54,8 @@ const NewsManagerDashboard = () => {
 
     useEffect(() => {
         load();
-        newsApi.emailStatus().then((s) => setEmailConfigured(s.configured)).catch(() => {});
+        emailApi.status().then((s) => setEmailConfigured(s.configured)).catch(() => {});
     }, []);
-
     const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
     const resetForm = () => {
@@ -221,7 +221,7 @@ const NewsManagerDashboard = () => {
                 )}
 
                 {tab === 'email' && (
-                    <ComposeEmailPanel articles={posts} emailConfigured={emailConfigured} />
+                    <ComposeEmailPanel emailConfigured={emailConfigured} />
                 )}
             </div>
             <Footer />
