@@ -47,7 +47,7 @@ const Campaign = [
       cImg:cimg3,
       cImg2:cS2img3,
       cSimg:cSimg3,
-      thumb:'Conference',
+      thumb:'Constitutional Court',
       title:'Professional Police Service and Justice System Issues',
       slug:'Professional-Police-Service-and-Justice-System-Issues',
       date:'July 5, 2026',
