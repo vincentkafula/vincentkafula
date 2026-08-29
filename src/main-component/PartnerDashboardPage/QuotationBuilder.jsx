@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import './quotationBuilder.css';
 import TaskSheetModal, { emptyTaskSheet } from './TaskSheetModal';
+import JobsheetPreviewModal from './JobsheetPreviewModal';
+import SummarySheetPreviewModal from './SummarySheetPreviewModal';
+import InvoicePreviewModal from './InvoicePreviewModal';
 
 // Qualified team rates (per shift). Operation Supervisor rate is not yet defined in the
 // spec, so it's shown as "TBC" and left out of the indicative total rather than guessed.
@@ -35,6 +38,7 @@ const todayDisplay = () =>
 const QuotationBuilder = ({ onSubmit, submitting }) => {
     const [form, setForm] = useState(emptyForm);
     const [taskSheetOpen, setTaskSheetOpen] = useState(false);
+    const [docModal, setDocModal] = useState(null);
     const [taskSheetComplete, setTaskSheetComplete] = useState(false);
     const [taskSheetSummary, setTaskSheetSummary] = useState('');
     const [taskSheetData, setTaskSheetData] = useState(emptyTaskSheet());
@@ -112,6 +116,9 @@ const QuotationBuilder = ({ onSubmit, submitting }) => {
                     <h2>Quotation Request Builder</h2>
                 </div>
                 <div className="qb-header-actions">
+                    <button className="qb-btn" type="button" onClick={() => setDocModal('jobsheet')}>View Jobsheet</button>
+                    <button className="qb-btn" type="button" onClick={() => setDocModal('summary')}>View Summary Sheet</button>
+                    <button className="qb-btn" type="button" onClick={() => setDocModal('invoice')}>View Invoice</button>
                     <button className="qb-btn" type="button" onClick={reset}>Clear form</button>
                     <button className="qb-btn qb-primary" type="button" onClick={handleSubmit} disabled={submitting}>
                         {submitting ? 'Submitting…' : 'Submit quotation request'}
@@ -329,6 +336,26 @@ const QuotationBuilder = ({ onSubmit, submitting }) => {
                 initial={taskSheetData}
                 defaultTitle={form.task_title}
                 defaultDate=""
+            />
+
+            <JobsheetPreviewModal
+                open={docModal === 'jobsheet'}
+                onClose={() => setDocModal(null)}
+                onNavigate={(which) => setDocModal(which)}
+            />
+            <SummarySheetPreviewModal
+                open={docModal === 'summary'}
+                onClose={() => setDocModal(null)}
+                onNavigate={(which) => setDocModal(which)}
+            />
+            <InvoicePreviewModal
+                open={docModal === 'invoice'}
+                onClose={() => setDocModal(null)}
+                onNavigate={(which) => setDocModal(which)}
+                fromName={form.partner_name}
+                taskTitle={form.task_title}
+                rows={rows}
+                total={indicativeTotal}
             />
         </div>
     );
