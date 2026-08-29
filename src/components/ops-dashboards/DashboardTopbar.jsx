@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getAuth, clearAuth } from '../../api/authApi';
 
 const DashboardTopbar = () => {
@@ -25,6 +25,14 @@ const DashboardTopbar = () => {
             <span style={{ color: '#555' }}>
                 Signed in as <strong>{auth?.display_name}</strong>
             </span>
+            {auth?.role === 'head-office' && (
+                <Link to="/admin/accounts" style={{ fontSize: '13px', color: '#12351b', fontWeight: 600, textDecoration: 'none' }}>
+                    Manage Accounts
+                </Link>
+            )}
+            <Link to="/account-settings" style={{ fontSize: '13px', color: '#12351b', fontWeight: 600, textDecoration: 'none' }}>
+                Settings
+            </Link>
             <button
                 onClick={logout}
                 style={{

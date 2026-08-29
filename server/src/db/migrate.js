@@ -59,11 +59,66 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN (
     'teams','foreman','day-admin','operation-office','op-management',
-    'store','project-manager','head-office','partner','team-member'
+    'store','project-manager','head-office','partner','team-member',
+    'news-manager','shop-manager'
   )),
   display_name TEXT NOT NULL,
+  email TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  used_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
+
+CREATE TABLE IF NOT EXISTS news_posts (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  excerpt TEXT,
+  body TEXT NOT NULL,
+  cover_image_url TEXT,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published')),
+  author_username TEXT,
+  author_display_name TEXT,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_news_posts_status ON news_posts(status);
+
+CREATE TABLE IF NOT EXISTS email_broadcasts (
+  id SERIAL PRIMARY KEY,
+  news_post_id INTEGER REFERENCES news_posts(id) ON DELETE SET NULL,
+  subject TEXT NOT NULL,
+  recipients TEXT[] NOT NULL,
+  sent_count INTEGER NOT NULL DEFAULT 0,
+  failed_count INTEGER NOT NULL DEFAULT 0,
+  sent_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT,
+  price NUMERIC(12,2) NOT NULL DEFAULT 0,
+  compare_at_price NUMERIC(12,2),
+  image_url TEXT,
+  stock_quantity INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','inactive')),
+  created_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
 
 CREATE TABLE IF NOT EXISTS invoices (
   id SERIAL PRIMARY KEY,
@@ -233,12 +288,31 @@ const DEMO_USERS = [
   { username: 'store', role: 'store', display_name: 'Demo Store' },
   { username: 'headoffice', role: 'head-office', display_name: 'Demo Head Office' },
   { username: 'teammember', role: 'team-member', display_name: 'Demo Team Member' },
+  { username: 'newsmanager', role: 'news-manager', display_name: 'Demo News Manager' },
+  { username: 'shopmanager', role: 'shop-manager', display_name: 'Demo Shop Manager' },
 ];
 const DEMO_PASSWORD = 'Demo@2026';
+
+// Statements applied to databases that already had the old schema before news/shop/roles existed.
+// Each is safe to re-run every boot.
+const COMPAT_MIGRATIONS = [
+  `ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT`,
+  `ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check`,
+  `ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN (
+    'teams','foreman','day-admin','operation-office','op-management',
+    'store','project-manager','head-office','partner','team-member',
+    'news-manager','shop-manager'
+  ))`,
+];
 
 export async function runMigrations() {
   await pool.query(SCHEMA);
   console.log('Database schema is ready.');
+
+  for (const stmt of COMPAT_MIGRATIONS) {
+    await pool.query(stmt);
+  }
+  console.log('Compatibility migrations applied.');
 
   const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
   for (const u of DEMO_USERS) {

@@ -14,6 +14,8 @@ import ForemanDashboard from '../ForemanDashboardPage';
 import StoreDashboard from '../StoreDashboardPage';
 import HeadOfficeDashboard from '../HeadOfficeDashboardPage';
 import TeamMemberDashboard from '../TeamMemberDashboardPage';
+import NewsManagerDashboard from '../NewsManagerDashboardPage';
+import ShopManagerDashboard from '../ShopManagerDashboardPage';
 import RequireDashboardAuth from '../../components/ops-dashboards/RequireDashboardAuth';
 
 const roleLabels = {
@@ -27,6 +29,8 @@ const roleLabels = {
     'head-office': 'Head Office',
     'partner': 'Partner',
     'team-member': 'Team Member',
+    'news-manager': 'News Manager',
+    'shop-manager': 'Shop Manager',
 };
 
 // Roles with a real, built-out dashboard. Everything else falls back to the placeholder below.
@@ -41,6 +45,8 @@ const builtDashboards = {
     'store': StoreDashboard,
     'head-office': HeadOfficeDashboard,
     'team-member': TeamMemberDashboard,
+    'news-manager': NewsManagerDashboard,
+    'shop-manager': ShopManagerDashboard,
 };
 
 const DashboardPlaceholder = ({ role }) => {

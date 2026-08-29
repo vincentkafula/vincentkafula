@@ -7,6 +7,7 @@ import PageTitle from "../../components/pagetitle/PageTitle";
 import Scrollbar from "../../components/scrollbar/scrollbar";
 import Product from "./product";
 import api from "../../api";
+import { productsApi } from "../../api/productsApi";
 import ProductTabs from "./alltab";
 import Footer from "../../components/footer/Footer";
 
@@ -18,11 +19,21 @@ const ProductSinglePage = () => {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    if (!products?.length) return;
-
-    const found = products.find((p) => p.slug === slug);
-
-    setProduct(found || null);
+    const found = products?.length ? products.find((p) => p.slug === slug) : null;
+    if (found) {
+      setProduct(found);
+      return;
+    }
+    // Not in the static demo catalog — try the live backend (shop-manager-posted products).
+    productsApi.getBySlug(slug)
+      .then((p) => setProduct({
+        proImg: p.image_url || '/product/1.jpg',
+        title: p.name,
+        slug: p.slug,
+        price: Number(p.price).toFixed(2),
+        delPrice: p.compare_at_price ? Number(p.compare_at_price).toFixed(2) : Number(p.price).toFixed(2),
+      }))
+      .catch(() => setProduct(null));
   }, [slug]);
 
   const addToCartProduct = (item, qty = 1) => {

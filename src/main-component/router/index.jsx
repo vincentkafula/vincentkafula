@@ -32,6 +32,13 @@ import LoginPage from '../LoginPage';
 import DashboardPage from '../DashboardPage';
 import SignUpPage from '../SignUpPage';
 import ForgotPassword from '../ForgotPassword';
+import ResetPasswordPage from '../ResetPasswordPage';
+import AccountSettingsPage from '../AccountSettingsPage';
+import AccountManagementPage from '../AccountManagementPage';
+import NewsPage from '../NewsPage';
+import NewsSinglePage from '../NewsSinglePage';
+import RequireAuth from '../../components/ops-dashboards/RequireAuth';
+import RequireRole from '../../components/ops-dashboards/RequireRole';
 import FaqPage from '../FaqPage';
 const VolunteerPage = lazy(() => import('../VolunteerPage/VolunteerPage'));
 import DonatePage from '../DonatePage/DonatePage';
@@ -83,6 +90,11 @@ const AllRoute = () => {
           <Route path='dashboard/:role' element={<DashboardPage />} />
           <Route path='register' element={<SignUpPage />} />
           <Route path='forgot-password' element={<ForgotPassword />} />
+          <Route path='reset-password/:token' element={<ResetPasswordPage />} />
+          <Route path='account-settings' element={<RequireAuth><AccountSettingsPage /></RequireAuth>} />
+          <Route path='admin/accounts' element={<RequireRole roles={['head-office']}><AccountManagementPage /></RequireRole>} />
+          <Route path='news' element={<NewsPage />} />
+          <Route path='news/:slug' element={<NewsSinglePage />} />
         </Routes>
       </BrowserRouter>
 

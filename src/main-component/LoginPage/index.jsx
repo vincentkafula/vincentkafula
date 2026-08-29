@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authApi, setAuth } from '../../api/authApi';
 
 import './style.scss';
@@ -19,6 +19,8 @@ const demoAccounts = [
     { role: 'Store', username: 'store' },
     { role: 'Head Office', username: 'headoffice' },
     { role: 'Team Member', username: 'teammember' },
+    { role: 'News Manager', username: 'newsmanager' },
+    { role: 'Shop Manager', username: 'shopmanager' },
 ];
 const DEMO_PASSWORD = 'Demo@2026';
 
@@ -92,6 +94,9 @@ const LoginPage = () => {
                                     {submitting ? 'Signing in...' : 'Login'}
                                 </Button>
                             </Grid>
+                            <p style={{ marginTop: '14px', fontSize: '13px' }}>
+                                <Link to="/forgot-password">Forgot your password?</Link>
+                            </p>
                         </Grid>
                     </Grid>
                 </form>

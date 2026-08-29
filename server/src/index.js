@@ -13,6 +13,8 @@ import paymentAuthorisationsRouter from "./routes/paymentAuthorisations.js";
 import payrollRouter from "./routes/payroll.js";
 import weeklyRegistersRouter from "./routes/weeklyRegisters.js";
 import oasysChecksRouter from "./routes/oasysChecks.js";
+import newsRouter from "./routes/news.js";
+import productsRouter from "./routes/products.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -35,6 +37,8 @@ app.use("/api/payment-authorisations", paymentAuthorisationsRouter);
 app.use("/api/payroll", payrollRouter);
 app.use("/api/weekly-registers", weeklyRegistersRouter);
 app.use("/api/oasys-checks", oasysChecksRouter);
+app.use("/api/news", newsRouter);
+app.use("/api/products", productsRouter);
 
 async function start() {
   try {
