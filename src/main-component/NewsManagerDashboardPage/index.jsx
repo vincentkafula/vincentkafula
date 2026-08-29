@@ -16,13 +16,31 @@ import {
 
 const emptyForm = { title: '', excerpt: '', body: '', cover_image_url: '' };
 
+const TabButton = ({ active, onClick, children }) => (
+    <button
+        onClick={onClick}
+        style={{
+            padding: '10px 20px',
+            borderRadius: '10px',
+            border: active ? '1px solid #12351b' : '1px solid #e3e9e3',
+            background: active ? '#12351b' : '#fff',
+            color: active ? '#fff' : '#12351b',
+            fontWeight: 600,
+            fontSize: '14px',
+            cursor: 'pointer',
+        }}
+    >
+        {children}
+    </button>
+);
+
 const NewsManagerDashboard = () => {
+    const [tab, setTab] = useState('articles'); // 'articles' | 'email'
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState(emptyForm);
     const [editingId, setEditingId] = useState(null);
     const [saving, setSaving] = useState(false);
-    const [selected, setSelected] = useState(null);
     const [emailConfigured, setEmailConfigured] = useState(true);
 
     const load = () => {
@@ -96,7 +114,6 @@ const NewsManagerDashboard = () => {
             await newsApi.remove(post.id);
             toast.success('Deleted');
             load();
-            if (selected?.id === post.id) setSelected(null);
         } catch (err) {
             toast.error(err.message);
         }
@@ -127,39 +144,44 @@ const NewsManagerDashboard = () => {
                     <DashStat label="Drafts" value={drafts} accent="#a3690f" />
                 </DashGrid>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 420px) 1fr', gap: '24px', alignItems: 'start' }}>
-                    <DashCard>
-                        <h3 style={{ marginTop: 0, fontSize: '17px' }}>{editingId ? 'Edit Article' : 'New Article'}</h3>
-                        <form onSubmit={submit}>
-                            <div style={{ marginBottom: '14px' }}>
-                                <DashLabel>Title</DashLabel>
-                                <DashInput name="title" value={form.title} onChange={change} placeholder="Article headline" />
-                            </div>
-                            <div style={{ marginBottom: '14px' }}>
-                                <DashLabel>Excerpt</DashLabel>
-                                <DashInput name="excerpt" value={form.excerpt} onChange={change} placeholder="Short summary (optional)" />
-                            </div>
-                            <div style={{ marginBottom: '14px' }}>
-                                <DashLabel>Cover Image URL</DashLabel>
-                                <DashInput name="cover_image_url" value={form.cover_image_url} onChange={change} placeholder="https://…" />
-                            </div>
-                            <div style={{ marginBottom: '18px' }}>
-                                <DashLabel>Body</DashLabel>
-                                <DashTextarea name="body" value={form.body} onChange={change} rows={8} placeholder="Write the article…" />
-                            </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <DashButton type="submit" disabled={saving}>
-                                    {saving ? 'Saving…' : editingId ? 'Save Changes' : 'Create Draft'}
-                                </DashButton>
-                                {editingId && (
-                                    <DashButton type="button" variant="outline" onClick={resetForm}>Cancel</DashButton>
-                                )}
-                            </div>
-                        </form>
-                    </DashCard>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
+                    <TabButton active={tab === 'articles'} onClick={() => setTab('articles')}>📰 Articles</TabButton>
+                    <TabButton active={tab === 'email'} onClick={() => setTab('email')}>✉️ Email</TabButton>
+                </div>
 
-                    <div>
-                        <DashCard style={{ marginBottom: '20px' }}>
+                {tab === 'articles' && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 420px) 1fr', gap: '24px', alignItems: 'start' }}>
+                        <DashCard>
+                            <h3 style={{ marginTop: 0, fontSize: '17px' }}>{editingId ? 'Edit Article' : 'New Article'}</h3>
+                            <form onSubmit={submit}>
+                                <div style={{ marginBottom: '14px' }}>
+                                    <DashLabel>Title</DashLabel>
+                                    <DashInput name="title" value={form.title} onChange={change} placeholder="Article headline" />
+                                </div>
+                                <div style={{ marginBottom: '14px' }}>
+                                    <DashLabel>Excerpt</DashLabel>
+                                    <DashInput name="excerpt" value={form.excerpt} onChange={change} placeholder="Short summary (optional)" />
+                                </div>
+                                <div style={{ marginBottom: '14px' }}>
+                                    <DashLabel>Cover Image URL</DashLabel>
+                                    <DashInput name="cover_image_url" value={form.cover_image_url} onChange={change} placeholder="https://…" />
+                                </div>
+                                <div style={{ marginBottom: '18px' }}>
+                                    <DashLabel>Body</DashLabel>
+                                    <DashTextarea name="body" value={form.body} onChange={change} rows={8} placeholder="Write the article…" />
+                                </div>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <DashButton type="submit" disabled={saving}>
+                                        {saving ? 'Saving…' : editingId ? 'Save Changes' : 'Create Draft'}
+                                    </DashButton>
+                                    {editingId && (
+                                        <DashButton type="button" variant="outline" onClick={resetForm}>Cancel</DashButton>
+                                    )}
+                                </div>
+                            </form>
+                        </DashCard>
+
+                        <DashCard>
                             <h3 style={{ marginTop: 0, fontSize: '17px' }}>Articles</h3>
                             {loading ? (
                                 <p style={{ color: '#7a8a7d' }}>Loading…</p>
@@ -170,13 +192,10 @@ const NewsManagerDashboard = () => {
                                     {posts.map((post) => (
                                         <div
                                             key={post.id}
-                                            onClick={() => setSelected(post)}
                                             style={{
-                                                border: selected?.id === post.id ? '1.5px solid #12351b' : '1px solid #eef0ec',
+                                                border: '1px solid #eef0ec',
                                                 borderRadius: '10px',
                                                 padding: '14px 16px',
-                                                cursor: 'pointer',
-                                                background: selected?.id === post.id ? '#f6f9f6' : '#fff',
                                             }}
                                         >
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
@@ -187,21 +206,23 @@ const NewsManagerDashboard = () => {
                                                 {new Date(post.created_at).toLocaleDateString()} · by {post.author_display_name || '—'}
                                             </p>
                                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                                <DashButton variant="subtle" style={{ padding: '5px 12px', fontSize: '12px' }} onClick={(e) => { e.stopPropagation(); edit(post); }}>Edit</DashButton>
-                                                <DashButton variant="subtle" style={{ padding: '5px 12px', fontSize: '12px' }} onClick={(e) => { e.stopPropagation(); togglePublish(post); }}>
+                                                <DashButton variant="subtle" style={{ padding: '5px 12px', fontSize: '12px' }} onClick={() => edit(post)}>Edit</DashButton>
+                                                <DashButton variant="subtle" style={{ padding: '5px 12px', fontSize: '12px' }} onClick={() => togglePublish(post)}>
                                                     {post.status === 'published' ? 'Unpublish' : 'Publish'}
                                                 </DashButton>
-                                                <DashButton variant="danger" style={{ padding: '5px 12px', fontSize: '12px' }} onClick={(e) => { e.stopPropagation(); remove(post); }}>Delete</DashButton>
+                                                <DashButton variant="danger" style={{ padding: '5px 12px', fontSize: '12px' }} onClick={() => remove(post)}>Delete</DashButton>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </DashCard>
-
-                        <ComposeEmailPanel article={selected} emailConfigured={emailConfigured} />
                     </div>
-                </div>
+                )}
+
+                {tab === 'email' && (
+                    <ComposeEmailPanel articles={posts} emailConfigured={emailConfigured} />
+                )}
             </div>
             <Footer />
             <Scrollbar />
