@@ -37,7 +37,7 @@ const Campaign = [
        slug:'Unconstitutional-Conduct-of-ZAQA-Must-Fall',
        date:'January 2, 2027',
        time:'10:00 - 15:00',
-       location:'State House, Independence Avenue, Lusaka, Zambia.',
+       location:'Plot No. 438, Independence Avenue, Lusaka, Zambia.',
        progress:'0',
        raised:'0.00',
        goal:'40000.00',
