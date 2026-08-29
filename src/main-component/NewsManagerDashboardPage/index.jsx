@@ -8,6 +8,7 @@ import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { newsApi } from '../../api/newsApi';
 import { getAuth } from '../../api/authApi';
+import ComposeEmailPanel from '../../components/ops-dashboards/ComposeEmailPanel';
 import {
     DashCard, DashStat, DashHeader, DashButton, DashBadge,
     DashInput, DashTextarea, DashGrid, DashLabel,
@@ -22,8 +23,6 @@ const NewsManagerDashboard = () => {
     const [editingId, setEditingId] = useState(null);
     const [saving, setSaving] = useState(false);
     const [selected, setSelected] = useState(null);
-    const [recipients, setRecipients] = useState('');
-    const [sending, setSending] = useState(false);
     const [emailConfigured, setEmailConfigured] = useState(true);
 
     const load = () => {
@@ -100,26 +99,6 @@ const NewsManagerDashboard = () => {
             if (selected?.id === post.id) setSelected(null);
         } catch (err) {
             toast.error(err.message);
-        }
-    };
-
-    const sendEmail = async (e) => {
-        e.preventDefault();
-        const list = recipients.split(/[,\n]/).map((r) => r.trim()).filter(Boolean);
-        if (!selected) return;
-        if (!list.length) {
-            toast.error('Add at least one recipient email');
-            return;
-        }
-        setSending(true);
-        try {
-            const result = await newsApi.sendEmail(selected.id, list);
-            toast.success(`Sent to ${result.sent} recipient${result.sent === 1 ? '' : 's'}${result.failed ? `, ${result.failed} failed` : ''}`);
-            setRecipients('');
-        } catch (err) {
-            toast.error(err.message);
-        } finally {
-            setSending(false);
         }
     };
 
@@ -220,32 +199,7 @@ const NewsManagerDashboard = () => {
                             )}
                         </DashCard>
 
-                        <DashCard>
-                            <h3 style={{ marginTop: 0, fontSize: '17px' }}>Email This Article</h3>
-                            {!emailConfigured && (
-                                <p style={{ background: '#fff4e0', color: '#a3690f', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', marginBottom: '14px' }}>
-                                    Email sending isn't configured yet on the server — add <code>RESEND_API_KEY</code> (and optionally <code>RESEND_FROM_EMAIL</code>) to the backend's Railway variables.
-                                </p>
-                            )}
-                            {!selected ? (
-                                <p style={{ color: '#7a8a7d', fontSize: '14px' }}>Select an article above to send it by email.</p>
-                            ) : (
-                                <form onSubmit={sendEmail}>
-                                    <p style={{ fontSize: '14px', marginBottom: '12px' }}>Sending: <strong>{selected.title}</strong></p>
-                                    <DashLabel>Recipient emails (comma or new-line separated)</DashLabel>
-                                    <DashTextarea
-                                        rows={4}
-                                        value={recipients}
-                                        onChange={(e) => setRecipients(e.target.value)}
-                                        placeholder="supporter1@example.com, supporter2@example.com"
-                                        style={{ marginBottom: '14px' }}
-                                    />
-                                    <DashButton type="submit" disabled={sending || !emailConfigured}>
-                                        {sending ? 'Sending…' : 'Send Email'}
-                                    </DashButton>
-                                </form>
-                            )}
-                        </DashCard>
+                        <ComposeEmailPanel article={selected} emailConfigured={emailConfigured} />
                     </div>
                 </div>
             </div>

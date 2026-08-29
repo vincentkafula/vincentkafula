@@ -34,11 +34,11 @@ export const newsApi = {
         fetch(`${API_URL}/api/news/${id}`, { method: 'DELETE', headers: authHeaders() }).then(handle),
     emailStatus: () =>
         fetch(`${API_URL}/api/news/email/status`, { headers: authHeaders() }).then(handle),
-    sendEmail: (id, recipients) =>
+    sendEmail: (id, recipients, options = {}) =>
         fetch(`${API_URL}/api/news/${id}/send`, {
             method: 'POST',
             headers: jsonHeaders(),
-            body: JSON.stringify({ recipients }),
+            body: JSON.stringify({ recipients, ...options }),
         }).then(handle),
     broadcastHistory: (id) =>
         fetch(`${API_URL}/api/news/${id}/broadcasts`, { headers: authHeaders() }).then(handle),

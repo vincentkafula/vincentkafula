@@ -156,7 +156,7 @@ router.get('/email/status', requireAuth(MANAGER_ROLES), (req, res) => {
 // POST /api/news/:id/send — email this article to a list of recipients via Resend
 router.post('/:id/send', requireAuth(MANAGER_ROLES), async (req, res) => {
   try {
-    const { recipients } = req.body;
+    const { recipients, subject: subjectOverride, intro } = req.body;
     if (!Array.isArray(recipients) || recipients.length === 0) {
       return res.status(400).json({ error: 'recipients must be a non-empty array of email addresses' });
     }
@@ -164,20 +164,31 @@ router.post('/:id/send', requireAuth(MANAGER_ROLES), async (req, res) => {
     const post = rows[0];
     if (!post) return res.status(404).json({ error: 'Article not found' });
 
+    const subject = subjectOverride || post.title;
+
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         ${post.cover_image_url ? `<img src="${post.cover_image_url}" style="width:100%;border-radius:8px;margin-bottom:16px;" />` : ''}
+        ${intro ? `<p style="white-space: pre-wrap; color:#333; line-height:1.6; font-size:15px;">${intro}</p><hr style="border:none;border-top:1px solid #eee;margin:20px 0;" />` : ''}
         <h2 style="color:#12351b;">${post.title}</h2>
         <p style="white-space: pre-wrap; color:#333; line-height:1.6;">${post.body}</p>
-        <p style="margin-top:24px; font-size:12px; color:#888;">Sent by ${req.user.display_name} — Vincent Kafula Campaign</p>
+
+        <div style="text-align:center; padding-top:24px; margin-top:28px; border-top:1px dashed #ddd;">
+          <div style="font-family: 'Brush Script MT', 'Segoe Script', cursive; font-size:34px; color:#b8860b;">Vincent Kafula</div>
+          <div style="width:180px;height:2px;margin:6px auto 12px;background:linear-gradient(90deg,transparent,#d4a01f,transparent);"></div>
+          <div style="font-size:12.5px; color:#666; line-height:1.9;">
+            +260 95 554 8500 &nbsp;·&nbsp; vincent.kafula@gmail.com &nbsp;·&nbsp; www.vkm8.org &nbsp;·&nbsp; Lusaka, Zambia
+          </div>
+        </div>
+        <p style="margin-top:18px; font-size:11px; color:#aaa; text-align:center;">Sent by ${req.user.display_name} — Vincent Kafula Campaign</p>
       </div>`;
 
-    const result = await sendBulkEmail({ recipients, subject: post.title, html });
+    const result = await sendBulkEmail({ recipients, subject, html });
 
     await pool.query(
       `INSERT INTO email_broadcasts (news_post_id, subject, recipients, sent_count, failed_count, sent_by)
        VALUES ($1,$2,$3,$4,$5,$6)`,
-      [post.id, post.title, recipients, result.sent, result.failed, req.user.display_name]
+      [post.id, subject, recipients, result.sent, result.failed, req.user.display_name]
     );
 
     res.json(result);
