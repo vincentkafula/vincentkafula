@@ -9,6 +9,7 @@ import StatusBadge from '../../components/ops-dashboards/StatusBadge';
 import QuotationBuilder from './QuotationBuilder';
 import { quotationsApi } from '../../api/quotationsApi';
 import { invoicesApi } from '../../api/invoicesApi';
+import InvoiceFacsimileModal from './InvoiceFacsimileModal';
 
 const PartnerDashboard = () => {
     const [quotations, setQuotations] = useState([]);
@@ -16,6 +17,7 @@ const PartnerDashboard = () => {
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [payingId, setPayingId] = useState(null);
+    const [viewingInvoice, setViewingInvoice] = useState(null);
 
     const load = () => {
         setLoading(true);
@@ -143,16 +145,24 @@ const PartnerDashboard = () => {
                                             </td>
                                             <td style={{ padding: '10px' }}>{new Date(inv.created_at).toLocaleDateString()}</td>
                                             <td style={{ padding: '10px' }}>
-                                                {inv.status === 'unpaid' && (
+                                                <div style={{ display: 'flex', gap: '8px' }}>
                                                     <button
-                                                        className="theme-btn"
-                                                        disabled={payingId === inv.id}
-                                                        onClick={() => pay(inv.id)}
-                                                        style={{ padding: '6px 16px', fontSize: '13px' }}
+                                                        onClick={() => setViewingInvoice(inv)}
+                                                        style={{ padding: '6px 14px', fontSize: '13px', border: '1px solid #1C2A28', background: 'none', borderRadius: '4px', cursor: 'pointer' }}
                                                     >
-                                                        {payingId === inv.id ? 'Processing...' : 'Pay Now'}
+                                                        View Invoice
                                                     </button>
-                                                )}
+                                                    {inv.status === 'unpaid' && (
+                                                        <button
+                                                            className="theme-btn"
+                                                            disabled={payingId === inv.id}
+                                                            onClick={() => pay(inv.id)}
+                                                            style={{ padding: '6px 16px', fontSize: '13px' }}
+                                                        >
+                                                            {payingId === inv.id ? 'Processing...' : 'Pay Now'}
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -161,6 +171,8 @@ const PartnerDashboard = () => {
                         </div>
                     )}
                 </div>
+
+                <InvoiceFacsimileModal invoice={viewingInvoice} onClose={() => setViewingInvoice(null)} />
             </div>
             <Footer />
             <Scrollbar />

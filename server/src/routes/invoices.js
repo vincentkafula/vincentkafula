@@ -10,7 +10,8 @@ router.get('/', requireAuth(), async (req, res) => {
     const { quotation_id } = req.query;
     const params = [];
     let sql = `
-      SELECT i.*, q.partner_name, q.payment_terms
+      SELECT i.*, q.partner_name, q.partner_email, q.partner_phone, q.payment_terms,
+             q.task_details, q.location_address, q.num_foremen, q.num_workers, q.num_operation_supervisors
       FROM invoices i
       JOIN quotations q ON q.id = i.quotation_id
     `;
