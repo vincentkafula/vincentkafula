@@ -1,93 +1,30 @@
 import React from 'react'
-import Navbar2 from '../../components/Navbar2/Navbar2'
-import PageTitle from '../../components/pagetitle/PageTitle'
-import Footer from '../../components/footer/Footer'
-import Scrollbar from '../../components/scrollbar/scrollbar'
-import FaqSection from './FaqSection'
+import LegalPage from '../../components/LegalPage/LegalPage'
 
-import fagImg1 from '../../images/terms/terms.jpg'
-import fagImg2 from '../../images/terms/1.jpg'
-import fagImg3 from '../../images/terms/2.jpg'
+const sections = [
+    { h: 'Who we are', p: ['This website is run by Vincent Kafula, Founder of Build One Zambia. You can contact us at vincent.kafula@gmail.com or through the contact page.'] },
+    {
+        h: 'What we collect and why',
+        p: ['We only collect the information you choose to send us through the forms on this website:'],
+        list: [
+            'Contact form: your name, email address, optional phone number, subject and message, so that we can reply to you.',
+            'Volunteer form: your name, email address, optional phone number, your province, district, constituency, ward and polling station, how you would like to help and your message, so that we can organise volunteering in your area.',
+            'Support form: your name, email address, optional phone number, the type of support offered and any details, so that we can follow up with you.',
+            'Newsletter: your email address, so that we can send campaign updates.',
+            'Accounts: if you have a staff or shop account, the details needed to run that account and any orders.',
+        ],
+    },
+    { h: 'How your information is handled', p: ['Form submissions are sent by email to the campaign inbox using an email delivery service (Resend). We do not sell your information or share it with third parties for their own marketing. We do not take card or bank details on this website.'] },
+    { h: 'How long we keep it', p: ['We keep your information only for as long as it is needed for the purpose you gave it for, and then delete it. You can ask us to delete it sooner at any time.'] },
+    { h: 'Your rights', p: ['You can ask to see the information we hold about you, ask us to correct or delete it, or unsubscribe from updates at any time by emailing vincent.kafula@gmail.com.'] },
+    { h: 'Cookies and third-party content', p: ['This website does not use advertising cookies. The contact page shows an embedded Google map, and the site loads fonts and icons from Google Fonts and Cloudflare; these services may record your IP address when the content loads.'] },
+    { h: 'Changes to this policy', p: ['We may update this policy from time to time. The date at the top of the page shows when it was last changed.'] },
+];
 
-
-const PrivacyPage = (props) => {
-
-    return (
-        <div>
-            <Navbar2 />
-            <PageTitle pageTitle={'Privacy Policy'} pagesub={'Privacy Policy'} />
-            <section className="wpo-terms-section section-padding">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-10 offset-lg-1">
-                            <div className="wpo-terms-wrap">
-                                <div className="wpo-terms-img">
-                                    <img src={fagImg1} alt=""/>
-                                </div>
-                                <div className="wpo-terms-text">
-                                    <h2>Reasons for Using Website Privacy Policy</h2>
-                                    <p>When you are planning to create a website, it’s very easy to overlook creating and
-                                        adding a website Privacy Policy template. This is because when you are
-                                        browsing through sites, you may not look at this part unless you really have to –
-                                        and even then, you might not actually read all the content! However, it’s very
-                                        important to have the terms page on your website, for a number of reasons. Once
-                                        you’ve learned all about these reasons, you may realize that adding this part to
-                                        your website is really essential.</p>
-                                    <p>Even a short Privacy Policy agreement should include several key clauses to
-                                        safeguard your business. For example, if you’re selling online and incorrectly price
-                                        an item, your Privacy Policy are what will enable you to cancel the order.</p>
-
-                                    <ul>
-                                        <li>Acceptable use of your website and all of its content.</li>
-                                        <li>Rules on uploading any content in your website.</li>
-                                        <li>Any and all websites which are linked to your own.</li>
-                                        <li>The availability of your website.</li>
-                                        <li>Returns and Guarantees for Customers</li>
-                                    </ul>
-                                    <p>If any estimates of how long it will take the cleaning operatives to complete the job
-                                        are being provided those are only estimates based on the average time it takes to
-                                        clean a home or an office of similar size to the Client’s, it being difficult to
-                                        calculate precisely how long such tasks may take and that a degree of flexibility
-                                        may be required. Please note that one off cleans may take longer to complete due to
-                                        longer intervals between cleaning sessions, number and type of cleaning tasks
-                                        required, when compared to the regular maintenance cleaning of the same property.
-                                    </p>
-                                    <div className="row t-sub">
-                                        <div className="col-md-6 col-sm-6 col-12">
-                                            <div className="pf-p-details-img">
-                                                <img src={fagImg2} alt=""/>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6 col-sm-6 col-12">
-                                            <div className="pf-p-details-img">
-                                                <img src={fagImg3} alt=""/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p>Post Construction Cleaning (Builders Cleaning), Event Cleaning or badly neglected
-                                        homes may take up to three times longer than a well maintained home requiring
-                                        general cleaning. Therefore the Company advises the Client to ask f or our
-                                        specialist cleaning services: Builders Cleaning or Event Cleaning.</p>
-
-                                </div>
-                                <div className="pf-faq-section">
-                                    <h4>Frequently Ask Questions</h4>
-                                    <div className="row">
-                                        <div className="col-lg-12 col-md-12 col-12">
-                                            <FaqSection/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <Footer />
-            <Scrollbar />
-        </div>
-
-    )
-}
+const PrivacyPage = () => (
+    <LegalPage title="Privacy Policy" updated="October 2026"
+        description="How Vincent Kafula’s website collects, uses and protects the personal information you send through its forms."
+        sections={sections} />
+);
 
 export default PrivacyPage;

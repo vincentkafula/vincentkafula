@@ -5,6 +5,7 @@ import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { newsApi } from '../../api/newsApi';
+import Seo from '../../components/Seo/Seo';
 
 const NewsPage = () => {
     const [posts, setPosts] = useState([]);
@@ -21,7 +22,8 @@ const NewsPage = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'Campaign News'} pagesub={'News'} />
+            <Seo title="News and Updates" description="Statements, announcements and updates from Vincent Kafula and the Build One Zambia campaign." />
+            <PageTitle pageTitle={'News and Updates'} pagesub={'News'} />
             <section className="section-padding">
                 <div className="container">
                     {loading ? (
@@ -46,7 +48,7 @@ const NewsPage = () => {
                                                 <Link to={`/news/${post.slug}`}>{post.title}</Link>
                                             </h3>
                                             {post.excerpt && <p style={{ color: '#666', fontSize: '14px' }}>{post.excerpt}</p>}
-                                            <Link to={`/news/${post.slug}`} className="theme-btn" style={{ marginTop: '10px', display: 'inline-block' }}>Read More</Link>
+                                            <Link to={`/news/${post.slug}`} className="theme-btn" style={{ marginTop: '10px', display: 'inline-block' }}>Read more</Link>
                                         </div>
                                     </div>
                                 </div>

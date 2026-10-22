@@ -1,12 +1,16 @@
 import React, { useState, useMemo } from 'react'
-import SimpleReactValidator from 'simple-react-validator';
 import Navbar2 from '../../components/Navbar2/Navbar2'
 import PageTitle from '../../components/pagetitle/PageTitle'
 import Footer from '../../components/footer/Footer'
 import Scrollbar from '../../components/scrollbar/scrollbar'
-import vImg from '../../images/volunteer.jpg'
-import TeamSection from '../../components/TeamSection/TeamSection';
 import eczData from '../../data/ecz-locations.json'
+import { Link } from 'react-router-dom'
+import Seo from '../../components/Seo/Seo'
+import { submitPublicForm } from '../../api/contactApi'
+import { SectionHead } from '../../components/Advocacy/sections'
+import { involvement } from '../../api/advocacy'
+
+const HELP_OPTIONS = ['Organise in my ward or district', 'Spread the word in my community', 'Join an agricultural cooperative', 'Help on polling day', 'Other']
 
 const titleCase = (str) => str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase());
 
@@ -21,12 +25,25 @@ const VolunteerPage = (props) => {
         pollingStation: '',
         email: '',
         subject: '',
-        file: '',
+        phone: '',
         message: ''
     });
-    const [validator] = useState(new SimpleReactValidator({
-        className: 'errorMessage'
-    }));
+    const [status, setStatus] = useState({ state: 'idle', message: '' });
+    const [errors, setErrors] = useState({});
+    const validate = (f) => {
+        const e = {};
+        if (f.name.trim().length < 2) e.name = 'Please enter your full name.';
+        if (!f.province) e.province = 'Please select your province.';
+        if (!f.district) e.district = 'Please select your district.';
+        if (!f.constituency) e.constituency = 'Please select your constituency.';
+        if (!f.ward) e.ward = 'Please select your ward.';
+        if (!f.pollingStation) e.pollingStation = 'Please select your polling station.';
+        if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) e.email = 'Please enter a valid email address.';
+        if (!f.subject) e.subject = 'Please choose how you would like to help.';
+        if (f.message.trim().length < 10) e.message = 'Please tell us a little more (at least 10 characters).';
+        return e;
+    };
+    const Err = ({ name }) => errors[name] ? <div className="errorMessage" role="alert">{errors[name]}</div> : null;
 
     const provinces = useMemo(() => Object.keys(eczData).sort(), []);
 
@@ -69,54 +86,52 @@ const VolunteerPage = (props) => {
         }
 
         setForms(updated);
-        if (validator.allValid()) {
-            validator.hideMessages();
-        } else {
-            validator.showMessages();
-        }
+        if (errors[name]) setErrors({ ...errors, [name]: undefined });
     };
 
-    const submitHandler = e => {
+    const submitHandler = async e => {
         e.preventDefault();
-        if (validator.allValid()) {
-            validator.hideMessages();
-            setForms({
-                name: '',
-                province: '',
-                district: '',
-                constituency: '',
-                ward: '',
-                pollingStation: '',
-                email: '',
-                subject: '',
-                file: '',
-                message: ''
-            })
-        } else {
-            validator.showMessages();
+        const found = validate(forms);
+        setErrors(found);
+        if (Object.keys(found).length) return;
+        setStatus({ state: 'sending', message: '' });
+        try {
+            await submitPublicForm('volunteer', forms);
+            setForms({ name: '', province: '', district: '', constituency: '', ward: '', pollingStation: '', email: '', subject: '', phone: '', message: '' });
+            setStatus({ state: 'ok', message: 'Thank you for volunteering. We will contact you by email about activities in your area.' });
+        } catch (err) {
+            setStatus({ state: 'error', message: err.message });
         }
     };
 
     return (
         <div className="volunteer-page">
             <Navbar2 />
-            <PageTitle pageTitle={'Volunteer'} pagesub={'Volunteer'} />
+            <Seo title="Volunteer" description="Volunteer with Build One Zambia: help organise in your province, district or ward and share the message in your community." />
+            <PageTitle pageTitle={'Volunteer'} pagesub={'Get involved'} />
             <div className="volunteer-area">
                 <div className="volunteer-wrap">
                     <div className="container">
                         <div className="row justify-content-center">
                             <div className="col-lg-10">
-                                <div className="volunteer-item">
-                                    <div className="volunteer-img-wrap">
-                                        <div className="volunter-img">
-                                            <img src={vImg} alt="" />
-                                        </div>
+                                <div className="vk-section" style={{ paddingBottom: 50 }}>
+                                    <SectionHead kicker="Join the movement" title="The campaign is powered by people like you">
+                                        Farmers, builders, teachers, families and young people who refuse to accept the status quo. Choose how you would like to help, tell us where you are, and we will be in touch.
+                                    </SectionHead>
+                                    <div className="vk-involve-grid">
+                                        {involvement.map((i) => (
+                                            <div className="vk-involve vk-involve--light" key={i.title}>
+                                                <i className={i.icon} aria-hidden="true"></i>
+                                                <h3>{i.title}</h3>
+                                                <p style={{ marginBottom: 0 }}>{i.text}</p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                                 <div className="volunteer-contact">
                                     <div className="volunteer-contact-form">
-                                        <h2>Become a Volunteer</h2>
-                                        <form onSubmit={(e) => submitHandler(e)} className="contact-validation-active" id="contact-form-main">
+                                        <h2>Become a volunteer</h2>
+                                        <form onSubmit={(e) => submitHandler(e)} className="contact-validation-active" id="contact-form-main" noValidate>
                                             <div className="row">
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
                                                     <div className="form-field">
@@ -126,8 +141,8 @@ const VolunteerPage = (props) => {
                                                             name="name"
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}
-                                                            placeholder="Your Name" />
-                                                        {validator.message('name', forms.name, 'required|alpha_space')}
+                                                            placeholder="Your full name" aria-label="Your full name" />
+                                                        <Err name="name" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
@@ -137,12 +152,12 @@ const VolunteerPage = (props) => {
                                                             name="province"
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}>
-                                                            <option value="">Select Province</option>
+                                                            <option value="">Select province</option>
                                                             {provinces.map((p) => (
                                                                 <option key={p} value={p}>{titleCase(p)}</option>
                                                             ))}
                                                         </select>
-                                                        {validator.message('province', forms.province, 'required')}
+                                                        <Err name="province" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
@@ -153,12 +168,12 @@ const VolunteerPage = (props) => {
                                                             disabled={!forms.province}
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}>
-                                                            <option value="">Select District</option>
+                                                            <option value="">Select district</option>
                                                             {districts.map((d) => (
                                                                 <option key={d} value={d}>{titleCase(d)}</option>
                                                             ))}
                                                         </select>
-                                                        {validator.message('district', forms.district, 'required')}
+                                                        <Err name="district" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
@@ -169,12 +184,12 @@ const VolunteerPage = (props) => {
                                                             disabled={!forms.district}
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}>
-                                                            <option value="">Select Constituency</option>
+                                                            <option value="">Select constituency</option>
                                                             {constituencies.map((c) => (
                                                                 <option key={c} value={c}>{titleCase(c)}</option>
                                                             ))}
                                                         </select>
-                                                        {validator.message('constituency', forms.constituency, 'required')}
+                                                        <Err name="constituency" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
@@ -185,12 +200,12 @@ const VolunteerPage = (props) => {
                                                             disabled={!forms.constituency}
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}>
-                                                            <option value="">Select Ward</option>
+                                                            <option value="">Select ward</option>
                                                             {wards.map((w) => (
                                                                 <option key={w} value={w}>{titleCase(w)}</option>
                                                             ))}
                                                         </select>
-                                                        {validator.message('ward', forms.ward, 'required')}
+                                                        <Err name="ward" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-12 col-12 form-group">
@@ -201,12 +216,12 @@ const VolunteerPage = (props) => {
                                                             disabled={!forms.ward}
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}>
-                                                            <option value="">Select Polling Station</option>
+                                                            <option value="">Select polling station</option>
                                                             {pollingStations.map((s) => (
                                                                 <option key={s} value={s}>{titleCase(s)}</option>
                                                             ))}
                                                         </select>
-                                                        {validator.message('pollingStation', forms.pollingStation, 'required')}
+                                                        <Err name="pollingStation" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group clearfix">
@@ -217,34 +232,25 @@ const VolunteerPage = (props) => {
                                                             name="email"
                                                             onBlur={(e) => changeHandler(e)}
                                                             onChange={(e) => changeHandler(e)}
-                                                            placeholder="Your Email" />
-                                                        {validator.message('email', forms.email, 'required|email')}
+                                                            placeholder="Your email" aria-label="Your email" />
+                                                        <Err name="email" />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
                                                     <div className="form-field">
-                                                        <input
-                                                            value={forms.subject}
-                                                            type="text"
-                                                            name="subject"
-                                                            onBlur={(e) => changeHandler(e)}
-                                                            onChange={(e) => changeHandler(e)}
-                                                            placeholder="Your subject" />
-                                                        {validator.message('subject', forms.subject, 'required|alpha_space')}
+                                                        <select value={forms.subject} name="subject" aria-label="How would you like to help?" onChange={(e) => changeHandler(e)}>
+                                                            <option value="">How would you like to help?</option>
+                                                            {HELP_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+                                                        </select>
+                                                        <Err name="subject" />
                                                     </div>
                                                 </div>
-                                                <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group form-group-in">
-                                                    <label htmlFor="file">Upload Your CV</label>
-                                                    <input
-                                                        value={forms.file}
-                                                        type="file"
-                                                        name="file"
-                                                        id='file'
-                                                        onBlur={(e) => changeHandler(e)}
-                                                        onChange={(e) => changeHandler(e)}
-                                                        placeholder="Your Email" />
-                                                    {validator.message('file', forms.file, 'required|file')}
-                                                    <i className="ti-cloud-up"></i>
+                                                <div className="col-lg-12 col-12 form-group">
+                                                    <div className="form-field">
+                                                        <input value={forms.phone} type="tel" name="phone" autoComplete="tel"
+                                                            onChange={(e) => changeHandler(e)}
+                                                            placeholder="Your phone number (optional)" aria-label="Your phone number (optional)" />
+                                                    </div>
                                                 </div>
                                                 <div className="col-lg-12 col-12 form-group">
                                                     <textarea
@@ -253,22 +259,17 @@ const VolunteerPage = (props) => {
                                                         value={forms.message}
                                                         type="text"
                                                         name="message"
-                                                        placeholder="Message">
+                                                        placeholder="Tell us a little about yourself and your skills" aria-label="Message">
                                                     </textarea>
-                                                    {validator.message('message', forms.message, 'required')}
+                                                    <Err name="message" />
                                                 </div>
                                                 <div className="submit-area col-lg-12 col-12">
-                                                    <button type="submit" className="theme-btn submit-btn">Send Message</button>
-                                                    <div id="loader">
-                                                        <i className="ti-reload"></i>
-                                                    </div>
+                                                    <button type="submit" className="theme-btn submit-btn" disabled={status.state === 'sending'}>{status.state === 'sending' ? 'Sending…' : 'Sign up to volunteer'}</button>
                                                 </div>
                                             </div>
-                                            <div className="clearfix error-handling-messages">
-                                                <div id="success">Thank you</div>
-                                                <div id="error"> Error occurred while sending email. Please try again later.
-                                                </div>
-                                            </div>
+                                            {status.state === 'ok' && <p className="vk-form-status vk-form-status--ok" role="status">{status.message}</p>}
+                                            {status.state === 'error' && <p className="vk-form-status vk-form-status--error" role="alert">{status.message}</p>}
+                                            <p className="vk-privacy-note">Your details are used only to organise volunteering. See the <Link to="/privacy">privacy policy</Link>.</p>
                                         </form>
                                     </div>
                                 </div>
@@ -276,7 +277,6 @@ const VolunteerPage = (props) => {
                         </div>
                     </div>
                 </div>
-                <TeamSection tmClass={'s2'}/>
             </div>
             <Footer />
             <Scrollbar />

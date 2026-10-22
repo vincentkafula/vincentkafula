@@ -20,7 +20,7 @@ const About = (props) => {
                     <div className="row align-items-center">
                         <div className="col-lg-6 col-md-12 col-12">
                             <div className="wpo-about-img">
-                                <img src={props.abimg} alt="" />
+                                <img src={props.abimg} alt="Vincent Kafula at his desk with the Zambian flag" />
                                 <div className="wpo-about-img-text">
                                     <h4>2025</h4>
 
@@ -70,7 +70,7 @@ const About = (props) => {
                             <div className="wpo-about-text">
                                 <div className="wpo-section-title">
                                     <span>About Vincent Kafula</span>
-                                    <h2>We Can Work Together For Create a Better Future.</h2>
+                                    <h2>Working together to build a better future</h2>
                                 </div>
                                 {props.fullBio ? (
                                     <div className="about-bio-content">
@@ -81,6 +81,7 @@ const About = (props) => {
                                         ))}
                                         <button
                                             type="button"
+                                            aria-expanded={expanded}
                                             onClick={() => setExpanded(!expanded)}
                                             style={{
                                                 background: 'none',
@@ -94,22 +95,22 @@ const About = (props) => {
                                                 display: 'inline-block',
                                             }}
                                         >
-                                            {expanded ? 'Read Less' : 'Read More'}
+                                            {expanded ? 'Read less' : 'Read full biography'}
                                         </button>
                                     </div>
                                 ) : (
                                     <>
-                                        <p>The leader is eager to listen to the needs of the youth generation and to hear what
-                                            solutions they have to the problems they are facing. He hopes to find solutions that
-                                            will help them lead meaningful lives and make lasting change in the world. </p>
-                                        <p>He believes that the collaboration between the youth and the leaders of society is
-                                            necessary to bring about a brighter future. Now, he is ready to take the first step
-                                            to making that happen.</p>
+                                        <p>Vincent is eager to listen to the needs of the younger generation and to hear the
+                                            solutions they have for the problems they face. He hopes to help turn those ideas into
+                                            opportunities for young Zambians to lead meaningful lives and create lasting change.</p>
+                                        <p>He believes collaboration between young people and the nation’s leaders is essential
+                                            to a brighter future, and he is ready to take the first step towards making it happen.</p>
                                     </>
                                 )}
                                 <div className="quote">
-                                    <p>“We can start by taking small steps and making small changes that can have a big
-                                        impact on the world.”</p>
+                                    <p>“We begin with small, strategic steps — changes that may appear modest but will leave a
+                                        profound impact on the future of our country.”</p>
+                                    <small style={{ display: 'block', marginTop: 8 }}>— Build One Zambia</small>
                                 </div>
                                 <div className="wpo-about-left-info">
                                     <div className="wpo-about-left-inner">
@@ -119,7 +120,7 @@ const About = (props) => {
                                         </div>
                                     </div>
                                     <div className="signeture">
-                                        <img src={sign} alt="" />
+                                        <img src={sign} alt="Vincent Kafula’s signature" />
                                     </div>
                                 </div>
                             </div>

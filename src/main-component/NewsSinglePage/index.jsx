@@ -5,6 +5,7 @@ import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { newsApi } from '../../api/newsApi';
+import Seo from '../../components/Seo/Seo';
 
 const NewsSinglePage = () => {
     const { slug } = useParams();
@@ -23,6 +24,7 @@ const NewsSinglePage = () => {
     return (
         <Fragment>
             <Navbar2 />
+            <Seo title={post?.title || 'News'} description={post?.excerpt || undefined} />
             <PageTitle pageTitle={post?.title || 'News'} pagesub={'News'} />
             <section className="section-padding">
                 <div className="container" style={{ maxWidth: '820px' }}>

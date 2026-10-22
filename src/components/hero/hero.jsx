@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import hero1 from '../../images/slider/1.png'
+import { movement } from '../../api/advocacy';
 
 const Hero = () => {
 
@@ -14,22 +15,23 @@ const Hero = () => {
                 <div className="hero-inner">
                     <div className="container-fluid">
                         <div className="hero-content">
-                            <div data-swiper-parallax="300" className="slide-title-sub">
-                                <span>We Are Waiting For You</span>
+                            <div className="slide-title-sub">
+                                <span className="vk-hero-role">Vincent Kafula, <strong>Founder of Build One Zambia</strong></span>
                             </div>
-                            <div data-swiper-parallax="300" className="slide-title">
-                                <h2>Our justice system must work for all</h2>
+                            <div className="slide-title">
+                                <h1 className="vk-sr-only">Vincent Kafula — Founder of Build One Zambia</h1>
+                                <h2>{movement.tagline}</h2>
                             </div>
-                            <div data-swiper-parallax="400" className="slide-text">
-                                <p>We can start by taking small steps and making small changes that can have a big
-                                    impact on the world.</p>
+                            <div className="slide-text">
+                                <p>Vincent Kafula advocates for a Zambia built by Zambians: government-owned machinery in every municipality, Zambian workers doing the work, and the country’s land and minerals benefiting every citizen.</p>
                             </div>
                             <div className="clearfix"></div>
-                            <div data-swiper-parallax="500" className="slide-btns">
-                                <Link onClick={ClickHandler} to="/about" className="theme-btn">Join The Campaign</Link>
+                            <div className="slide-btns">
+                                <Link onClick={ClickHandler} to="/advocacy" className="theme-btn">Explore the advocacy</Link>
+                                <Link onClick={ClickHandler} to="/proposals" className="vk-btn-outline">Read the proposals</Link>
                             </div>
                             <div className="politian-pic">
-                                <img src={hero1} alt="" />
+                                <img src={hero1} alt="Vincent Kafula speaking at a podium" />
                                 <div className="politian-shape">
                                     <div className="shape-1"></div>
                                     <div className="shape-2"></div>

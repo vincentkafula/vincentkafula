@@ -23,22 +23,22 @@ const BlogSection = () => {
     return (
         <section className="wpo-blog-section section-padding" id="blog">
             <div className="container">
-                <SectionTitle subTitle={'Our News'} Title={'Latest News & Press'} />
+                <SectionTitle subTitle={'News'} Title={'Latest news and updates'} />
                 <div className="wpo-blog-items">
                     <div className="row">
                         {posts.map((post) => (
                             <div className="col col-lg-4 col-md-6 col-12" key={post.id}>
                                 <div className="wpo-blog-item">
                                     <div className="wpo-blog-img">
-                                        <img src={post.cover_image_url || '/product/1.jpg'} alt="" />
+                                        <img src={post.cover_image_url || '/product/1.jpg'} alt="" loading="lazy" />
                                     </div>
                                     <div className="wpo-blog-content">
                                         <ul>
-                                            <li><Link onClick={ClickHandler} to={`/blog-single/${post.slug}`}>{fmtDate(post.published_at)}</Link></li>
-                                            <li>by: <Link onClick={ClickHandler} to={`/blog-single/${post.slug}`}>{post.author_display_name}</Link></li>
+                                            <li><Link onClick={ClickHandler} to={`/news/${post.slug}`}>{fmtDate(post.published_at)}</Link></li>
+                                            <li>by: <Link onClick={ClickHandler} to={`/news/${post.slug}`}>{post.author_display_name}</Link></li>
                                         </ul>
-                                        <h2><Link onClick={ClickHandler} to={`/blog-single/${post.slug}`}>{post.title}</Link></h2>
-                                        <Link className="more" onClick={ClickHandler} to={`/blog-single/${post.slug}`}>Continue Reading</Link>
+                                        <h2><Link onClick={ClickHandler} to={`/news/${post.slug}`}>{post.title}</Link></h2>
+                                        <Link className="more" onClick={ClickHandler} to={`/news/${post.slug}`}>Read more</Link>
                                     </div>
                                 </div>
                             </div>

@@ -19,7 +19,7 @@ export function isEmailConfigured() {
 // strings, or an array of { email, name } objects when `buildHtml` is provided so each
 // recipient gets their own personalized version (e.g. "Dear Jane," vs "Dear John,").
 // Returns { sent, failed, errors }.
-export async function sendBulkEmail({ recipients, subject, html, text, buildHtml }) {
+export async function sendBulkEmail({ recipients, subject, html, text, buildHtml, replyTo }) {
   const { apiKey, from } = getConfig();
   if (!apiKey) {
     throw new Error('Email is not configured on the server (missing RESEND_API_KEY)');
@@ -45,7 +45,7 @@ export async function sendBulkEmail({ recipients, subject, html, text, buildHtml
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ from, to, subject, html: body, text }),
+          body: JSON.stringify({ from, to, subject, html: body, text, ...(replyTo ? { reply_to: replyTo } : {}) }),
         });
         if (!res.ok) {
           const body2 = await res.json().catch(() => ({}));

@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import MobileMenu from '../MobileMenu/MobileMenu'
+import NavList from '../NavList/NavList'
 
 
 const Header = (props) => {
     const [menuActive, setMenuState] = useState(false);
+    const navigate = useNavigate();
+    const [query, setQuery] = useState('');
     const SubmitHandler = (e) => {
         e.preventDefault()
+        const q = query.trim();
+        if (!q) return;
+        setMenuState(false);
+        navigate(`/search?q=${encodeURIComponent(q)}`);
     }
 
     const ClickHandler = () => {
@@ -27,90 +34,28 @@ const Header = (props) => {
                             <div className="col-lg-2 col-md-4 col-6">
                                 <div className="navbar-header">
                                     <Link onClick={ClickHandler} className="navbar-brand" to="/"><img src={props.Logo}
-                                        alt="logo"/></Link>
+                                        alt="Vincent Kafula — home"/></Link>
                                 </div>
                             </div>
                             <div className="col-lg-8 col-md-1 col-1">
                                 <div id="navbar" className="collapse navbar-collapse navigation-holder">
                                     <button className="menu-close"><i className="ti-close"></i></button>
-                                    <ul className="nav navbar-nav mb-2 mb-lg-0">
-                                        <li className="menu-item-has-children">
-                                            <Link onClick={ClickHandler} to="/">Home</Link>
-                                            <ul className="sub-menu">
-                                                <li><Link onClick={ClickHandler} to="/home">Main Home</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/home2">Election Home</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/home3">Male Candidate</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/home4">Female Candidate</Link></li>
-                                            </ul>
-                                        </li>
-                                        <li><Link onClick={ClickHandler} to="/about">About us</Link></li>
-                                        <li className="menu-item-has-children">
-                                            <Link onClick={ClickHandler} to="/">Campaign</Link>
-                                            <ul className="sub-menu">
-                                                <li><Link onClick={ClickHandler} to="/campaign">Campaign Style 1</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/campaign-2">Campaign Style 2</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/campaign-3">Campaign Style 3</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/campaign-single/Support-for-Womans">Campaign single</Link></li>
-                                            </ul>
-                                        </li>
-                                        <li className="menu-item-has-children">
-                                            <Link onClick={ClickHandler} to="/">Pages</Link>
-                                            <ul className="sub-menu">
-                                                <li><Link onClick={ClickHandler} to="/gallery">Gallery</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/testimonial">Testimonial</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/team">Team</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/team-single/Esther-Howard">Team Single</Link></li>
-                                                <li className="menu-item-has-children">
-                                                    <Link onClick={ClickHandler} to="/">Services</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link onClick={ClickHandler} to="/service">Services</Link></li>
-                                                        <li><Link onClick={ClickHandler} to="/service-single/Economic-Establishment">Services Single</Link></li>
-                                                    </ul>
-                                                </li>
-                                                <li><Link onClick={ClickHandler} to="/shop">Shop</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/news">News</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/faq">FAQ</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/volunteer">Volunteer</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/404">404 Error</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/login">Login</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/register">Register</Link></li>
-                                            </ul>
-                                        </li>
-                                        <li className="menu-item-has-children">
-                                            <Link onClick={ClickHandler} to="/">Blog</Link>
-                                            <ul className="sub-menu">
-                                                <li><Link onClick={ClickHandler} to="/blog">Blog right sidebar</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/blog-left-sidebar">Blog left sidebar</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/blog-fullwidth">Blog fullwidth</Link></li>
-                                                <li className="menu-item-has-children">
-                                                    <Link onClick={ClickHandler} to="/">Blog details</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link onClick={ClickHandler} to="/blog-single/support-progressive-change">Blog details right sidebar</Link>
-                                                        </li>
-                                                        <li><Link onClick={ClickHandler} to="/blog-single-left-sidebar/support-progressive-change">Blog details left
-                                                            sidebar</Link></li>
-                                                        <li><Link onClick={ClickHandler} to="/blog-single-fullwidth/support-progressive-change">Blog details
-                                                            fullwidth</Link></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li><Link onClick={ClickHandler} to="/contact">Contact</Link></li>
-                                    </ul>
+                                    <NavList />
                                 </div>
                             </div>
                             <div className="col-lg-2 col-md-3 col-2">
                                 <div className="header-right">
                                     <div className="header-search-form-wrapper">
                                         <div className="cart-search-contact">
-                                            <button onClick={() => setMenuState(!menuActive)} className="search-toggle-btn"><i
+                                            <button onClick={() => setMenuState(!menuActive)} className="search-toggle-btn" aria-label="Open search"><i
                                                 className={`fi ti-search ${menuActive ? "ti-close" : "fi "}`}></i></button>
                                             <div className={`header-search-form ${menuActive ? "header-search-content-toggle" : ""}`}>
                                                 <form onSubmit={SubmitHandler}>
                                                     <div>
-                                                        <input type="text" className="form-control"
-                                                            placeholder="Search here..." />
-                                                        <button type="submit"><i
+                                                        <input type="search" className="form-control" aria-label="Search the website"
+                                                            value={query} onChange={(e) => setQuery(e.target.value)}
+                                                            placeholder="Search the issues..." />
+                                                        <button type="submit" aria-label="Search"><i
                                                             className="fi flaticon-search"></i></button>
                                                     </div>
                                                 </form>
@@ -118,14 +63,14 @@ const Header = (props) => {
                                         </div>
                                     </div>
                                     <div className="close-form">
-                                        <Link onClick={ClickHandler} className="theme-btn" to="/donate"><span className="text">Donate</span>
+                                        <Link onClick={ClickHandler} className="theme-btn" to="/donate"><span className="text">Support</span>
                                             <span className="mobile">
                                                 <i className="fi flaticon-charity"></i>
                                             </span></Link>
                                     </div>
                                     <div className="login-icon-wrap" style={{ marginLeft: '15px', display: 'flex', alignItems: 'center', height: '100%' }}>
                                         <Link onClick={ClickHandler} to="/login" style={{ display: 'inline-flex', color: '#fff', fontWeight: 600 }}>
-                                            Login
+                                            Log in
                                         </Link>
                                     </div>
                                 </div>
