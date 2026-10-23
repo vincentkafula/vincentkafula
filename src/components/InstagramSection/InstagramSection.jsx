@@ -92,7 +92,7 @@ const InstagramSection = () => {
     return (
         <section className="wpo-instagram-section">
             <div className="container-fluid">
-                <SectionTitle subTitle={'Work'} Title={'Our Instagram Feed'} />
+                <SectionTitle subTitle={'Gallery'} Title={'Our Instagram Feed'} />
                 <div className="row">
                     <div className="col col-xs-12">
                         <div className="wpo-instagram-container instagram-slider">

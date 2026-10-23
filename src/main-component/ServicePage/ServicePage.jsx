@@ -11,7 +11,7 @@ const ServicePage =() => {
     return(
         <Fragment>
             <Navbar2/>
-            <PageTitle pageTitle={'Service'} pagesub={'Service'}/> 
+            <PageTitle pageTitle={'Key Issues'} pagesub={'Key Issues'}/> 
             <ServiceSection sClass={'s3'}/>
             <Donors />
             <PartnerSection/>

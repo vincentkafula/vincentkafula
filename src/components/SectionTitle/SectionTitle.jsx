@@ -6,7 +6,7 @@ const SectionTitle = (props) => {
             <div className="col-12">
                 <div className="wpo-section-title">
                     <span>{props.subTitle}</span>
-                    <h2 id={props.id}>{props.Title}</h2>
+                    <h2>{props.Title}</h2>
                 </div>
             </div>
         </div>

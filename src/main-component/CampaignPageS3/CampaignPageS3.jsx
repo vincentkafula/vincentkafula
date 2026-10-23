@@ -12,7 +12,7 @@ const CampaignPageS3 = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'Campaign'} pagesub={'Campaign'} bgSrc={campaignBanner} />
+            <PageTitle pageTitle={'Campaign Events'} pagesub={'Campaign'} bgSrc={campaignBanner} />
             <CampaignSectionS2 cmClass={'wpo-campaign-area-s3'}/>
             <Donors />
             <PartnerSection/>

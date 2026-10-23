@@ -20,45 +20,23 @@ const Description = ({ CampaignDetails }) => {
                         <ul>
                             <li><span>Raised:</span> ${CampaignDetails.raised}</li>
                             <li><span>Goal:</span> ${CampaignDetails.goal}</li>
-                            <li><span>Donar:</span> 380</li>
+                            <li><span>Supporters:</span> 380</li>
                         </ul>
                     </div>
                     <div className="campaign-b-text">
-                        <p>On the other hand, we denounce with righteous indignation
-                            and dislike men who are so beguiled and demoralized by
-                            the charms of pleasure of the moment, so blinded by
-                            desire, that they cannot foresee the pain and trouble
-                            that are bound to ensue and equal blame belongs to those
-                            who fail in their duty through weakness of will, which
-                            is the same as saying through shrinking from toil and
-                            pain.</p>
-                        <p>These campaigns are perfectly simple and easy to distinguish.
-                            In a free hour, when our power of choice is untrammelled
-                            and when nothing prevents our being able to do what we
-                            like best, every pleasure is to be welcomed and every
-                            pain avoided.</p>
-                        <p>But in certain circumstances and owing to the claims of
-                            duty or the obligations of business it will frequently
-                            occur that pleasures have to be repudiated and
-                            annoyances accepted. The wise man therefore always holds
-                            in these matters to this principle of selection: he
-                            rejects pleasures.</p>
+                        <p>{CampaignDetails.title} is a Build One Zambia public event at {CampaignDetails.location}. It is part of the campaign for a Zambia built by Zambians, for Zambians, where every family has a safe home, every farmer has the means to succeed and every province thrives.</p>
+                        <p>The event brings together citizens, young people and community leaders to discuss the issues that affect them and the changes Build One Zambia proposes.</p>
+                        <p>Everyone is welcome. Further details, including the programme and speakers, will be announced before the event. For questions, please use the contact page.</p>
                     </div>
                     <div className="campaign-bb-text">
-                        <h3>Support for Woman's April 2026</h3>
-                        <p>These campaigns are perfectly simple and easy to distinguish.
-                            In a free hour, when our power of choice is untrammelled
-                            and when nothing prevents our being able to do what we
-                            like best, every pleasure.</p>
+                        <h3>How You Can Take Part</h3>
+                        <p>Build One Zambia is powered by farmers, builders, teachers, families and young people who refuse to accept the status quo. Here is how you can take part:</p>
                         <ul>
-                            <li>The wise man therefore always holds in these
-                                matters.</li>
-                            <li>In a free hour, when our power of choice and when
-                                nothing.</li>
-                            <li>Else he endures pains to avoid worse pains.</li>
-                            <li>We denounce with righteous indignation and dislike
-                                men. </li>
-                            <li>Which is the same as saying through.</li>
+                            <li>Volunteer to help organise in your province, district or ward.</li>
+                            <li>Share the Build One Zambia message with family, friends and your community.</li>
+                            <li>Take part in the agricultural cooperative programme.</li>
+                            <li>Attend campaign events and bring a friend.</li>
+                            <li>Vote Build One Zambia.</li>
                         </ul>
                     </div>
                 </div>

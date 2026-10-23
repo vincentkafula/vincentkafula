@@ -11,7 +11,7 @@ const TeamSection = (props) => {
     return (
         <section className={`wpo-team-section section-padding ${props.tmClass}`}>
             <div className="container">
-                <SectionTitle subTitle={'Our Team'} Title={'Meet Our Campaign team'} />
+                <SectionTitle subTitle={'Our Team'} Title={'Meet Our Campaign Team'} />
                 <div className="wpo-team-wrap">
                     <div className="row">
                         {Team.map((team, aitem) => (

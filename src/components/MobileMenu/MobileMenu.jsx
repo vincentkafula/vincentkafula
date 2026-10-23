@@ -4,18 +4,182 @@ import ListItem from "@mui/material/List";
 import Collapse from "@mui/material/Collapse";
 import { NavLink } from "react-router-dom";
 import './style.css';
-import navigation from '../../data/navigation';
 
-// Mobile menu supports one submenu level, so third-level items are flattened under their parent.
-const menus = navigation.map((item) => ({
-    ...item,
-    submenu: item.submenu
-        ? item.submenu.flatMap((sub) => [
-            { id: sub.id, title: sub.title, link: sub.link },
-            ...(sub.submenu || []).map((child) => ({ id: child.id, title: `— ${child.title}`, link: child.link })),
-        ])
-        : undefined,
-}));
+const menus = [
+    {
+        id: 1,
+        title: 'Home',
+        link: '/home',
+        submenu: [
+            {
+                id: 11,
+                title: 'Home',
+                link: '/home'
+            },
+            {
+                id: 12,
+                title: 'Election Home',
+                link: '/home2'
+            },
+            {
+                id: 13,
+                title: 'Male Candidate',
+                link: '/home3'
+            },
+            {
+                id: 14,
+                title: 'Female Candidate',
+                link: '/home4'
+            },
+        ]
+    },
+
+    {
+        id: 2,
+        title: 'About Vincent',
+        link: '/about',
+    },
+
+    {
+        id: 6,
+        title: 'Campaign',
+        link: '/campaign',
+        submenu: [
+            {
+                id: 61,
+                title: 'Campaign Events',
+                link: '/campaign',
+            },
+            {
+                id: 62,
+                title: 'Campaign Events Grid',
+                link: '/campaign-2'
+            },
+            {
+                id: 63,
+                title: 'Campaign Events List',
+                link: '/campaign-3'
+            },
+            {
+                id: 64,
+                title: 'Campaign Details',
+                link: '/campaign-single/Support-for-Womans'
+            },
+        ]
+    },
+    {
+        id: 3,
+        title: 'Pages',
+        link: '/',
+        submenu: [
+            {
+                id: 31,
+                title: 'Gallery',
+                link: '/gallery'
+            },
+            {
+                id: 322,
+                title: 'Testimonials',
+                link: '/testimonial'
+            },
+            {
+                id: 385,
+                title: 'Team',
+                link: '/team',
+            },
+            {
+                id: 386,
+                title: 'Team Member',
+                link: '/team-single/Esther-Howard'
+            },
+            {
+                id: 388,
+                title: 'Key Issues',
+                link: '/service'
+            },
+            {
+                id: 389,
+                title: 'Issue Details',
+                link: '/service-single/Transport-Infrastructure'
+            },
+            {
+                id: 371,
+                title: 'Shop',
+                link: '/shop',
+            },
+            {
+                id: 33,
+                title: 'FAQ',
+                link: '/faq'
+            },
+            {
+                id: 39,
+                title: 'Volunteer',
+                link: '/volunteer'
+            },
+            {
+                id: 34,
+                title: '404 Error',
+                link: '/404'
+            },
+            {
+                id: 35,
+                title: 'Log In',
+                link: '/login'
+            },
+            {
+                id: 36,
+                title: 'Register',
+                link: '/register'
+            },
+        ]
+    },
+
+    {
+        id: 5,
+        title: 'Blog',
+        link: '/blog',
+        submenu: [
+            {
+                id: 51,
+                title: 'Blog Right Sidebar',
+                link: '/blog'
+            },
+            {
+                id: 52,
+                title: 'Blog Left Sidebar',
+                link: '/blog-left'
+            },
+            {
+                id: 53,
+                title: 'Blog Full Width',
+                link: '/blog-fullwidth'
+            },
+            {
+                id: 54,
+                title: 'Blog Details',
+                link: '/blog-single/support-progressive-change'
+            },
+            {
+                id: 55,
+                title: 'Blog Details Left Sidebar',
+                link: '/blog-single-left-sidebar/support-progressive-change'
+            },
+            {
+                id: 56,
+                title: 'Blog Details Full Width',
+                link: '/blog-single-fullwidth/support-progressive-change'
+            },
+        ]
+    },
+    {
+        id: 88,
+        title: 'Contact',
+        link: '/contact',
+    }
+
+
+]
 
 
 const MobileMenu = () => {
@@ -31,7 +195,7 @@ const MobileMenu = () => {
         <div>
             <div className={`mobileMenu ${menuActive ? "show" : ""}`}>
                 <div className="menu-close">
-                    <div className="clox" role="button" tabIndex={0} aria-label="Close menu" onClick={() => setMenuState(!menuActive)}><i className="ti-close"></i></div>
+                    <div className="clox" onClick={() => setMenuState(!menuActive)}><i className="ti-close"></i></div>
                 </div>
 
                 <ul className="responsivemenu">
@@ -58,7 +222,7 @@ const MobileMenu = () => {
                                             </List>
                                         </Collapse>
                                     </Fragment>
-                                    : <NavLink className="active" onClick={ClickHandler}
+                                    : <NavLink className="active"
                                         to={item.link}>{item.title}</NavLink>
                                 }
                             </ListItem>
@@ -69,7 +233,7 @@ const MobileMenu = () => {
             </div>
 
             <div className="showmenu" onClick={() => setMenuState(!menuActive)}>
-                <button type="button" className="navbar-toggler open-btn" aria-label="Open menu">
+                <button type="button" className="navbar-toggler open-btn">
                     <span className="icon-bar first-angle"></span>
                     <span className="icon-bar middle-angle"></span>
                     <span className="icon-bar last-angle"></span>

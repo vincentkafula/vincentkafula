@@ -16,26 +16,26 @@ const FunFact = (props) => {
                             <div className="wpo-fun-fact-grids clearfix">
                                 <div className="grid">
                                     <div className="info">
-                                        <h3 className="stat-lg"><span><CountUp end={22.5} decimals={1} enableScrollSpy /></span> Million</h3>
-                                        <p>People</p>
+                                        <h3 className="stat-lg"><span><CountUp end={28.9} decimals={1} enableScrollSpy /></span> Billion</h3>
+                                        <p>USD Public Debt to Address</p>
                                     </div>
                                 </div>
                                 <div className="grid">
                                     <div className="info">
-                                        <h3 className="stat-lg"><span><CountUp end={752610} separator="," enableScrollSpy /></span> km²</h3>
-                                        <p>Square Kilometers</p>
+                                        <h3 className="stat-lg"><span><CountUp end={10} enableScrollSpy /></span> Provinces</h3>
+                                        <p>Each With a Power Plant</p>
                                     </div>
                                 </div>
                                 <div className="grid">
                                     <div className="info">
-                                        <h3><span><CountUp end={32} enableScrollSpy /></span>%</h3>
-                                        <p>Farming Land</p>
+                                        <h3><span><CountUp end={70} enableScrollSpy /></span>%</h3>
+                                        <p>Export Earnings From Copper</p>
                                     </div>
                                 </div>
                                 <div className="grid">
                                     <div className="info">
-                                        <h3>$<CountUp end={1542} separator="," enableScrollSpy /></h3>
-                                        <p>Average Costs of Home</p>
+                                        <h3><CountUp end={73} enableScrollSpy /></h3>
+                                        <p>Tribes in One Nation</p>
                                     </div>
                                 </div>
                             </div>

@@ -11,7 +11,7 @@ const TestimonialPage = () => {
     return (
         <Fragment>
             <Navbar2 />
-            <PageTitle pageTitle={'Testimonial'} pagesub={'Testimonial'} />
+            <PageTitle pageTitle={'Testimonials'} pagesub={'Testimonials'} />
             <Testimonial tmClass={'pt-100'}/>
             <Donors />
             <PartnerSection/>

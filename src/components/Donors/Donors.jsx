@@ -13,13 +13,13 @@ const Donors = () => {
                 <div className="wpo-donors-wrap">
                     <div className="row align-items-center">
                         <div className="col-lg-6">
-                            <h2>Would you like to become one of
-                                our honorable donors?</h2>
+                            <h2>Would you like to support the
+                                Build One Zambia campaign?</h2>
                         </div>
                         <div className="col-lg-6">
                             <div className="donors-btn">
-                                <Link onClick={ClickHandler} to="/donate">$10 Donation</Link>
-                                <Link onClick={ClickHandler} to="/donate">Other</Link>
+                                <Link onClick={ClickHandler} to="/donate">Support Now</Link>
+                                <Link onClick={ClickHandler} to="/volunteer">Volunteer</Link>
                             </div>
                         </div>
                     </div>

@@ -1,14 +1,28 @@
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, } from "react-router-dom";
 import Homepage from '../HomePage/HomePage'
+import HomePage2 from '../HomePage2/HomePage2';
+import HomePage3 from '../HomePage3/HomePage3';
+import HomePage4 from '../HomePage4/HomePage4';
 import AboutPage from '../AboutPage/AboutPage';
 import CampaignPage from '../CampaignPage/CampaignPage';
+import CampaignPageS2 from '../CampaignPageS2/CampaignPageS2';
+import CampaignPageS3 from '../CampaignPageS3/CampaignPageS3';
 import CampaignSinglePage from '../CampaignSinglePage/CampaignSinglePage';
+import TestimonialPage from '../TestimonialPage/TestimonialPage';
+import TeamPage from '../TeamPage/TeamPage';
+import TeamSinglePage from '../TeamSinglePage/TeamSinglePage';
+import ServicePage from '../ServicePage/ServicePage';
+import ServiceSinglePage from '../ServiceSinglePage/ServiceSinglePage';
+import GalleryPage from '../GalleryPage/GalleryPage';
 import ShopPage from '../ShopPage'
 import ProductSinglePage from '../ProductSinglePage';
 import CartPage from '../CartPage';
 import CheckoutPage from '../CheckoutPage';
 import OrderRecived from '../OrderRecived';
+import BlogPage from '../BlogPage/BlogPage'
+import BlogPageLeft from '../BlogPageLeft/BlogPageLeft'
+import BlogPageFullwidth from '../BlogPageFullwidth/BlogPageFullwidth'
 import BlogDetails from '../BlogDetails/BlogDetails'
 import BlogDetailsFull from '../BlogDetailsFull/BlogDetailsFull'
 import BlogDetailsLeftSiide from '../BlogDetailsLeftSiide/BlogDetailsLeftSiide'
@@ -30,11 +44,6 @@ const VolunteerPage = lazy(() => import('../VolunteerPage/VolunteerPage'));
 import DonatePage from '../DonatePage/DonatePage';
 import PrivacyPage from '../PrivacyPage/PrivacyPage';
 import TermsPage from '../TermsPage/TermsPage';
-import AdvocacyPage from '../AdvocacyPage/AdvocacyPage';
-import { AdvocacySinglePage, InfrastructurePage, LegacyServiceRedirect } from '../AdvocacySinglePage/AdvocacySinglePage';
-import ProposalsPage from '../ProposalsPage/ProposalsPage';
-import ResourcesPage from '../ResourcesPage/ResourcesPage';
-import SearchPage from '../SearchPage/SearchPage';
 
 
 const AllRoute = () => {
@@ -45,26 +54,20 @@ const AllRoute = () => {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="home" element={<Homepage />} />
-          <Route path="home2" element={<Navigate to="/" replace />} />
-          <Route path="home3" element={<Navigate to="/" replace />} />
-          <Route path="home4" element={<Navigate to="/" replace />} />
+          <Route path="home2" element={<HomePage2 />} />
+          <Route path="home3" element={<HomePage3 />} />
+          <Route path="home4" element={<HomePage4 />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="campaign" element={<CampaignPage />} />
-          <Route path="campaign-2" element={<Navigate to="/campaign" replace />} />
-          <Route path="campaign-3" element={<Navigate to="/campaign" replace />} />
+          <Route path="campaign-2" element={<CampaignPageS2 />} />
+          <Route path="campaign-3" element={<CampaignPageS3 />} />
           <Route path="campaign-single/:slug" element={<CampaignSinglePage />} />
-          <Route path="service" element={<Navigate to="/advocacy" replace />} />
-          <Route path="advocacy" element={<AdvocacyPage />} />
-          <Route path="advocacy/:slug" element={<AdvocacySinglePage />} />
-          <Route path="infrastructure/:slug" element={<InfrastructurePage />} />
-          <Route path="proposals" element={<ProposalsPage />} />
-          <Route path="resources" element={<ResourcesPage />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="service-single/:slug" element={<LegacyServiceRedirect />} />
-          <Route path="testimonial" element={<Navigate to="/about" replace />} />
-          <Route path="gallery" element={<Navigate to="/" replace />} />
-          <Route path="team" element={<Navigate to="/about" replace />} />
-          <Route path="team-single/:slug" element={<Navigate to="/about" replace />} />
+          <Route path="service" element={<ServicePage />} />
+          <Route path="service-single/:slug" element={<ServiceSinglePage />} />
+          <Route path="testimonial" element={<TestimonialPage />} />
+          <Route path="gallery" element={<GalleryPage />} />
+          <Route path="team" element={<TeamPage />} />
+          <Route path="team-single/:slug" element={<TeamSinglePage />} />
           <Route path="shop" element={<ShopPage />} />
           <Route path='product-single/:slug' element={<ProductSinglePage/>} />
           <Route path='cart' element={<CartPage/>} />
@@ -74,9 +77,9 @@ const AllRoute = () => {
           <Route path='volunteer' element={<Suspense fallback={<div />}><VolunteerPage/></Suspense>} />
           <Route path='donate' element={<DonatePage/>} />
           <Route path='contact' element={<ContactPage/>}/>
-          <Route path='blog' element={<Navigate to="/news" replace />} />
-          <Route path='blog-left-sidebar' element={<Navigate to="/news" replace />} />
-          <Route path='blog-fullwidth' element={<Navigate to="/news" replace />} />
+          <Route path='blog' element={<BlogPage />} />
+          <Route path='blog-left-sidebar' element={<BlogPageLeft />} />
+          <Route path='blog-fullwidth' element={<BlogPageFullwidth />} />
           <Route path='blog-single/:slug' element={<BlogDetails />} />
           <Route path='blog-single-left-sidebar/:slug' element={<BlogDetailsLeftSiide />} />
           <Route path='blog-single-fullwidth/:slug' element={<BlogDetailsFull />} />
@@ -92,7 +95,6 @@ const AllRoute = () => {
           <Route path='admin/accounts' element={<RequireRole roles={['head-office']}><AccountManagementPage /></RequireRole>} />
           <Route path='news' element={<NewsPage />} />
           <Route path='news/:slug' element={<NewsSinglePage />} />
-          <Route path='*' element={<ErrorPage/>} />
         </Routes>
       </BrowserRouter>
 

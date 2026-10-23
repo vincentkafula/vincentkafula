@@ -25,7 +25,7 @@ const ServiceSidebar = (props) => {
                     </form>
                 </div>
                 <div className="widget category-widget">
-                    <h3>All Services</h3>
+                    <h3>All Key Issues</h3>
                     <ul>
                         {Services.slice(0,5).map((service, Sitem) => (
                             <li key={Sitem}><Link onClick={ClickHandler} to={`/service-single/${service.slug}`}>{service.sTitle}</Link></li>
@@ -34,7 +34,7 @@ const ServiceSidebar = (props) => {
                 </div>
                 <div className="wpo-contact-widget widget">
                     <div className="wpo-contact-widget-inner">
-                        <h2><Link onClick={ClickHandler} to="/contact">Contact For Advertisment 270 x 310</Link></h2>
+                        <h2><Link onClick={ClickHandler} to="/contact">Contact Vincent Kafula</Link></h2>
                     </div>
                 </div>
             </div>

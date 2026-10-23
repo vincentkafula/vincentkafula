@@ -29,7 +29,7 @@ const Features = (props) => {
                                     </div>
                                     <div className="feature-text">
                                         <h2><Link onClick={ClickHandler} to="/about">Our Mission</Link></h2>
-                                        <p>Empowering communities through compassionate action, positive change with charity mission.</p>
+                                        <p>Building one Zambia where every family has a home and every province thrives.</p>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@ const Features = (props) => {
                                     </div>
                                     <div className="feature-text">
                                         <h2><Link onClick={ClickHandler} to="/campaign">Campaign Events</Link></h2>
-                                        <p>Join us in supporting a worthy cause at our charity event, together we can make a difference.</p>
+                                        <p>Join our public meetings and campaigns in communities across Zambia.</p>
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@ const Features = (props) => {
                                         <i className="fi flaticon-charity"></i>
                                     </div>
                                     <div className="feature-text">
-                                        <h2><Link onClick={ClickHandler} to="/donate">Make Donation</Link></h2>
+                                        <h2><Link onClick={ClickHandler} to="/donate">Support the Campaign</Link></h2>
                                     </div>
                                 </div>
                                 <div className="feature-item-hidden">
@@ -70,9 +70,8 @@ const Features = (props) => {
                                         <i className="fi flaticon-charity"></i>
                                     </div>
                                     <div className="feature-text">
-                                        <h2><Link onClick={ClickHandler} to="/donate">Make Donation</Link></h2>
-                                        <p>Donate now to help those in need! Make a difference by taking action with
-                                            your donation.</p>
+                                        <h2><Link onClick={ClickHandler} to="/donate">Support the Campaign</Link></h2>
+                                        <p>Help fund a people-powered movement for Zambian-led development.</p>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +83,7 @@ const Features = (props) => {
                                         <i className="fi flaticon-community"></i>
                                     </div>
                                     <div className="feature-text">
-                                        <h2><Link onClick={ClickHandler} to="/volunteer">Join Volunteer</Link></h2>
+                                        <h2><Link onClick={ClickHandler} to="/volunteer">Volunteer</Link></h2>
                                     </div>
                                 </div>
                                 <div className="feature-item-hidden">
@@ -92,8 +91,8 @@ const Features = (props) => {
                                         <i className="fi flaticon-community"></i>
                                     </div>
                                     <div className="feature-text">
-                                        <h2><Link onClick={ClickHandler} to="/volunteer">Join Volunteer</Link></h2>
-                                        <p>Join our team of volunteers and help make a positive impact in your community today.</p>
+                                        <h2><Link onClick={ClickHandler} to="/volunteer">Volunteer</Link></h2>
+                                        <p>Help organise in your province, district or ward and share the message.</p>
                                     </div>
                                 </div>
                             </div>

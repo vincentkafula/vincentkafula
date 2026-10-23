@@ -12,7 +12,7 @@ const TeamPage =() => {
     return(
         <Fragment>
             <Navbar2/>
-            <PageTitle pageTitle={'Team'} pagesub={'Team'}/> 
+            <PageTitle pageTitle={'Campaign Team'} pagesub={'Team'}/> 
             <TeamSection tClass={'wpo-team-section-s3'}/>
             <Donors />
             <PartnerSection/>
