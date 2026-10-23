@@ -37,7 +37,7 @@ const Description = ({ CampaignDetails }) => {
                             <li>Share the Build One Zambia message with family, friends and your community.</li>
                             <li>Take part in the agricultural cooperative programme.</li>
                             <li>Attend campaign events and bring a friend.</li>
-                            <li>Vote Build One Zambia.</li>
+                            <li>Vote Build One Zambia on 14 August 2031.</li>
                         </ul>
                     </div>
                 </div>

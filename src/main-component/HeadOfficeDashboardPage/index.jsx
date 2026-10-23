@@ -5,6 +5,7 @@ import DashboardTopbar from '../../components/ops-dashboards/DashboardTopbar';
 import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import TeamProfilesManager from '../../components/ops-dashboards/TeamProfilesManager';
+import DonationsPanel from '../../components/ops-dashboards/DonationsPanel';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
@@ -103,6 +104,7 @@ const HeadOfficeDashboard = () => {
                 <p style={{ color: '#999', fontSize: '12px', marginTop: '14px' }}>
                     "OpHelp Balance" reflects the 25% admin fee — the company's margin on each Jobsheet. Transport, Material, and Other are shown as single totals since the Foreman's Jobsheet doesn't currently split those specific categories by Cash/EFT.
                 </p>
+                <DonationsPanel />
                 <TeamProfilesManager />
             </div>
             <Footer />

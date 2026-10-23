@@ -92,7 +92,7 @@ const FaqSection = () => {
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  You can volunteer to organise in your province, district or ward, share the message with your community, join an agricultural cooperative, and vote for Build One Zambia. Use the volunteer or contact page to get started.
+                  You can volunteer to organise in your province, district or ward, share the message with your community, join an agricultural cooperative, and vote for Build One Zambia on 14 August 2031. Use the volunteer or contact page to get started.
                 </Typography>
               </AccordionDetails>
             </Accordion>

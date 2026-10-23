@@ -296,6 +296,23 @@ const DEMO_PASSWORD = 'Demo@2026';
 // Statements applied to databases that already had the old schema before news/shop/roles existed.
 // Each is safe to re-run every boot.
 const COMPAT_MIGRATIONS = [
+  // Donations taken through Stripe Checkout (card details are handled by Stripe, never stored here).
+  `CREATE TABLE IF NOT EXISTS donations (
+    id SERIAL PRIMARY KEY,
+    stripe_session_id TEXT UNIQUE,
+    stripe_payment_intent TEXT,
+    amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+    currency TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','paid','expired','failed')),
+    donor_first_name TEXT,
+    donor_last_name TEXT,
+    donor_email TEXT,
+    donor_address TEXT,
+    message TEXT,
+    campaign_slug TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    paid_at TIMESTAMPTZ
+  )`,
   // Team and candidate register: only head-office approved, published profiles are shown publicly.
   `CREATE TABLE IF NOT EXISTS team_profiles (
     id SERIAL PRIMARY KEY,

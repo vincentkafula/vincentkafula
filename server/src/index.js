@@ -18,6 +18,7 @@ import productsRouter from "./routes/products.js";
 import emailRouter from "./routes/email.js";
 import contactRouter from "./routes/contact.js";
 import teamProfilesRouter from "./routes/teamProfiles.js";
+import donationsRouter from "./routes/donations.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -26,7 +27,8 @@ app.use(cors());
 app.set("trust proxy", 1);
 const jsonSmall = express.json({ limit: "100kb" });
 // Appointment-document uploads parse their own larger body in routes/teamProfiles.js.
-app.use((req, res, next) => (/^\/api\/team\/\d+\/documents$/.test(req.path) && req.method === "POST" ? next() : jsonSmall(req, res, next)));
+// Document uploads and the Stripe webhook (which needs the raw body) parse their own bodies.
+app.use((req, res, next) => (((/^\/api\/team\/\d+\/documents$/.test(req.path)) || req.path === "/api/donations/webhook") && req.method === "POST" ? next() : jsonSmall(req, res, next)));
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "politian-backend" });
@@ -48,6 +50,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/team", teamProfilesRouter);
+app.use("/api/donations", donationsRouter);
 
 async function start() {
   try {

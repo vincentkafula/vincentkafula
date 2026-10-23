@@ -1,12 +1,14 @@
 // Full campaign plans from the Build One Zambia document (BuildOneZambia_Website_Content.docx),
 // keyed by issue slug. Each block renders as one section on the issue details page.
+// Election date: 14 August 2031 (confirmed by Vincent Kafula).
 const serviceDetails = {
   "Transport-Infrastructure": {
     "intro": [
+      "Zambia Goes to the Polls — 14 August 2031",
+      "On 14 August 2031, Zambians will elect a President, Members of the National Assembly, mayors, council chairs, and councillors. This is your opportunity to embrace real, lasting change.",
       "Build One Zambia is committed to a Zambia First development philosophy — one that is practical, people-centred, and firmly opposed to the old system of endless contracts, foreign firms extracting profits while our citizens receive little, and corruption that drains our national resources.",
       "Previous governments allowed foreign companies to dominate key infrastructure projects. These firms often performed minimal work while sharing returns with corrupt officials, leaving Zambian workers with low wages or none at all — and leaving our communities with no lasting skills or benefits."
     ],
-    "introLists": [],
     "blocks": [
       {
         "title": "Our People-Powered Infrastructure Strategy",
@@ -145,6 +147,10 @@ const serviceDetails = {
           {
             "t": "p",
             "text": "We do not offer empty contracts or foreign handouts. We promise Zambian-led development: machinery in Zambian hands, wages in Zambian pockets, skills embedded in Zambia permanently, and corruption eradicated at every level. Every province and district will benefit — because this work is done by our people, for our people."
+          },
+          {
+            "t": "p",
+            "text": "Your vote on 14 August 2031 is the key to this future. Choose progress. Choose ownership. Choose Zambia First. Together, we will build the Zambia we deserve."
           }
         ]
       }
@@ -154,7 +160,6 @@ const serviceDetails = {
     "intro": [
       "Zambia’s fertile soil is one of our greatest national assets. Build One Zambia is committed to placing the tools of modern agriculture directly into the hands of Zambian farmers — through transparent, accountable, cooperative-based models that eliminate middlemen and corruption."
     ],
-    "introLists": [],
     "blocks": [
       {
         "title": "1. Tractors — Power and Prosperity for Zambian Farmers",
@@ -258,7 +263,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> Water is life. With Build One Zambia, prosperity is within reach for > every Zambian farmer."
+            "text": "Water is life. With Build One Zambia, prosperity is within reach for every Zambian farmer."
           }
         ]
       }
@@ -271,7 +276,6 @@ const serviceDetails = {
       "No more foreign contractors leaving with billions while our people receive little in return. No more unfinished projects abandoned to corruption. Under a Build One Zambia government, the state will supply heavy machinery directly to municipalities. Zambian citizens — your neighbours, your children, your brothers and sisters — will operate the equipment, lay the foundations, raise the walls, and complete every structure. Virtually all materials will be sourced from Zambian quarries, factories, and workshops, creating cascading chains of local employment.",
       "Foreign involvement will be strictly limited to top individual engineers and architects engaged personally — never through companies — to work alongside and train our own qualified Zambian professionals until all skills are fully transferred and we stand entirely on our own."
     ],
-    "introLists": [],
     "blocks": [
       {
         "title": "Projects We Commit to Delivering",
@@ -359,7 +363,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> The old system enriched foreigners and a handful of corrupt > officials. Our system enriches Zambian families, Zambian communities, > and Zambia’s future. This is the Zambia we are building — > together."
+            "text": "The old system enriched foreigners and a handful of corrupt officials. Our system enriches Zambian families, Zambian communities, and Zambia’s future. This is the Zambia we are building — together."
           }
         ]
       },
@@ -398,7 +402,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> No Zambian should live in rented accommodation indefinitely. Home > ownership is a right, not a privilege."
+            "text": "No Zambian should live in rented accommodation indefinitely. Home ownership is a right, not a privilege."
           }
         ]
       },
@@ -465,7 +469,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> A Zambia where every family owns a safe, modern home. A Zambia free > from cholera, unreliable water, and perpetual rent. A Zambia built by > Zambians, for Zambians. Join the Build One Zambia movement. Vote for > real change in 2026."
+            "text": "A Zambia where every family owns a safe, modern home. A Zambia free from cholera, unreliable water, and perpetual rent. A Zambia built by Zambians, for Zambians. Join the Build One Zambia movement. Vote for real change in 2031."
           }
         ]
       }
@@ -473,7 +477,6 @@ const serviceDetails = {
   },
   "Mining-Strategy": {
     "intro": [],
-    "introLists": [],
     "blocks": [
       {
         "title": "Putting Zambians First — Our Vision for Mineral Wealth",
@@ -562,7 +565,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> From the villages of Luapula to the hills of Southern Province, our > gemstones, gold, and manganese will finally lift families, fund > schools, and build clinics — because the wealth will belong to the > people who own the land."
+            "text": "From the villages of Luapula to the hills of Southern Province, our gemstones, gold, and manganese will finally lift families, fund schools, and build clinics — because the wealth will belong to the people who own the land."
           }
         ]
       }
@@ -570,7 +573,6 @@ const serviceDetails = {
   },
   "Decentralised-Governance": {
     "intro": [],
-    "introLists": [],
     "blocks": [
       {
         "title": "Decentralised Power for a United Nation",
@@ -632,7 +634,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> We begin with small, strategic steps — changes that may appear > modest but will leave a profound impact on the future of our country."
+            "text": "We begin with small, strategic steps — changes that may appear modest but will leave a profound impact on the future of our country."
           },
           {
             "t": "p",
@@ -669,7 +671,7 @@ const serviceDetails = {
           },
           {
             "t": "p",
-            "text": "> Join us. The future of Zambia starts now."
+            "text": "Join us. The future of Zambia starts now."
           }
         ]
       }

@@ -54,7 +54,7 @@ const CampaignTab = ({ CampaignDetails }) => {
         {activeTab === "2" && (
           <div className="row">
             <div className="col-12">
-              <Donation />
+              <Donation campaignSlug={CampaignDetails.slug} />
             </div>
           </div>
         )}
