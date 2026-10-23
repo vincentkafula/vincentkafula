@@ -38,9 +38,6 @@ const Header = (props) => {
                                             <Link onClick={ClickHandler} to="/">Home</Link>
                                             <ul className="sub-menu">
                                                 <li><Link onClick={ClickHandler} to="/home">Home</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/home2">Election Home</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/home3">Male Candidate</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/home4">Female Candidate</Link></li>
                                             </ul>
                                         </li>
                                         <li><Link onClick={ClickHandler} to="/about">About Vincent</Link></li>
@@ -59,7 +56,7 @@ const Header = (props) => {
                                                 <li><Link onClick={ClickHandler} to="/gallery">Gallery</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/testimonial">Testimonials</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/team">Team</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/team-single/Esther-Howard">Team Member</Link></li>
+                                                <li><Link onClick={ClickHandler} to="/team">Team Member</Link></li>
                                                 <li className="menu-item-has-children">
                                                     <Link onClick={ClickHandler} to="/">Key Issues</Link>
                                                     <ul className="sub-menu">

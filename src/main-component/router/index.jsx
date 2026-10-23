@@ -1,9 +1,6 @@
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Homepage from '../HomePage/HomePage'
-import HomePage2 from '../HomePage2/HomePage2';
-import HomePage3 from '../HomePage3/HomePage3';
-import HomePage4 from '../HomePage4/HomePage4';
 import AboutPage from '../AboutPage/AboutPage';
 import CampaignPage from '../CampaignPage/CampaignPage';
 import CampaignPageS2 from '../CampaignPageS2/CampaignPageS2';
@@ -54,9 +51,9 @@ const AllRoute = () => {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="home" element={<Homepage />} />
-          <Route path="home2" element={<HomePage2 />} />
-          <Route path="home3" element={<HomePage3 />} />
-          <Route path="home4" element={<HomePage4 />} />
+          <Route path="home2" element={<Navigate to="/" replace />} />
+          <Route path="home3" element={<Navigate to="/" replace />} />
+          <Route path="home4" element={<Navigate to="/" replace />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="campaign" element={<CampaignPage />} />
           <Route path="campaign-2" element={<CampaignPageS2 />} />

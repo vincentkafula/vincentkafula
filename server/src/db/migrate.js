@@ -296,6 +296,43 @@ const DEMO_PASSWORD = 'Demo@2026';
 // Statements applied to databases that already had the old schema before news/shop/roles existed.
 // Each is safe to re-run every boot.
 const COMPAT_MIGRATIONS = [
+  // Team and candidate register: only head-office approved, published profiles are shown publicly.
+  `CREATE TABLE IF NOT EXISTS team_profiles (
+    id SERIAL PRIMARY KEY,
+    full_name TEXT NOT NULL,
+    role_title TEXT NOT NULL,
+    region TEXT,
+    bio TEXT,
+    photo_url TEXT,
+    status TEXT NOT NULL DEFAULT 'candidate_for_appointment' CHECK (status IN (
+      'candidate_for_appointment','under_consideration','nominee','appointment_pending','appointed','rejected'
+    )),
+    appointment_reference TEXT,
+    appointment_date DATE,
+    published BOOLEAN NOT NULL DEFAULT false,
+    approved_by TEXT,
+    approved_at TIMESTAMPTZ,
+    created_by TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS team_profile_documents (
+    id SERIAL PRIMARY KEY,
+    profile_id INTEGER NOT NULL REFERENCES team_profiles(id) ON DELETE CASCADE,
+    file_name TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    data BYTEA NOT NULL,
+    uploaded_by TEXT,
+    uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS team_profile_audit (
+    id SERIAL PRIMARY KEY,
+    profile_id INTEGER REFERENCES team_profiles(id) ON DELETE SET NULL,
+    action TEXT NOT NULL,
+    details JSONB,
+    changed_by TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
   `ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT`,
   `ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check`,
   `ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN (

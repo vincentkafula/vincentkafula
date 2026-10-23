@@ -25,7 +25,7 @@ const Campaign = [
        location:'Plot No. 438, Independence Avenue, Lusaka, Zambia',
        progress:'0',
        raised:'0.00',
-       goal:'30000.00',
+       goal:null, // enter a real fundraising goal to show the progress bar
     },
     {
        Id:'2',
@@ -40,7 +40,7 @@ const Campaign = [
        location:'Plot No. 438, Independence Avenue, Lusaka, Zambia',
        progress:'0',
        raised:'0.00',
-       goal:'40000.00',
+       goal:null, // enter a real fundraising goal to show the progress bar
     },
     {
       Id:'3',
@@ -55,7 +55,7 @@ const Campaign = [
       location:'Plot No. 438, Independence Avenue, Lusaka, Zambia',
       progress:'0',
       raised:'0.00',
-      goal:'40000.00',
+      goal:null, // enter a real fundraising goal to show the progress bar
    }
 
 ]

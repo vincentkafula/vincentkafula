@@ -6,40 +6,36 @@ import ts1 from '../../images/testimonial/1.png'
 import ts2 from '../../images/testimonial/2.png'
 import ts3 from '../../images/testimonial/3.png'
 
-import thumb1 from '../../images/testimonial/thumb1.png'
-import thumb2 from '../../images/testimonial/thumb2.png'
-import thumb3 from '../../images/testimonial/thumb3.png'
 
 
 
+// Statements taken from the official Build One Zambia campaign document.
 const testimonial = [
     {
         id: '01',
         tImg: ts1,
-        thumbImg: thumb1,
-        Des: "Politics is the art of looking for trouble, finding it everywhere, diagnosing it incorrectly and applying the wrong remedies.",
-        Title: 'Robert Willum',
-        Sub: "President of BPT",
+        thumbImg: ts1,
+        Des: "We begin with small, strategic steps — changes that may appear modest but will leave a profound impact on the future of our country.",
+        Title: 'Build One Zambia',
+        Sub: "Official campaign statement",
     },
     {
-        id: '01',
+        id: '02',
         tImg: ts2,
-        thumbImg: thumb2,
-        Des: "Politics is the art of looking for trouble, finding it everywhere, diagnosing it incorrectly and applying the wrong remedies.",
-        Title: 'Leslie Alexander',
-        Sub: "President of TBP",
+        thumbImg: ts2,
+        Des: "Choose progress. Choose ownership. Choose Zambia First. Together, we will build the Zambia we deserve.",
+        Title: 'Build One Zambia',
+        Sub: "Official campaign statement",
     },
     {
-        id: '01',
+        id: '03',
         tImg: ts3,
-        thumbImg: thumb3,
-        Des: "Politics is the art of looking for trouble, finding it everywhere, diagnosing it incorrectly and applying the wrong remedies.",
-        Title: 'David Joy',
-        Sub: "President of AML",
-    }
-]
-
-const Testimonial = (props) => {
+        thumbImg: ts3,
+        Des: "One Zambia. One future. Built by us.",
+        Title: 'Build One Zambia',
+        Sub: "Official campaign statement",
+    },
+];const Testimonial = (props) => {
 
     const [nav1, setNav1] = useState();
     const [nav2, setNav2] = useState();

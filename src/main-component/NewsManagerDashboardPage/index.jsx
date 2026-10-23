@@ -5,6 +5,7 @@ import Navbar2 from '../../components/Navbar2/Navbar2';
 import DashboardTopbar from '../../components/ops-dashboards/DashboardTopbar';
 import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
+import TeamProfilesManager from '../../components/ops-dashboards/TeamProfilesManager';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { newsApi } from '../../api/newsApi';
 import { emailApi } from '../../api/emailApi';
@@ -223,6 +224,7 @@ const NewsManagerDashboard = () => {
                 {tab === 'email' && (
                     <ComposeEmailPanel emailConfigured={emailConfigured} />
                 )}
+                <TeamProfilesManager />
             </div>
             <Footer />
             <Scrollbar />

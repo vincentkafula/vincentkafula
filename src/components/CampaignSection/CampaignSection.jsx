@@ -28,7 +28,8 @@ const CampaignSection = (props) => {
                                                 <h2><Link onClick={ClickHandler} to={`/campaign-single/${campaign.slug}`}>{campaign.title}</Link></h2>
                                                 <p><i className="fi flaticon-time"></i> {campaign.date} @ {campaign.time}</p>
                                                 <p><i className="fi flaticon-pin"></i> {campaign.location}</p>
-                                                <div className="progress-section">
+                                                {campaign.goal && (
+<div className="progress-section">
                                                     <div className="process">
                                                         <div className="progress">
                                                             <div className="progress-bar" style={{width: `${campaign.progress}%`}}>
@@ -37,9 +38,10 @@ const CampaignSection = (props) => {
                                                         </div>
                                                     </div>
                                                 </div>
+)}
                                                 <ul>
-                                                    <li><span>Raised:</span> ${campaign.raised}</li>
-                                                    <li><span>Goal:</span> ${campaign.goal}</li>
+                                                    {campaign.goal && (<><li><span>Raised:</span> ${campaign.raised}</li>
+                                                    <li><span>Goal:</span> ${campaign.goal}</li></>)}
                                                 </ul>
                                             </div>
                                         </div>

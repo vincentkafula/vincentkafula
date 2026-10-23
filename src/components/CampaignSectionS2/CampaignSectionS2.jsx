@@ -43,7 +43,8 @@ const CampaignSectionS2 = (props) => {
                                                     philosophy; that is, the search for a superior moral justification
                                                     for selfishness.</p>
                                             </div>
-                                            <div className="progress-section">
+                                            {campaign.goal && (
+<div className="progress-section">
                                                 <div className="process">
                                                     <div className="progress">
                                                         <div className="progress-bar" style={{ width: `${campaign.progress}%` }}>
@@ -52,9 +53,10 @@ const CampaignSectionS2 = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
+)}
                                             <ul>
-                                                <li><span>Raised:</span> ${campaign.raised}</li>
-                                                <li><span>Goal:</span> ${campaign.goal}</li>
+                                                {campaign.goal && (<><li><span>Raised:</span> ${campaign.raised}</li>
+                                                <li><span>Goal:</span> ${campaign.goal}</li></>)}
                                             </ul>
                                         </div>
                                     </div>

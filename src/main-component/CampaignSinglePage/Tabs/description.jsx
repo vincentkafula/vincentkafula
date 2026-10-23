@@ -6,7 +6,8 @@ const Description = ({ CampaignDetails }) => {
             <div className="wpo-campaign-content">
                 <div className="wpo-campaign-text-top">
                     <h2>{CampaignDetails.title}</h2>
-                    <div className="progress-sub">
+                    {CampaignDetails.goal && (
+<div className="progress-sub">
                         <div className="progress-section">
                             <div className="process">
                                 <div className="progress">
@@ -18,11 +19,11 @@ const Description = ({ CampaignDetails }) => {
                             </div>
                         </div>
                         <ul>
-                            <li><span>Raised:</span> ${CampaignDetails.raised}</li>
-                            <li><span>Goal:</span> ${CampaignDetails.goal}</li>
-                            <li><span>Supporters:</span> 380</li>
+                            {CampaignDetails.goal && (<><li><span>Raised:</span> ${CampaignDetails.raised}</li>
+                            <li><span>Goal:</span> ${CampaignDetails.goal}</li></>)}
                         </ul>
                     </div>
+)}
                     <div className="campaign-b-text">
                         <p>{CampaignDetails.title} is a Build One Zambia public event at {CampaignDetails.location}. It is part of the campaign for a Zambia built by Zambians, for Zambians, where every family has a safe home, every farmer has the means to succeed and every province thrives.</p>
                         <p>The event brings together citizens, young people and community leaders to discuss the issues that affect them and the changes Build One Zambia proposes.</p>

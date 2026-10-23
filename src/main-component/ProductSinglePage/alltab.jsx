@@ -76,64 +76,10 @@ const ProductTabs = () => {
                 <div className="col col-lg-10 col-12">
 
                   {/* REVIEW ITEM */}
-                  <div className="client-rv">
-                    <div className="client-pic">
-                      <img src={rv1} alt="" />
-                    </div>
-                    <div className="details">
-                      <div className="name-rating-time">
-                        <div className="name-rating">
-                          <h4>Jenefar Willium</h4>
-                          <div className="product-rt">
-                            <span>25 Sep 2025</span>
-                            <div className="rating">
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star-o"></i>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="review-body">
-                        <p>
-                          There are many variations of passages of Lorem Ipsum
-                          available, but the majority have suffered alteration.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <p>There are no reviews yet.</p>
 
                   {/* REVIEW ITEM */}
-                  <div className="client-rv">
-                    <div className="client-pic">
-                      <img src={rv2} alt="" />
-                    </div>
-                    <div className="details">
-                      <div className="name-rating-time">
-                        <div className="name-rating">
-                          <h4>Maria Bannet</h4>
-                          <div className="product-rt">
-                            <span>28 Sep 2025</span>
-                            <div className="rating">
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star"></i>
-                              <i className="fa fa-star-o"></i>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="review-body">
-                        <p>
-                          There are many variations of passages of Lorem Ipsum
-                          available, but the majority have suffered alteration.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
 
                 {/* REVIEW FORM */}

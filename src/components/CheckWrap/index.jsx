@@ -14,7 +14,7 @@ const CheckWrap = (props) => {
     const [value, setValue] = useState({
         email: 'user@gmail.com',
         password: '123456',
-        card_holder: 'Jhon Doe',
+        card_holder: '',
         card_number: '589622144',
         cvv: '856226',
         expire_date: '',

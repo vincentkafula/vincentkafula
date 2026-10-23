@@ -17,13 +17,16 @@ import newsRouter from "./routes/news.js";
 import productsRouter from "./routes/products.js";
 import emailRouter from "./routes/email.js";
 import contactRouter from "./routes/contact.js";
+import teamProfilesRouter from "./routes/teamProfiles.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 app.set("trust proxy", 1);
-app.use(express.json({ limit: "100kb" }));
+const jsonSmall = express.json({ limit: "100kb" });
+// Appointment-document uploads parse their own larger body in routes/teamProfiles.js.
+app.use((req, res, next) => (/^\/api\/team\/\d+\/documents$/.test(req.path) && req.method === "POST" ? next() : jsonSmall(req, res, next)));
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "politian-backend" });
@@ -44,6 +47,7 @@ app.use("/api/news", newsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/contact", contactRouter);
+app.use("/api/team", teamProfilesRouter);
 
 async function start() {
   try {

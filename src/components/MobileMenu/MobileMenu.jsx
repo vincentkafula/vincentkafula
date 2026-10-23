@@ -16,21 +16,9 @@ const menus = [
                 title: 'Home',
                 link: '/home'
             },
-            {
-                id: 12,
-                title: 'Election Home',
-                link: '/home2'
-            },
-            {
-                id: 13,
-                title: 'Male Candidate',
-                link: '/home3'
-            },
-            {
-                id: 14,
-                title: 'Female Candidate',
-                link: '/home4'
-            },
+            
+            
+            
         ]
     },
 
@@ -90,7 +78,7 @@ const menus = [
             {
                 id: 386,
                 title: 'Team Member',
-                link: '/team-single/Esther-Howard'
+                link: '/team'
             },
             {
                 id: 388,
