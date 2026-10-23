@@ -47,7 +47,7 @@ const BlogSidebar = (props) => {
                 <div className="widget category-widget">
                     <h3>Post Categories</h3>
                     <ul>
-                        {Services.slice(0, 5).map((service, Sitem) => (
+                        {Services.slice(0, 6).map((service, Sitem) => (
                             <li key={Sitem}><Link onClick={ClickHandler} to={`/service-single/${service.slug}`}>{service.sTitle}</Link></li>
                         ))}
                     </ul>

@@ -88,7 +88,7 @@ const ServiceSection = (props) => {
                 <SectionTitle subTitle={'Key Issues'} Title={'How we can build a better Zambia together'}/>
                 <div className="row-grid wpo-service-slider">
                     <Slider {...settings}>
-                        {Services.slice(0, 5).map((service, srv) => (
+                        {Services.slice(0, 6).map((service, srv) => (
                             <div className="grid" key={srv}>
                                 <div className="wpo-service-item" {...cardProps(service.slug)}>
                                     <div className="wpo-service-text">

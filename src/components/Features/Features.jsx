@@ -29,7 +29,7 @@ const Features = (props) => {
                                     </div>
                                     <div className="feature-text">
                                         <h2><Link onClick={ClickHandler} to="/about">Our Mission</Link></h2>
-                                        <p>Building one Zambia where every family has a home and every province thrives.</p>
+                                        <p>Building one Zambia where every family has a home, every province thrives, and everyone’s rights are respected.</p>
                                     </div>
                                 </div>
                             </div>

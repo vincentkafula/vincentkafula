@@ -2,6 +2,121 @@
 // keyed by issue slug. Each block renders as one section on the issue details page.
 // Election date: 14 August 2031 (confirmed by Vincent Kafula).
 const serviceDetails = {
+  "Street-Vendors-and-Vulnerable-Communities": {
+    "intro": [
+      "Vincent Kafula stands with street vendors, small traders and every community member who cannot easily defend themselves. When a local authority, such as a city, municipal or town council, or the central government takes action that undermines people’s rights, dignity or livelihoods, he will speak up and, where necessary, seek help from the courts, including the Constitutional Court of Zambia.",
+      "This is not a campaign against government. It is a call for every authority to act lawfully, fairly and after proper consultation with the people affected."
+    ],
+    "blocks": [
+      {
+        "title": "Who We Defend",
+        "els": [
+          {
+            "t": "ul",
+            "items": [
+              "Street vendors and small traders.",
+              "Informal workers.",
+              "Women and youth traders.",
+              "People living with disabilities.",
+              "The elderly.",
+              "People living in informal settlements.",
+              "People facing evictions or demolitions."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "What We Stand For",
+        "els": [
+          {
+            "t": "ul",
+            "items": [
+              "We support clean, safe and orderly communities.",
+              "Government and councils have a duty to consult people, act fairly, follow the law and provide alternatives before removing anyone from their source of livelihood.",
+              "Rights belong to everyone, including people who cannot afford lawyers or do not have a loud voice.",
+              "We will raise concerns, assist affected people where we can, and use the courts where necessary, whenever any local authority or central government body takes action that undermines these rights."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Current Case: Lusaka Street Vendors",
+        "els": [
+          {
+            "t": "p",
+            "text": "Lusaka City Council has begun removing street vendors from the streets, saying that they make the streets dirty and must move to markets."
+          },
+          {
+            "t": "p",
+            "text": "Our position is that there are not enough markets, and no published plan, to accommodate the vendors affected. Many vendors have traded in Lusaka for decades, and we believe the Council has tolerated their trading and collected levies from them."
+          },
+          {
+            "t": "p",
+            "text": "We believe the Council should consult vendors and provide suitable alternative trading places before removing them. This is in line with the Constitution of Zambia, including Article 151, which provides for a local government system that promotes people’s participation in democratic governance at the local level, and with the Local Government Act No. 2 of 2019."
+          },
+          {
+            "t": "p",
+            "text": "We are preparing legal action in the Constitutional Court of Zambia, asking that vendors be consulted and offered suitable alternatives before they are removed. No court has made any decision in this matter."
+          }
+        ]
+      },
+      {
+        "title": "What We Are Doing",
+        "els": [
+          {
+            "t": "ul",
+            "items": [
+              "Raising public awareness of the rights of street vendors and vulnerable communities.",
+              "Engaging with the authorities to seek dialogue and fair solutions.",
+              "Gathering information from people who are affected.",
+              "Preparing legal action in the Constitutional Court of Zambia."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Report a Problem or Get Help",
+        "els": [
+          {
+            "t": "p",
+            "text": "If the action of a council or government body is affecting your rights or your livelihood, please contact us using the form below or the details on this page. We will do our best to support you and will consider assisting where we can. We cannot promise to take on every case or guarantee any result."
+          },
+          {
+            "t": "p",
+            "text": "Please do not send photos or personal details of other people without their permission."
+          }
+        ]
+      },
+      {
+        "title": "How You Can Support Us",
+        "els": [
+          {
+            "t": "ul",
+            "items": [
+              "Report a case that affects you or your community.",
+              "Share evidence, such as dates, notices, letters, and photos taken with permission.",
+              "Volunteer to help in your province, district or ward.",
+              "Donate to support the work."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Contact",
+        "els": [
+          {
+            "t": "ul",
+            "items": [
+              "Email: vincent.kafula@gmail.com",
+              "Phone (Zambia): +260 955 548 500",
+              "Phone (South Africa): 061 461 5035",
+              "Address: 37 Chiappini Street, St Andrew’s Presbyterian Church, Cape Town"
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "Transport-Infrastructure": {
     "intro": [
       "Zambia Goes to the Polls — 14 August 2031",

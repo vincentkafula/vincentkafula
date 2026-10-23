@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Navbar2 from '../../components/Navbar2/Navbar2'
 import PageTitle from '../../components/pagetitle/PageTitle'
 import Scrollbar from '../../components/scrollbar/scrollbar'
@@ -14,6 +14,20 @@ const ServiceSinglePage = (props) => {
 
     const serviceDetails = Services.find(item => item.slug === slug)
     const plan = serviceDetailsText[slug] || { intro: [], blocks: [] };
+
+    // Page title and search description for each issue page.
+    useEffect(() => {
+        if (!serviceDetails) return;
+        document.title = serviceDetails.metaTitle || `${serviceDetails.sTitle} | Vincent Kafula`;
+        const setMeta = (name, content) => {
+            let el = document.head.querySelector(`meta[name="${name}"]`);
+            if (!el) { el = document.createElement('meta'); el.setAttribute('name', name); document.head.appendChild(el); }
+            el.setAttribute('content', content);
+        };
+        setMeta('description', serviceDetails.metaDescription || serviceDetails.description);
+        if (serviceDetails.metaKeywords) setMeta('keywords', serviceDetails.metaKeywords);
+        return () => { document.title = 'Vincent Kafula | Founder of Build One Zambia'; };
+    }, [serviceDetails]);
 
     return (
         <Fragment>
@@ -63,7 +77,7 @@ const ServiceSinglePage = (props) => {
                                     </div>
                                     <div className="wpo-service-area">
                                         <div className="row align-items-center">
-                                            {Services.slice(0,5).filter((s) => s.slug !== slug).slice(0,3).map((service, srv) => (
+                                            {Services.slice(0,6).filter((s) => s.slug !== slug).slice(0,3).map((service, srv) => (
                                                 <div className="col-lg-4 col-md-6 col-12" key={srv}>
                                                     <Link className="wpo-service-item" style={{ display: 'block', color: 'inherit' }} onClick={() => window.scrollTo(10, 0)} to={`/service-single/${service.slug}`}>
                                                         <i className={`fi ${service.icon}`} ></i>

@@ -96,6 +96,26 @@ const FaqSection = () => {
                 </Typography>
               </AccordionDetails>
             </Accordion>
+
+            <Accordion
+              expanded={expanded === "panel5"}
+              onChange={handleChange("panel5")}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel5bh-content"
+                id="panel5bh-header"
+              >
+                <Typography sx={{ fontWeight: 500 }}>
+                  Does Vincent Kafula help people whose rights are affected by an authority?
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  Yes. Vincent Kafula defends street vendors and other vulnerable community members through advocacy, engagement with the authorities and, where necessary, the courts. If an authority’s action is affecting your rights or livelihood, please get in touch through the contact page. We will do our best to support you, but we cannot promise to take on every case.
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
           </div>
         </div>
       </div>
