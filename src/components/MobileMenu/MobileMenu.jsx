@@ -117,7 +117,7 @@ const menus = [
             },
             {
                 id: 36,
-                title: 'Register',
+                title: 'Registration',
                 link: '/register'
             },
         ]

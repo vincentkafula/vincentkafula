@@ -27,7 +27,8 @@ import ContactPage from '../ContactPage/ContactPage';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import LoginPage from '../LoginPage';
 import DashboardPage from '../DashboardPage';
-import SignUpPage from '../SignUpPage';
+import RegistrationPage from '../RegistrationPage/RegistrationPage';
+import { MembershipForm, CooperativeForm, InternshipForm } from '../RegistrationPage/RegistrationForms';
 import ForgotPassword from '../ForgotPassword';
 import ResetPasswordPage from '../ResetPasswordPage';
 import AccountSettingsPage from '../AccountSettingsPage';
@@ -85,7 +86,10 @@ const AllRoute = () => {
           <Route path='404' element={<ErrorPage/>}/> 
           <Route path='login' element={<LoginPage />} />
           <Route path='dashboard/:role' element={<DashboardPage />} />
-          <Route path='register' element={<SignUpPage />} />
+          <Route path='register' element={<RegistrationPage />} />
+          <Route path='register/membership' element={<MembershipForm />} />
+          <Route path='register/cooperative' element={<CooperativeForm />} />
+          <Route path='register/internship' element={<InternshipForm />} />
           <Route path='forgot-password' element={<ForgotPassword />} />
           <Route path='reset-password/:token' element={<ResetPasswordPage />} />
           <Route path='account-settings' element={<RequireAuth><AccountSettingsPage /></RequireAuth>} />

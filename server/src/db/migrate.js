@@ -296,6 +296,82 @@ const DEMO_PASSWORD = 'Demo@2026';
 // Statements applied to databases that already had the old schema before news/shop/roles existed.
 // Each is safe to re-run every boot.
 const COMPAT_MIGRATIONS = [
+  // Registrations: membership, cooperatives and internships.
+  `CREATE TABLE IF NOT EXISTS registration_otps (
+    id SERIAL PRIMARY KEY,
+    email TEXT NOT NULL,
+    code_hash TEXT NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    expires_at TIMESTAMPTZ NOT NULL,
+    used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_registration_otps_email ON registration_otps(email)`,
+  `CREATE TABLE IF NOT EXISTS member_registrations (
+    id SERIAL PRIMARY KEY,
+    membership_no TEXT NOT NULL UNIQUE,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    date_of_birth DATE NOT NULL,
+    nrc_number TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    email TEXT NOT NULL,
+    province TEXT NOT NULL,
+    district TEXT NOT NULL,
+    constituency TEXT NOT NULL,
+    ward TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+    review_note TEXT,
+    reviewed_by TEXT,
+    reviewed_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS cooperative_registrations (
+    id SERIAL PRIMARY KEY,
+    reference_no TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    activity TEXT NOT NULL,
+    province TEXT NOT NULL,
+    district TEXT NOT NULL,
+    constituency TEXT NOT NULL,
+    ward TEXT NOT NULL,
+    chief_name TEXT NOT NULL,
+    chiefdom TEXT,
+    chair_membership_no TEXT NOT NULL,
+    chair_phone TEXT NOT NULL,
+    member_nos TEXT[] NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+    review_note TEXT,
+    reviewed_by TEXT,
+    reviewed_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS internship_registrations (
+    id SERIAL PRIMARY KEY,
+    reference_no TEXT NOT NULL UNIQUE,
+    membership_no TEXT NOT NULL,
+    institution TEXT NOT NULL,
+    student_number TEXT,
+    course TEXT NOT NULL,
+    year_of_study TEXT NOT NULL,
+    expected_completion TEXT,
+    motivation TEXT,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+    review_note TEXT,
+    reviewed_by TEXT,
+    reviewed_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS registration_documents (
+    id SERIAL PRIMARY KEY,
+    registration_type TEXT NOT NULL,
+    registration_id INTEGER NOT NULL,
+    kind TEXT NOT NULL,
+    file_name TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    data BYTEA NOT NULL,
+    uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
   // Donations taken through Stripe Checkout (card details are handled by Stripe, never stored here).
   `CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,

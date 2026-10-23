@@ -32,6 +32,7 @@ const PrivacyPage = (props) => {
                                     <ul>
                                         <li>Contact form: your name, email, phone number and message, so that we can reply.</li>
                                         <li>Volunteer form: your name, email and location details, so that we can organise activities in your area.</li>
+                                    <li>Registration (membership, cooperative and internship): your name, date of birth, NRC number and copy, contact and location details, and study details, so that we can verify and process your registration. These are seen only by authorised reviewers.</li>
                                         <li>Newsletter: your email address, so that we can send campaign updates.</li>
                                         <li>Shop and accounts: the details needed to process orders and run your account.</li>
                                         <li>We do not use advertising cookies on this website.</li>
