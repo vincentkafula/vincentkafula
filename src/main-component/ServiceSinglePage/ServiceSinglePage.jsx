@@ -2,7 +2,8 @@ import React, { Fragment } from 'react';
 import Navbar2 from '../../components/Navbar2/Navbar2'
 import PageTitle from '../../components/pagetitle/PageTitle'
 import Scrollbar from '../../components/scrollbar/scrollbar'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import serviceDetailsText from '../../api/serviceDetails';
 import Services from '../../api/service';
 import ServiceSidebar from './sidebar'
 import Contact from './contact';
@@ -12,6 +13,7 @@ const ServiceSinglePage = (props) => {
     const { slug } = useParams()
 
     const serviceDetails = Services.find(item => item.slug === slug)
+    const plan = serviceDetailsText[slug] || { intro: [], blocks: [] };
 
     return (
         <Fragment>
@@ -29,8 +31,7 @@ const ServiceSinglePage = (props) => {
                                     <div className="wpo-service-single-title">
                                         <h3>{serviceDetails.sTitle}</h3>
                                     </div>
-                                    <p>{serviceDetails.intro1 || serviceDetails.description}</p>
-                                    <p>{serviceDetails.intro2 || serviceDetails.des3}</p>
+                                    {(plan.intro.length ? plan.intro : [serviceDetails.description]).map((text, i) => <p key={i}>{text}</p>)}
                                     <div className="row mt-4">
                                         <div className="col-md-6 col-sm-6 col-12">
                                             <div className="wpo-p-details-img">
@@ -44,42 +45,31 @@ const ServiceSinglePage = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="wpo-service-single-item list-widget">
-                                    <div className="wpo-service-single-title">
-                                        <h3>What is proposed</h3>
+                                {plan.blocks.map((block, bi) => (
+                                    <div className={`wpo-service-single-item${block.els.some((el) => el.t === 'ul') ? ' list-widget' : ''}`} key={bi}>
+                                        <div className="wpo-service-single-title">
+                                            <h3>{block.title}</h3>
+                                        </div>
+                                        {block.els.map((el, ei) => {
+                                            if (el.t === 'h') return <p key={ei}><strong>{el.text}</strong></p>;
+                                            if (el.t === 'ul') return <ul key={ei}>{el.items.map((item, ii) => <li key={ii}>{item}</li>)}</ul>;
+                                            return <p key={ei}>{el.text}</p>;
+                                        })}
                                     </div>
-                                    <p>{serviceDetails.proposedP || serviceDetails.description}</p>
-                                    <ul>
-{(serviceDetails.proposed || []).map((item, i) => <li key={i}>{item}</li>)}
-                                    </ul>
-                                </div>
-                                <div className="wpo-service-single-item">
-                                    <div className="wpo-service-single-title">
-                                        <h3>Why it matters</h3>
-                                    </div>
-                                    <p>{serviceDetails.why || serviceDetails.des2}</p>
-                                </div>
-                                <div className="wpo-service-single-item list-widget">
-                                    <div className="wpo-service-single-title">
-                                        <h3>Intended outcomes</h3>
-                                    </div>
-                                    <ul>
-{(serviceDetails.outcomes || []).map((item, i) => <li key={i}>{item}</li>)}
-                                    </ul>
-                                </div>
+                                ))}
                                 <div className="wpo-service-single-item">
                                     <div className="wpo-service-single-title">
                                         <h3>Related issues</h3>
                                     </div>
                                     <div className="wpo-service-area">
                                         <div className="row align-items-center">
-                                            {Services.slice(0,3).map((service, srv) => (
+                                            {Services.slice(0,5).filter((s) => s.slug !== slug).slice(0,3).map((service, srv) => (
                                                 <div className="col-lg-4 col-md-6 col-12" key={srv}>
-                                                    <div className="wpo-service-item">
+                                                    <Link className="wpo-service-item" style={{ display: 'block', color: 'inherit' }} onClick={() => window.scrollTo(10, 0)} to={`/service-single/${service.slug}`}>
                                                         <i className={`fi ${service.icon}`} ></i>
                                                         <h2>{service.sTitle}</h2>
                                                         <p>{service.des2}</p>
-                                                    </div>
+                                                    </Link>
                                                 </div>
                                             ))}
                                         </div>

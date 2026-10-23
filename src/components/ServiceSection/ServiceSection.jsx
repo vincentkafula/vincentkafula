@@ -2,7 +2,7 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import SectionTitle from "../SectionTitle/SectionTitle";
 import Services from '../../api/service'
 
@@ -64,6 +64,24 @@ const ClickHandler = () => {
 }
 
 const ServiceSection = (props) => {
+    const navigate = useNavigate();
+    const downPos = React.useRef(null);
+    // Open the issue when its card is clicked or tapped, but not when the slider is being swiped.
+    const cardProps = (slug) => ({
+        role: 'link',
+        tabIndex: 0,
+        style: { cursor: 'pointer' },
+        onMouseDown: (e) => { downPos.current = [e.clientX, e.clientY]; },
+        onClick: (e) => {
+            const d = downPos.current;
+            if (d && (Math.abs(e.clientX - d[0]) > 6 || Math.abs(e.clientY - d[1]) > 6)) return;
+            if (e.target.closest('a')) return;
+            ClickHandler();
+            navigate(`/service-single/${slug}`);
+        },
+        onKeyDown: (e) => { if (e.key === 'Enter') { ClickHandler(); navigate(`/service-single/${slug}`); } },
+    });
+
     return (
         <section className={`wpo-service-section section-padding ${props.sClass}`}>
             <div className="container">
@@ -72,7 +90,7 @@ const ServiceSection = (props) => {
                     <Slider {...settings}>
                         {Services.slice(0, 5).map((service, srv) => (
                             <div className="grid" key={srv}>
-                                <div className="wpo-service-item">
+                                <div className="wpo-service-item" {...cardProps(service.slug)}>
                                     <div className="wpo-service-text">
                                         <div className="service-icon">
                                             <i className={`fi ${service.icon}`}></i>
