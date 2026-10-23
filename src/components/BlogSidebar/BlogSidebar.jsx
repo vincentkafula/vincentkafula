@@ -39,7 +39,7 @@ const BlogSidebar = (props) => {
                     <h3>Search Here</h3>
                     <form onSubmit={SubmitHandler}>
                         <div>
-                            <input type="text" className="form-control" placeholder="Search Post.." />
+                            <input type="text" className="form-control" placeholder="Search posts..." />
                             <button type="submit"><i className="ti-search"></i></button>
                         </div>
                     </form>

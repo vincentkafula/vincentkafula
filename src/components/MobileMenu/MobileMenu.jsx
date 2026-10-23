@@ -63,7 +63,7 @@ const menus = [
             {
                 id: 64,
                 title: 'Campaign Details',
-                link: '/campaign-single/Support-for-Womans'
+                link: '/campaign-single/Support-for-Zambia-Electoral-Reform'
             },
         ]
     },

@@ -61,7 +61,7 @@ const Hero3 = () => {
                                         </div>
                                         <div className="content">
                                             <h3>500K</h3>
-                                            <p>Active Supporter</p>
+                                            <p>Active Supporters</p>
                                         </div>
                                     </div>
                                     <div className="wpo-supporter-img">

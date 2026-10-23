@@ -44,7 +44,7 @@ const ForgotPassword = () => {
 
             <Grid className="loginForm">
                 <h2>Forgot Password</h2>
-                <p>Enter your username and we'll email you a reset link (if an email is on file for your account)</p>
+                <p>Enter your username and we'll email you a reset link (if an email is on file for your account).</p>
                 <form onSubmit={submitForm}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>

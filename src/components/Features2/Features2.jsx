@@ -39,7 +39,7 @@ const Features2 = (props) => {
                                     </div>
                                     <div className="feature-text">
                                         <h2><Link onClick={ClickHandler} to="/campaign">Campaign Events</Link></h2>
-                                        <p>Join us in supporting a worthy cause at our charity event, together we can make a difference.</p>
+                                        <p>Join us in supporting a worthy cause at our charity event; together we can make a difference.</p>
                                     </div>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@ const Features2 = (props) => {
                                     </div>
                                     <div className="feature-text">
                                         <h2><Link onClick={ClickHandler} to="/volunteer">Join Volunteer</Link></h2>
-                                        <p>Join our team of volunteers and help make a positive impact in your community today..</p>
+                                        <p>Join our team of volunteers and help make a positive impact in your community today.</p>
                                     </div>
                                 </div>
                             </div>

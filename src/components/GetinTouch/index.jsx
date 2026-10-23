@@ -84,7 +84,7 @@ class GetinTouch extends Component {
                     <div className="row">
                         <div className="col-lg-8 offset-lg-2">
                             <div className="wpo-section-title">
-                                <h2>Do You Have Any Question?</h2>
+                                <h2>Do You Have Any Questions?</h2>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@ class GetinTouch extends Component {
                                         <p>{error.email ? error.email : ''}</p>
                                     </div>
                                     <div className="half-col">
-                                        <input onChange={this.changeHandler} value={phone} type="text" name="phone" placeholder="phone" />
+                                        <input onChange={this.changeHandler} value={phone} type="text" name="phone" placeholder="Phone" />
                                         <p>{error.phone ? error.phone : ''}</p>
                                     </div>
                                     <div>

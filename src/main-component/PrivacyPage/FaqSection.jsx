@@ -27,15 +27,12 @@ const FaqSection = () => {
                 id="panel1bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Suspendisse ultrices gravida. Risus commodo viverra maecenas
-                  accumsan
+                  What personal information do you collect?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  Only what you choose to send us through the website, such as your name, email address, phone number and message, or your location details when you volunteer.
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -50,15 +47,12 @@ const FaqSection = () => {
                 id="panel2bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Planning can help alleviate workplace stress and increase
-                  productivity.
+                  How is my information used?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  Only for the purpose you gave it for: replying to you, organising volunteering, sending campaign updates or processing a shop order.
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -73,14 +67,12 @@ const FaqSection = () => {
                 id="panel3bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Those who experiment the most, are able to innovate the best.
+                  Do you share my information with others?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  No. We do not sell your information or share it with third parties for their own marketing.
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -95,14 +87,12 @@ const FaqSection = () => {
                 id="panel4bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Understand Your Problem, You must understand the issue.
+                  How can I have my information deleted?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  Email vincent.kafula@gmail.com and ask us to delete it. You can also unsubscribe from updates at any time.
                 </Typography>
               </AccordionDetails>
             </Accordion>

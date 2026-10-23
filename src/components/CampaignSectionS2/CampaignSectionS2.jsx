@@ -39,9 +39,9 @@ const CampaignSectionS2 = (props) => {
                                             <p><i className="fi flaticon-time"></i> {campaign.date} @ {campaign.time}</p>
                                             <p><i className="fi flaticon-pin"></i> {campaign.location}</p>
                                             <div className="details">
-                                                <p>The modern conservative is engaged in one of man oldest exercises in moral
-                                                    philosophy and that is, the search for a superior moral for justification
-                                                    for selfishness. If nominated, We will not run.</p>
+                                                <p>The modern conservative is engaged in one of man’s oldest exercises in moral
+                                                    philosophy; that is, the search for a superior moral justification
+                                                    for selfishness.</p>
                                             </div>
                                             <div className="progress-section">
                                                 <div className="process">

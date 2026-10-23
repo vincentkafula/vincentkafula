@@ -122,7 +122,7 @@ const CheckoutSection = ({ cartList }) => {
                                             <div className="coupon coupon-2">
                                                 <div id="toggle2">
                                                     <div className="text" onClick={() => faqHandler('login')}><i className="fi flaticon-user-profile"></i> Returning customer?
-                                                        <span>Click Here to Login</span></div>
+                                                        <span>Click Here to Log In</span></div>
                                                 </div>
                                             </div>
                                             <Collapse in={tabs.login} timeout="auto"
@@ -140,7 +140,7 @@ const CheckoutSection = ({ cartList }) => {
                                                             required />
                                                     </div>
                                                     <div className="input-wrap s1">
-                                                        <button type="submit">Login</button>
+                                                        <button type="submit">Log In</button>
                                                     </div>
                                                 </div>
                                             </Collapse>
@@ -219,7 +219,7 @@ const CheckoutSection = ({ cartList }) => {
                                                             <div className="col-md-6 col-12">
                                                                 <TextField
                                                                     fullWidth
-                                                                    label="Dristrict"
+                                                                    label="District"
                                                                     name="dristrict"
                                                                     value={forms.dristrict}
                                                                     onChange={changeHandler}
@@ -400,9 +400,9 @@ const CheckoutSection = ({ cartList }) => {
                                                             <FormControlLabel value="cash" control={<Radio color="primary" />}
                                                                 label="Direct Bank Transfer" />
                                                             <FormControlLabel value="card" control={<Radio color="primary" />}
-                                                                label="Cash On delivery" />
+                                                                label="Cash on Delivery" />
                                                             <FormControlLabel value="online" control={<Radio color="primary" />}
-                                                                label="Online Getway" />
+                                                                label="Online Gateway" />
 
                                                         </RadioGroup>
                                                     </div>

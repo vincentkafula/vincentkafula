@@ -50,7 +50,7 @@ const Header = (props) => {
                                                 <li><Link onClick={ClickHandler} to="/campaign">Campaign Events</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/campaign-2">Campaign Events Grid</Link></li>
                                                 <li><Link onClick={ClickHandler} to="/campaign-3">Campaign Events List</Link></li>
-                                                <li><Link onClick={ClickHandler} to="/campaign-single/Support-for-Womans">Campaign Details</Link></li>
+                                                <li><Link onClick={ClickHandler} to="/campaign-single/Support-for-Zambia-Electoral-Reform">Campaign Details</Link></li>
                                             </ul>
                                         </li>
                                         <li className="menu-item-has-children">
@@ -87,10 +87,8 @@ const Header = (props) => {
                                                     <ul className="sub-menu">
                                                         <li><Link onClick={ClickHandler} to="/blog-single/support-progressive-change">Blog Details Right Sidebar</Link>
                                                         </li>
-                                                        <li><Link onClick={ClickHandler} to="/blog-single-left-sidebar/support-progressive-change">Blog details left
-                                                            sidebar</Link></li>
-                                                        <li><Link onClick={ClickHandler} to="/blog-single-fullwidth/support-progressive-change">Blog details
-                                                            fullwidth</Link></li>
+                                                        <li><Link onClick={ClickHandler} to="/blog-single-left-sidebar/support-progressive-change">Blog Details Left Sidebar</Link></li>
+                                                        <li><Link onClick={ClickHandler} to="/blog-single-fullwidth/support-progressive-change">Blog Details Full Width</Link></li>
                                                     </ul>
                                                 </li>
                                             </ul>

@@ -51,8 +51,8 @@ const SignUpPage = (props) => {
         <Grid className="loginWrapper">
 
             <Grid className="loginForm">
-                <h2>Signup</h2>
-                <p>Signup your account</p>
+                <h2>Sign Up</h2>
+                <p>Create your account</p>
                 <form onSubmit={submitForm}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>

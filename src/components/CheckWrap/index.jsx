@@ -70,7 +70,7 @@ const CheckWrap = (props) => {
                         <div className="col-md-6 col-12">
                             <TextField
                                 fullWidth
-                                label="Card holder Name"
+                                label="Cardholder Name"
                                 name="card_holder"
                                 value={value.card_holder}
                                 onChange={changeHandler}
@@ -109,7 +109,7 @@ const CheckWrap = (props) => {
                         <div className="col-md-6 col-12">
                             <TextField
                                 fullWidth
-                                label="Expire Date"
+                                label="Expiry Date"
                                 name="expire_date"
                                 value={value.expire_date}
                                 onChange={changeHandler}

@@ -27,15 +27,12 @@ const FaqSection = () => {
                 id="panel1bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Suspendisse ultrices gravida. Risus commodo viverra maecenas
-                  accumsan
+                  Is the content on this website government policy?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  No. It describes the proposals and commitments of the Build One Zambia campaign, provided for public information and discussion.
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -50,15 +47,12 @@ const FaqSection = () => {
                 id="panel2bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Planning can help alleviate workplace stress and increase
-                  productivity.
+                  Can I share content from this website?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  Yes. You may share links and quote short passages, provided you credit the source and do not change the meaning.
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -73,14 +67,12 @@ const FaqSection = () => {
                 id="panel3bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Those who experiment the most, are able to innovate the best.
+                  Can these terms change?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  Yes. We may update these terms and the website content at any time; the latest version is always on this page.
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -95,14 +87,12 @@ const FaqSection = () => {
                 id="panel4bh-header"
               >
                 <Typography sx={{ fontWeight: 500 }}>
-                  Understand Your Problem, You must understand the issue.
+                  Who can I contact about these terms?
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum
-                  exercitationem pariatur iure nemo esse repellendus est quo
-                  recusandae. Delectus, maxime.
+                  Send any questions to vincent.kafula@gmail.com.
                 </Typography>
               </AccordionDetails>
             </Accordion>

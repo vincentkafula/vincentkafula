@@ -49,8 +49,8 @@ const DonatePage = (props) => {
                                                     placeholder="Email"/>
                                             </div>
                                             <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-                                                <input type="text" className="form-control" name="Adress" id="Adress"
-                                                    placeholder="Adress"/>
+                                                <input type="text" className="form-control" name="Address" id="Address"
+                                                    placeholder="Address"/>
                                             </div>
                                             <div className="col-lg-12 col-12 form-group">
                                                 <textarea className="form-control" name="note" id="note"
@@ -108,7 +108,7 @@ const DonatePage = (props) => {
                                                             <div className="contact-form form-style">
                                                                 <div className="row">
                                                                     <div className="col-lg-6 col-md-12 col-12">
-                                                                        <label>Card holder Name</label>
+                                                                        <label>Cardholder Name</label>
                                                                         <input type="text" placeholder="" name="name"/>
                                                                     </div>
                                                                     <div className="col-lg-6 col-md-12 col-12">
@@ -120,7 +120,7 @@ const DonatePage = (props) => {
                                                                         <input type="text" placeholder="" name="CVV"/>
                                                                     </div>
                                                                     <div className="col-lg-6 col-md-12 col-12">
-                                                                        <label>Expire Date</label>
+                                                                        <label>Expiry Date</label>
                                                                         <input type="text" placeholder="" name="date"/>
                                                                     </div>
                                                                 </div>

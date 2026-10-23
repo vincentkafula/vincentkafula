@@ -35,7 +35,7 @@ const Hero2 = () => {
                                             <h2>Wisdom. Freedom. Hope.</h2>
                                         </div>
                                         <div data-swiper-parallax="400" className="slide-text">
-                                            <p>We can taking small steps and making small changes.</p>
+                                            <p>We can take small steps and make small changes.</p>
                                         </div>
                                         <div className="clearfix"></div>
                                         <div className="slide-btns">
@@ -54,7 +54,7 @@ const Hero2 = () => {
                                             <h2>Wisdom. Freedom. Hope.</h2>
                                         </div>
                                         <div data-swiper-parallax="400" className="slide-text">
-                                            <p>We can taking small steps and making small changes.</p>
+                                            <p>We can take small steps and make small changes.</p>
                                         </div>
                                         <div className="clearfix"></div>
                                         <div className="slide-btns">
@@ -72,7 +72,7 @@ const Hero2 = () => {
                                             <h2>Wisdom. Freedom. Hope.</h2>
                                         </div>
                                         <div data-swiper-parallax="400" className="slide-text">
-                                            <p>We can taking small steps and making small changes.</p>
+                                            <p>We can take small steps and make small changes.</p>
                                         </div>
                                         <div className="clearfix"></div>
                                         <div className="slide-btns">
@@ -90,7 +90,7 @@ const Hero2 = () => {
                                             <h2>Wisdom. Freedom. Hope.</h2>
                                         </div>
                                         <div data-swiper-parallax="400" className="slide-text">
-                                            <p>We can taking small steps and making small changes.</p>
+                                            <p>We can take small steps and make small changes.</p>
                                         </div>
                                         <div className="clearfix"></div>
                                         <div className="slide-btns">

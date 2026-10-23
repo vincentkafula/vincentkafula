@@ -34,7 +34,7 @@ const FunFactS2 = (props) => {
                                     <div className="grid">
                                         <div className="info">
                                             <h3>$<CountUp end={1542} separator="," enableScrollSpy /></h3>
-                                            <p>Average Costs of Home</p>
+                                            <p>Average Cost of a Home</p>
                                         </div>
                                     </div>
                                 </div>

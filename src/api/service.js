@@ -93,7 +93,7 @@ const Services = [
     {
         Id: '6',
         sImgS:eduS1,
-        sTitle: 'Graduated From Cambridge University in Education policy',
+        sTitle: 'Graduated From Cambridge University in Education Policy',
         slug:'Graduated-From-Cambridge',
         description:'Education policy involves researching and analyzing education systems, laws and governance regulations.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -105,7 +105,7 @@ const Services = [
     {
         Id: '7',
         sImgS:eduS2,
-        sTitle: 'Finished Educational leadership From Cambridge University.',
+        sTitle: 'Completed Educational Leadership at Cambridge University',
         slug:'Educational-leadership',
         description:'This field involves learning about leadership styles, effective communication, decision-making, strategic planning.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -117,7 +117,7 @@ const Services = [
     {
         Id: '8',
         sImgS:eduS3,
-        sTitle: 'Graduated from Oxford in Educational psychology',
+        sTitle: 'Graduated From Oxford in Educational Psychology',
         slug:'Educational-psychology',
         description:'Educational psychology is understanding how students learn, develop, and behave in educational settings.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -129,7 +129,7 @@ const Services = [
     {
         Id: '9',
         sImgS:sS1,
-        sTitle: 'New York: Support for Womans April 2026',
+        sTitle: 'New York: Support for Women, April 2026',
         slug:'Support',
         description:'Education policy involves researching and analyzing education systems, laws and governance regulations.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -141,7 +141,7 @@ const Services = [
     {
         Id: '10',
         sImgS:sS2,
-        sTitle: 'The Best Strategically Build Your Business Earning',
+        sTitle: 'How to Strategically Build Your Business Earnings',
         slug:'Strategically',
         description:'This field involves learning about leadership styles, effective communication, decision-making, strategic planning.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -165,7 +165,7 @@ const Services = [
     {
         Id: '12',
         sImgS:business1,
-        sTitle: 'We provide advanced solution growin your online',
+        sTitle: 'We Provide Advanced Solutions to Grow Your Online Presence',
         slug:'provide-advanced-solution',
         description:'Education policy involves researching and analyzing education systems, laws and governance regulations.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -177,7 +177,7 @@ const Services = [
     {
         Id: '13',
         sImgS:business2,
-        sTitle: 'We provide advanced solutions growin your online business',
+        sTitle: 'We Provide Advanced Solutions to Grow Your Online Business',
         slug:'advanced-solutions-growin',
         description:'This field involves learning about leadership styles, effective communication, decision-making, strategic planning.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -189,7 +189,7 @@ const Services = [
     {
         Id: '14',
         sImgS:business3,
-        sTitle: 'Many desktop publishing packag and web page editors use.',
+        sTitle: 'Many Desktop Publishing Packages and Web Page Editors',
         slug:'Many-desktop-publishing',
         description:'Educational psychology is understanding how students learn, develop, and behave in educational settings.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -201,7 +201,7 @@ const Services = [
     {
         Id: '15',
         sImgS:Qlf1,
-        sTitle: 'We have put together a list of our favorite art blogs that you',
+        sTitle: 'Our Favourite Art Blogs You Will Love',
         slug:'favorite-art-blogs',
         description:'Education policy involves researching and analyzing education systems, laws and governance regulations.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -225,7 +225,7 @@ const Services = [
     {
         Id: '17',
         sImgS:Qlf3,
-        sTitle: 'We stand behind the belief that students will perform better',
+        sTitle: 'Students Perform Better With the Right Support',
         slug:'behind-the-belief',
         description:'Educational psychology is understanding how students learn, develop, and behave in educational settings.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -237,7 +237,7 @@ const Services = [
     {
         Id: '18',
         sImgS:develop1,
-        sTitle: 'People living in rural areas are the most neglected',
+        sTitle: 'People Living in Rural Areas Are the Most Neglected',
         slug:'People-living-in-rural',
         description:'Education policy involves researching and analyzing education systems, laws and governance regulations.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -249,7 +249,7 @@ const Services = [
     {
         Id: '19',
         sImgS:develop2,
-        sTitle: 'Roads are the arteries through which the economy',
+        sTitle: 'Roads Are the Arteries Through Which the Economy Flows',
         slug:'Roads-are',
         description:'This field involves learning about leadership styles, effective communication, decision-making, strategic planning.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',
@@ -261,7 +261,7 @@ const Services = [
     {
         Id: '20',
         sImgS:develop3,
-        sTitle: 'Our Scientists, Students and River Defenders come',
+        sTitle: 'Our Scientists, Students and River Defenders Come Together',
         slug:'Our-Scientists',
         description:'Educational psychology is understanding how students learn, develop, and behave in educational settings.',
         des2:'Lacus, etiam sed est eu tempus need Temer diam congue laoret .',

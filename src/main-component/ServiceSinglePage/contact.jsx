@@ -77,9 +77,9 @@ const Contact = () => {
                             type="text"
                             name="subject">
                             <option>Choose a Service</option>
-                            <option>Tax Management</option>
-                            <option>Financial Advices</option>
-                            <option>Risk Management</option>
+                            <option>General Question</option>
+                            <option>Feedback on a Proposal</option>
+                            <option>Volunteering</option>
                         </select>
                         {validator.message('subject', forms.subject, 'required|alpha_space')}
                     </div>

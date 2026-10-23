@@ -90,11 +90,11 @@ const TeamSinglePage = (props) => {
                                         <ul>
                                             <li>Academy University School of Political Science, Boston, MA</li>
                                             <li>Admization Institute of Political Science, Juzment School of
-                                                Management,Cambridge</li>
+                                                Management, Cambridge</li>
                                             <li>The Syntify High School Of New York</li>
                                             <li>Education & Political Admissions</li>
                                             <li>Admization Institute of Political Science, Juzment
-                                                School of Management,Cambridge</li>
+                                                School of Management, Cambridge</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -153,10 +153,10 @@ const TeamSinglePage = (props) => {
                                         <div className="education-area ex-wiget">
                                             <h2>Achievements</h2>
                                             <ul>
-                                                <li>Best Political Science award 2017</li>
-                                                <li>Specials awards for Political activity 2018</li>
-                                                <li>Super Politician Top 50 Politician in USA</li>
-                                                <li>Young star Award at politician in 2021</li>
+                                                <li>Best Political Science Award, 2017</li>
+                                                <li>Special Award for Political Activity, 2018</li>
+                                                <li>Top 50 Politicians in the USA</li>
+                                                <li>Young Star Award for Politicians, 2021</li>
                                                 <li>Greatest Politician Top 10</li>
                                             </ul>
                                         </div>
@@ -180,7 +180,7 @@ const TeamSinglePage = (props) => {
                                         <input type="email" className="form-control" placeholder="Email:" name="email" />
                                     </div>
                                     <div className="form-group half-col">
-                                        <input type="text" className="form-control" placeholder="phone" name="phone" />
+                                        <input type="text" className="form-control" placeholder="Phone" name="phone" />
                                     </div>
                                     <div className="form-group half-col">
                                         <select name="subject" className="form-control">
@@ -194,7 +194,7 @@ const TeamSinglePage = (props) => {
                                     </div>
                                     <div className="form-group full-col">
                                         <textarea className="form-control" name="note"
-                                            placeholder="Case Discription"></textarea>
+                                            placeholder="Case Description"></textarea>
                                     </div>
                                     <div className="form-group full-col text-center">
                                         <button className="btn theme-btn" type="submit">Appointment </button>
