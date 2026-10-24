@@ -7,6 +7,7 @@ import PageTitle from '../../components/pagetitle/PageTitle';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { productsApi } from '../../api/productsApi';
+import CjShopPanel from '../../components/ops-dashboards/CjShopPanel';
 import { getAuth } from '../../api/authApi';
 import {
     DashCard, DashStat, DashHeader, DashButton, DashBadge,
@@ -114,8 +115,15 @@ const ShopManagerDashboard = () => {
                 </p>
 
                 <DashHeader
-                    title="Shop"
-                    subtitle="Post products for sale on the campaign shop."
+                    title="Campaign shop"
+                    subtitle="Products are supplied and shipped by CJdropshipping. Every sale's profit funds the campaign."
+                    right={<Link to="/shop" style={{ fontSize: '13px', color: '#12351b', fontWeight: 600 }}>View public shop →</Link>}
+                />
+                <CjShopPanel onProductsChanged={load} />
+
+                <DashHeader
+                    title="Your own products"
+                    subtitle="Items the campaign team sends by hand (not from CJ)."
                     right={<Link to="/shop" style={{ fontSize: '13px', color: '#12351b', fontWeight: 600 }}>View public shop →</Link>}
                 />
 

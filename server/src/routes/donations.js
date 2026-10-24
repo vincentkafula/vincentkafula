@@ -1,4 +1,6 @@
 import express from 'express';
+import { stripe, siteUrl, isStripeConfigured } from '../utils/stripe.js';
+import { handleShopCheckoutEvent } from './shop.js';
 import crypto from 'crypto';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/requireAuth.js';
@@ -14,47 +16,14 @@ import { requireAuth } from '../middleware/requireAuth.js';
 // Card details are entered on Stripe's hosted checkout page; this server never sees them.
 
 const router = express.Router();
-const STRIPE_API = 'https://api.stripe.com/v1';
 const VIEWERS = ['head-office'];
 
 const MIN_AMOUNT = 1;          // in major units (e.g. 1 USD)
 const MAX_AMOUNT = 100000;
 
 const currency = () => (process.env.DONATION_CURRENCY || 'usd').toLowerCase();
-const isConfigured = () => Boolean(process.env.STRIPE_SECRET_KEY);
+const isConfigured = isStripeConfigured;
 const clean = (v, max = 500) => (v === undefined || v === null ? null : String(v).trim().slice(0, max) || null);
-
-// Encode nested params the way Stripe's form API expects (a[b][0][c]=...).
-function encodeForm(obj, prefix = '', out = []) {
-  for (const [k, v] of Object.entries(obj)) {
-    if (v === undefined || v === null) continue;
-    const key = prefix ? `${prefix}[${k}]` : k;
-    if (typeof v === 'object') encodeForm(v, key, out);
-    else out.push(`${encodeURIComponent(key)}=${encodeURIComponent(v)}`);
-  }
-  return out.join('&');
-}
-
-async function stripe(method, path, params) {
-  const res = await fetch(`${STRIPE_API}${path}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: params ? encodeForm(params) : undefined,
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error?.message || `Stripe request failed (${res.status})`);
-  return body;
-}
-
-function siteUrl(req) {
-  if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/$/, '');
-  const origin = req.headers.origin;
-  if (origin && /^https?:\/\/[^/\s]+$/.test(origin)) return origin;
-  return null;
-}
 
 async function markFromSession(session) {
   const status = session.payment_status === 'paid' ? 'paid'
@@ -151,6 +120,11 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     if (!valid || !fresh) return res.status(400).send('Invalid signature');
 
     const event = JSON.parse(payload);
+    // Shop orders share this Stripe webhook; they are tagged with metadata.kind = 'shop'.
+    if (event.type?.startsWith('checkout.session.') && event.data?.object?.metadata?.kind === 'shop') {
+      await handleShopCheckoutEvent(event);
+      return res.json({ received: true });
+    }
     if (['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'checkout.session.expired'].includes(event.type)) {
       await markFromSession(event.data.object);
     } else if (event.type === 'checkout.session.async_payment_failed') {

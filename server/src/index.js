@@ -21,6 +21,7 @@ import teamProfilesRouter from "./routes/teamProfiles.js";
 import donationsRouter from "./routes/donations.js";
 import registrationsRouter from "./routes/registrations.js";
 import inboxRouter from "./routes/inbox.js";
+import shopRouter, { syncOpenOrders } from "./routes/shop.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -55,12 +56,17 @@ app.use("/api/team", teamProfilesRouter);
 app.use("/api/donations", donationsRouter);
 app.use("/api/registrations", registrationsRouter);
 app.use("/api/inbox", inboxRouter);
+app.use("/api/shop", shopRouter);
 
 async function start() {
   try {
     await runMigrations();
   } catch (err) {
     console.error("Failed to run migrations:", err);
+  }
+  // Pull CJ order status and tracking numbers every 30 minutes.
+  if (process.env.CJ_API_KEY) {
+    setInterval(() => syncOpenOrders().catch((e) => console.warn("CJ sync:", e.message)), 30 * 60 * 1000).unref();
   }
   app.listen(PORT, () => {
     console.log(`Politian backend listening on port ${PORT}`);

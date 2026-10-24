@@ -46,6 +46,7 @@ const VolunteerPage = lazy(() => import('../VolunteerPage/VolunteerPage'));
 import DonatePage from '../DonatePage/DonatePage';
 import PrivacyPage from '../PrivacyPage/PrivacyPage';
 import ManifestoWatchPage from '../ManifestoWatchPage/ManifestoWatchPage';
+import TrackOrderPage from '../TrackOrderPage';
 import TermsPage from '../TermsPage/TermsPage';
 
 
@@ -87,6 +88,7 @@ const AllRoute = () => {
           <Route path='blog-single-left-sidebar/:slug' element={<BlogDetailsLeftSiide />} />
           <Route path='blog-single-fullwidth/:slug' element={<BlogDetailsFull />} />
           <Route path='manifesto-watch' element={<ManifestoWatchPage />} />
+          <Route path='track-order' element={<TrackOrderPage />} />
           <Route path='privacy' element={<PrivacyPage />} />
           <Route path='terms' element={<TermsPage />} />
           <Route path='404' element={<ErrorPage/>}/> 

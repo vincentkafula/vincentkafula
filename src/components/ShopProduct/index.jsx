@@ -14,15 +14,15 @@ const ShopProduct = ({ products, addToCartProduct }) => {
                     <div className="col col-xs-12">
                         <div className="shop-grids clearfix">
                             {products.length > 0 &&
-                                products.slice(0, 12).map((product, pitem) => (
+                                products.map((product, pitem) => (
                                     <div className="grid" key={pitem}>
                                         <div className="img-holder">
                                             <img src={product.proImg} alt="" />
                                         </div>
                                         <div className="details">
                                             <h3><Link onClick={ClickHandler} to={`/product-single/${product.slug}`}>{product.title}</Link></h3>
-                                            <del>${product.delPrice}</del>
-                                            <span>${product.price}</span>
+                                            {product.delPrice && <del>${product.delPrice}</del>}
+                                            <span>{product.fromPrice ? 'From ' : ''}${product.price}</span>
                                             <div className="add-to-cart">
                                                 <button
                                                     data-bs-toggle="tooltip"
@@ -30,29 +30,12 @@ const ShopProduct = ({ products, addToCartProduct }) => {
                                                     title="Add to Cart"
                                                     onClick={() => addToCartProduct(product)}
                                                 >
-                                                    Add to cart
+                                                    {product.needsOptions ? 'Choose options' : 'Add to cart'}
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
-                        </div>
-                        <div className="pagination-wrapper pagination-wrapper-center">
-                            <ul className="pg-pagination">
-                                <li>
-                                    <a href="#" aria-label="Previous">
-                                        <i className="ti-angle-left"></i>
-                                    </a>
-                                </li>
-                                <li className="active"><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li>
-                                    <a href="#" aria-label="Next">
-                                        <i className="ti-angle-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>

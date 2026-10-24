@@ -30,6 +30,10 @@ const cartSlice = createSlice({
       if (item) item.qty += 1;
     },
 
+    clearCart: (state) => {
+      state.cart = [];
+    },
+
     decrement: (state, action) => {
       const item = state.cart.find((p) => p.id === action.payload);
       if (item && item.qty > 1) item.qty -= 1;
@@ -42,6 +46,7 @@ export const {
   removeFromCart,
   increment,
   decrement,
+  clearCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

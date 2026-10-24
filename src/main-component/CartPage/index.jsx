@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar2 from "../../components/Navbar2/Navbar2";
 import PageTitle from "../../components/pagetitle/PageTitle";
@@ -30,7 +30,6 @@ const CartPage = () => {
     e.preventDefault();
   };
 
-  const [delivery, deliveryCount] = useState(0);
 
   return (
     <Fragment>
@@ -118,7 +117,7 @@ const CartPage = () => {
                             </td>
 
                             <td className="ptice">
-                              ${catItem.qty * catItem.price}
+                              ${(catItem.qty * catItem.price).toFixed(2)}
                             </td>
 
                             <td className="action">
@@ -143,22 +142,6 @@ const CartPage = () => {
                     </table>
                   </div>
 
-                  <div className="cart-action">
-                    <div className="apply-area">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter your coupon"
-                      />
-                      <button className="theme-btn" type="submit">
-                        Apply
-                      </button>
-                    </div>
-
-                    <button className="theme-btn" type="button">
-                      <i className="fi flaticon-refresh"></i> Update Cart
-                    </button>
-                  </div>
                 </form>
               </div>
 
@@ -168,29 +151,17 @@ const CartPage = () => {
 
                   <div className="sub-total">
                     <h4>Subtotal</h4>
-                    <span>${totalPrice(carts)}</span>
+                    <span>${totalPrice(carts).toFixed(2)}</span>
                   </div>
 
                   <div className="shipping-option">
                     <span>Shipping</span>
-                    <ul>
-                      <li onClick={() => deliveryCount(0)}>
-                        <input type="radio" name="ship" />
-                        <label>Free Shipping</label>
-                      </li>
-
-                      <li onClick={() => deliveryCount(10)}>
-                        <input type="radio" name="ship" />
-                        <label>
-                          Local Pickup: <span>$10.00</span>
-                        </label>
-                      </li>
-                    </ul>
+                    <p style={{ margin: "6px 0 0", fontSize: 14 }}>Calculated at checkout for your country.</p>
                   </div>
 
                   <div className="total">
-                    <h4>Total</h4>
-                    <span>${totalPrice(carts) + delivery}</span>
+                    <h4>Total before shipping</h4>
+                    <span>${totalPrice(carts).toFixed(2)}</span>
                   </div>
 
                   <Link
