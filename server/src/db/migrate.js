@@ -296,6 +296,36 @@ const DEMO_PASSWORD = 'Demo@2026';
 // Statements applied to databases that already had the old schema before news/shop/roles existed.
 // Each is safe to re-run every boot.
 const COMPAT_MIGRATIONS = [
+  // Inbox: website form submissions and inbound email (Resend Receiving), read in the manager dashboards.
+  `CREATE TABLE IF NOT EXISTS inbox_messages (
+    id SERIAL PRIMARY KEY,
+    source TEXT NOT NULL CHECK (source IN ('email','website')),
+    form_type TEXT,
+    resend_email_id TEXT UNIQUE,
+    message_id TEXT,
+    from_name TEXT,
+    from_email TEXT NOT NULL,
+    to_addresses TEXT[] NOT NULL DEFAULT '{}',
+    cc_addresses TEXT[] NOT NULL DEFAULT '{}',
+    subject TEXT NOT NULL DEFAULT '',
+    text_body TEXT,
+    html_body TEXT,
+    fields JSONB NOT NULL DEFAULT '{}',
+    attachments JSONB NOT NULL DEFAULT '[]',
+    received_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    read_at TIMESTAMPTZ,
+    starred BOOLEAN NOT NULL DEFAULT false,
+    archived_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS inbox_messages_received_idx ON inbox_messages (received_at DESC)`,
+  `CREATE TABLE IF NOT EXISTS inbox_replies (
+    id SERIAL PRIMARY KEY,
+    message_id INTEGER NOT NULL REFERENCES inbox_messages(id) ON DELETE CASCADE,
+    body TEXT NOT NULL,
+    sent_by TEXT,
+    sent_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
   // Registrations: membership, cooperatives and internships.
   `CREATE TABLE IF NOT EXISTS registration_otps (
     id SERIAL PRIMARY KEY,

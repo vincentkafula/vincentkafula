@@ -7,6 +7,7 @@ import Footer from '../../components/footer/Footer';
 import TeamProfilesManager from '../../components/ops-dashboards/TeamProfilesManager';
 import DonationsPanel from '../../components/ops-dashboards/DonationsPanel';
 import RegistrationsPanel from '../../components/ops-dashboards/RegistrationsPanel';
+import InboxPanel from '../../components/ops-dashboards/InboxPanel';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import { jobsheetsApi } from '../../api/jobsheetsApi';
 import { getAuth } from '../../api/authApi';
@@ -41,6 +42,8 @@ const HeadOfficeDashboard = () => {
                 <div style={{ marginBottom: '24px' }}>
                     <p style={{ color: '#555', fontSize: '14px' }}>Signed in as <strong>{getAuth()?.display_name}</strong></p>
                 </div>
+
+                <InboxPanel />
 
                 <h3 style={{ marginBottom: '18px' }}>OpHelp Accounting — Serialed Jobsheet Ledger</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px', marginBottom: '30px' }}>

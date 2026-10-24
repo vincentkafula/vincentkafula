@@ -11,6 +11,7 @@ import { newsApi } from '../../api/newsApi';
 import { emailApi } from '../../api/emailApi';
 import { getAuth } from '../../api/authApi';
 import ComposeEmailPanel from '../../components/ops-dashboards/ComposeEmailPanel';
+import InboxPanel from '../../components/ops-dashboards/InboxPanel';
 import {
     DashCard, DashStat, DashHeader, DashButton, DashBadge,
     DashInput, DashTextarea, DashGrid, DashLabel,
@@ -37,7 +38,8 @@ const TabButton = ({ active, onClick, children }) => (
 );
 
 const NewsManagerDashboard = () => {
-    const [tab, setTab] = useState('articles'); // 'articles' | 'email'
+    const [tab, setTab] = useState('inbox'); // 'inbox' | 'articles' | 'email'
+    const [unread, setUnread] = useState(0);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState(emptyForm);
@@ -146,8 +148,9 @@ const NewsManagerDashboard = () => {
                 </DashGrid>
 
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
+                    <TabButton active={tab === 'inbox'} onClick={() => setTab('inbox')}>📥 Inbox{unread > 0 && <span style={{ marginLeft: 8, background: '#d9a21b', color: '#1d2a22', borderRadius: 10, padding: '1px 8px', fontSize: 12 }}>{unread}</span>}</TabButton>
                     <TabButton active={tab === 'articles'} onClick={() => setTab('articles')}>📰 Articles</TabButton>
-                    <TabButton active={tab === 'email'} onClick={() => setTab('email')}>✉️ Email</TabButton>
+                    <TabButton active={tab === 'email'} onClick={() => setTab('email')}>✉️ Send email</TabButton>
                 </div>
 
                 {tab === 'articles' && (
@@ -220,6 +223,11 @@ const NewsManagerDashboard = () => {
                         </DashCard>
                     </div>
                 )}
+
+                {/* Kept mounted so the unread count stays live while other tabs are open. */}
+                <div style={{ display: tab === 'inbox' ? 'block' : 'none' }}>
+                    <InboxPanel onUnreadChange={setUnread} />
+                </div>
 
                 {tab === 'email' && (
                     <ComposeEmailPanel emailConfigured={emailConfigured} />

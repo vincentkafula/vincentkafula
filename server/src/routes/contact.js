@@ -1,5 +1,6 @@
 import express from 'express';
 import { sendBulkEmail, isEmailConfigured } from '../utils/resend.js';
+import { saveWebsiteSubmission } from '../utils/inbox.js';
 
 // Public form submissions from the website (contact, volunteer, support, newsletter).
 // Each submission is emailed to CONTACT_TO_EMAIL (default: vincent.kafula@gmail.com) via Resend.
@@ -59,7 +60,12 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Please enter a message of at least 10 characters.' });
     }
 
+    // Every submission lands in the dashboard inbox; the email copy below is a notification on top.
+    const subjectForInbox = `${TYPES[type]}${body.subject ? `: ${String(body.subject).slice(0, 120)}` : ''}`;
+    const savedId = await saveWebsiteSubmission({ formType: type, title: subjectForInbox, body: { ...body, email } });
+
     if (!isEmailConfigured()) {
+      if (savedId) return res.json({ ok: true });
       return res.status(503).json({ error: 'The message service is not available right now. Please email vincent.kafula@gmail.com directly.' });
     }
 
@@ -73,7 +79,7 @@ router.post('/', async (req, res) => {
 
     const to = process.env.CONTACT_TO_EMAIL || 'vincent.kafula@gmail.com';
     const result = await sendBulkEmail({ recipients: [to], subject: subjectLine, html, replyTo: email });
-    if (!result.sent) {
+    if (!result.sent && !savedId) {
       return res.status(502).json({ error: 'Your message could not be sent. Please email vincent.kafula@gmail.com directly.' });
     }
     res.json({ ok: true });
