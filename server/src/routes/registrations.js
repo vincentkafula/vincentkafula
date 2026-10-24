@@ -165,15 +165,23 @@ router.post('/membership', bigJson, async (req, res) => {
       first_name: clean(b.first_name, 100), last_name: clean(b.last_name, 100), date_of_birth: clean(b.date_of_birth, 10),
       nrc_number: clean(b.nrc_number, 20), phone: clean(b.phone, 30), email: clean(b.email, 200).toLowerCase(),
       province: clean(b.province, 100), district: clean(b.district, 100), constituency: clean(b.constituency, 100), ward: clean(b.ward, 100),
+      middle_name: clean(b.middle_name, 100), gender: clean(b.gender, 10), occupation: clean(b.occupation, 150),
+      place_of_birth: clean(b.place_of_birth, 200), birth_province: clean(b.birth_province, 100), birth_district: clean(b.birth_district, 100),
+      polling_station: clean(b.polling_station, 200), chief_name: clean(b.chief_name, 200), chiefdom: clean(b.chiefdom, 200),
+      village: clean(b.village, 200), address: clean(b.address, 300),
     };
     if (!f.first_name || !f.last_name) return res.status(400).json({ error: 'Enter your first and last name.' });
+    if (!['Male', 'Female'].includes(f.gender)) return res.status(400).json({ error: 'Select your gender.' });
+    if (!f.place_of_birth || !f.birth_province || !f.birth_district) return res.status(400).json({ error: 'Enter your place of birth, including the province and district.' });
     const age = ageOn(f.date_of_birth);
     if (age < 0) return res.status(400).json({ error: 'Enter a valid date of birth.' });
     if (age < 18) return res.status(400).json({ error: 'Membership is open to Zambians aged 18 or older.' });
     if (!NRC_RE.test(f.nrc_number)) return res.status(400).json({ error: 'Enter your NRC number in the format 123456/78/1.' });
     if (!/^[+\d\s()-]{9,20}$/.test(f.phone)) return res.status(400).json({ error: 'Enter a valid phone number.' });
     if (!EMAIL_RE.test(f.email)) return res.status(400).json({ error: 'Enter a valid email address.' });
-    if (!f.province || !f.district || !f.constituency || !f.ward) return res.status(400).json({ error: 'Select your province, district, constituency and ward.' });
+    if (!f.province || !f.district || !f.constituency || !f.ward || !f.polling_station) return res.status(400).json({ error: 'Select your province, district, constituency, ward and polling station.' });
+    if (!f.chief_name) return res.status(400).json({ error: 'Enter the name of the chief for your area.' });
+    if (!f.village) return res.status(400).json({ error: 'Enter the name of your village or area.' });
     if (!b.declaration_citizen || !b.declaration_principles || !b.declaration_privacy) {
       return res.status(400).json({ error: 'Please confirm all the declarations.' });
     }
@@ -192,9 +200,12 @@ router.post('/membership', bigJson, async (req, res) => {
     const membership_no = await uniqueRef('member_registrations', 'membership_no', 'BOZ');
     await client.query('BEGIN');
     const { rows } = await client.query(
-      `INSERT INTO member_registrations (membership_no, first_name, last_name, date_of_birth, nrc_number, phone, email, province, district, constituency, ward)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING id`,
-      [membership_no, f.first_name, f.last_name, f.date_of_birth, f.nrc_number, f.phone, f.email, f.province, f.district, f.constituency, f.ward]
+      `INSERT INTO member_registrations (membership_no, first_name, middle_name, last_name, gender, date_of_birth, place_of_birth, birth_province, birth_district,
+         nrc_number, phone, email, occupation, province, district, constituency, ward, polling_station, chief_name, chiefdom, village, address)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) RETURNING id`,
+      [membership_no, f.first_name, f.middle_name || null, f.last_name, f.gender, f.date_of_birth, f.place_of_birth, f.birth_province, f.birth_district,
+        f.nrc_number, f.phone, f.email, f.occupation || null, f.province, f.district, f.constituency, f.ward, f.polling_station, f.chief_name,
+        f.chiefdom || null, f.village, f.address || null]
     );
     await saveDocs(client, 'membership', rows[0].id, docs);
     await client.query('COMMIT');

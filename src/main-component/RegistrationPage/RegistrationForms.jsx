@@ -52,31 +52,56 @@ const Field = ({ label, hint, full, children }) => (
     </div>
 );
 
-const LocationFields = ({ value, onChange }) => {
-    const provinces = Object.keys(eczData);
-    const districts = value.province ? Object.keys(eczData[value.province] || {}) : [];
-    const constituencies = value.district ? Object.keys(eczData[value.province]?.[value.district] || {}) : [];
-    const wards = value.constituency ? Object.keys(eczData[value.province]?.[value.district]?.[value.constituency] || {}) : [];
+const LEVELS = ['province', 'district', 'constituency', 'ward', 'polling_station'];
+const stationLabel = (st) => st.replace(/-0*(\d+)$/, ' (stream $1)');
+
+// Cascading ECZ location dropdowns. With `withStation`, adds the polling station level.
+const LocationFields = ({ value, onChange, withStation = false }) => {
+    const p = eczData[value.province] || {};
+    const d = p[value.district] || {};
+    const c = d[value.constituency] || {};
+    const options = {
+        province: Object.keys(eczData),
+        district: value.province ? Object.keys(p).sort() : [],
+        constituency: value.district ? Object.keys(d).sort() : [],
+        ward: value.constituency ? Object.keys(c).sort() : [],
+        polling_station: value.ward ? [...new Set(c[value.ward] || [])] : [],
+    };
+    const levels = withStation ? LEVELS : LEVELS.slice(0, 4);
     const set = (key, v) => {
-        const reset = { province: ['district', 'constituency', 'ward'], district: ['constituency', 'ward'], constituency: ['ward'], ward: [] }[key];
         const next = { ...value, [key]: v };
-        reset.forEach((k) => { next[k] = ''; });
+        levels.slice(levels.indexOf(key) + 1).forEach((k) => { next[k] = ''; });
         onChange(next);
     };
-    const select = (key, label, options) => (
-        <Field label={label}>
-            <select value={value[key]} onChange={(e) => set(key, e.target.value)} disabled={!options.length}>
-                <option value="">Select {label.toLowerCase()}</option>
-                {options.map((o) => <option key={o} value={o}>{titleCase(o)}</option>)}
+    const labels = { province: 'Province', district: 'District', constituency: 'Constituency', ward: 'Ward', polling_station: 'Polling station' };
+    return levels.map((key) => (
+        <Field key={key} label={labels[key]} full={key === 'polling_station'}
+            hint={key === 'polling_station' ? 'The polling station where you are registered (or intend to register) to vote, from the ECZ register.' : undefined}>
+            <select value={value[key] || ''} onChange={(e) => set(key, e.target.value)} disabled={!options[key].length}>
+                <option value="">Select {labels[key].toLowerCase()}</option>
+                {options[key].map((o) => <option key={o} value={o}>{key === 'polling_station' ? stationLabel(o) : titleCase(o)}</option>)}
             </select>
         </Field>
-    );
+    ));
+};
+
+// Province + district dropdowns for place of birth.
+const BirthPlaceFields = ({ value, onChange }) => {
+    const districts = value.birth_province ? Object.keys(eczData[value.birth_province] || {}).sort() : [];
     return (
         <>
-            {select('province', 'Province', provinces)}
-            {select('district', 'District', districts)}
-            {select('constituency', 'Constituency', constituencies)}
-            {select('ward', 'Ward', wards)}
+            <Field label="Province of birth">
+                <select value={value.birth_province} onChange={(e) => onChange({ ...value, birth_province: e.target.value, birth_district: '' })}>
+                    <option value="">Select province</option>
+                    {Object.keys(eczData).map((o) => <option key={o} value={o}>{titleCase(o)}</option>)}
+                </select>
+            </Field>
+            <Field label="District of birth">
+                <select value={value.birth_district} onChange={(e) => onChange({ ...value, birth_district: e.target.value })} disabled={!districts.length}>
+                    <option value="">Select district</option>
+                    {districts.map((o) => <option key={o} value={o}>{titleCase(o)}</option>)}
+                </select>
+            </Field>
         </>
     );
 };
@@ -152,10 +177,11 @@ const ageOf = (dob) => {
 
 // ---------- Membership ----------
 export const MembershipForm = () => {
-    const steps = ['Personal information', 'Location details', 'Document upload', 'Verification'];
+    const steps = ['Personal information', 'Where you live & vote', 'Document upload', 'Verification'];
     const [step, setStep] = useState(0);
-    const [f, setF] = useState({ first_name: '', last_name: '', date_of_birth: '', nrc_number: '', phone: '', email: '' });
-    const [loc, setLoc] = useState({ province: '', district: '', constituency: '', ward: '' });
+    const [f, setF] = useState({ first_name: '', middle_name: '', last_name: '', gender: '', date_of_birth: '', place_of_birth: '', birth_province: '', birth_district: '',
+        nrc_number: '', phone: '', email: '', occupation: '', chief_name: '', chiefdom: '', village: '', address: '' });
+    const [loc, setLoc] = useState({ province: '', district: '', constituency: '', ward: '', polling_station: '' });
     const [files, setFiles] = useState({ nrc_front: null, nrc_back: null, photo: null });
     const [decl, setDecl] = useState({ citizen: false, principles: false, privacy: false });
     const [code, setCode] = useState('');
@@ -166,15 +192,22 @@ export const MembershipForm = () => {
 
     const validate = () => {
         if (step === 0) {
-            if (!f.first_name.trim() || !f.last_name.trim()) return 'Enter your first and last name.';
+            if (!f.first_name.trim() || !f.last_name.trim()) return 'Enter your first name and surname.';
+            if (!f.gender) return 'Select your gender.';
             const age = ageOf(f.date_of_birth);
             if (age < 0) return 'Enter your date of birth.';
             if (age < 18) return 'Membership is open to Zambians aged 18 or older.';
+            if (!f.place_of_birth.trim() || !f.birth_province || !f.birth_district) return 'Enter your place of birth and select the province and district.';
             if (!/^\d{6}\/\d{2}\/\d$/.test(f.nrc_number.trim())) return 'Enter your NRC number in the format 123456/78/1.';
             if (!/^[+\d\s()-]{9,20}$/.test(f.phone.trim())) return 'Enter a valid phone number.';
             if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) return 'Enter a valid email address.';
         }
-        if (step === 1 && (!loc.province || !loc.district || !loc.constituency || !loc.ward)) return 'Select your province, district, constituency and ward.';
+        if (step === 1) {
+            if (!loc.province || !loc.district || !loc.constituency || !loc.ward) return 'Select your province, district, constituency and ward.';
+            if (!loc.polling_station) return 'Select your polling station.';
+            if (!f.chief_name.trim()) return 'Enter the name of the chief for your area.';
+            if (!f.village.trim()) return 'Type the name of your village or area.';
+        }
         if (step === 2 && !files.nrc_front) return 'Upload a copy of the front of your NRC.';
         if (step === 3) {
             if (!decl.citizen || !decl.principles || !decl.privacy) return 'Please confirm all the declarations.';
@@ -210,14 +243,31 @@ export const MembershipForm = () => {
             {step === 0 && (
                 <div className="rg-grid">
                     <Field label="First name"><input name="first_name" value={f.first_name} onChange={ch} autoComplete="given-name" /></Field>
-                    <Field label="Last name"><input name="last_name" value={f.last_name} onChange={ch} autoComplete="family-name" /></Field>
+                    <Field label="Middle name (optional)"><input name="middle_name" value={f.middle_name} onChange={ch} autoComplete="additional-name" /></Field>
+                    <Field label="Surname"><input name="last_name" value={f.last_name} onChange={ch} autoComplete="family-name" /></Field>
+                    <Field label="Gender">
+                        <select name="gender" value={f.gender} onChange={ch}>
+                            <option value="">Select gender</option><option>Male</option><option>Female</option>
+                        </select>
+                    </Field>
                     <Field label="Date of birth"><input type="date" name="date_of_birth" value={f.date_of_birth} onChange={ch} /></Field>
+                    <Field label="Place of birth" hint="Town, village or hospital where you were born"><input name="place_of_birth" value={f.place_of_birth} onChange={ch} /></Field>
+                    <BirthPlaceFields value={f} onChange={setF} />
                     <Field label="NRC number" hint="Format: 123456/78/1"><input name="nrc_number" value={f.nrc_number} onChange={ch} placeholder="123456/78/1" /></Field>
+                    <Field label="Occupation (optional)"><input name="occupation" value={f.occupation} onChange={ch} autoComplete="organization-title" /></Field>
                     <Field label="Phone number"><input type="tel" name="phone" value={f.phone} onChange={ch} autoComplete="tel" placeholder="+260 9XX XXX XXX" /></Field>
                     <Field label="Email address" hint="Your verification code will be sent here."><input type="email" name="email" value={f.email} onChange={ch} autoComplete="email" /></Field>
                 </div>
             )}
-            {step === 1 && <div className="rg-grid"><LocationFields value={loc} onChange={setLoc} /></div>}
+            {step === 1 && (
+                <div className="rg-grid">
+                    <LocationFields value={loc} onChange={setLoc} withStation />
+                    <Field label="Chief" hint="The traditional leader for your area"><input name="chief_name" value={f.chief_name} onChange={ch} /></Field>
+                    <Field label="Chiefdom (optional)"><input name="chiefdom" value={f.chiefdom} onChange={ch} /></Field>
+                    <Field label="Village / area name"><input name="village" value={f.village} onChange={ch} placeholder="Type your village, compound or area" /></Field>
+                    <Field label="Residential address (optional)"><input name="address" value={f.address} onChange={ch} autoComplete="street-address" /></Field>
+                </div>
+            )}
             {step === 2 && (
                 <div className="rg-grid">
                     <FileField label="NRC: front (required)" hint="PDF or photo, up to 5 MB" file={files.nrc_front} onFile={(x) => setFiles({ ...files, nrc_front: x })} />

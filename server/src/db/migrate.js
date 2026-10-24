@@ -426,6 +426,17 @@ const COMPAT_MIGRATIONS = [
     changed_by TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS middle_name TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS gender TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS place_of_birth TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS birth_province TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS birth_district TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS occupation TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS polling_station TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS chief_name TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS chiefdom TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS village TEXT`,
+  `ALTER TABLE member_registrations ADD COLUMN IF NOT EXISTS address TEXT`,
   `ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT`,
   `ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check`,
   `ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN (

@@ -8,9 +8,13 @@ const btn = (bg) => ({ background: bg, color: '#fff', border: 0, borderRadius: 5
 const TYPES = { membership: 'Members', cooperative: 'Cooperatives', internship: 'Internships' };
 
 const COLUMNS = {
-    membership: [['Membership no.', (r) => r.membership_no], ['Name', (r) => `${r.first_name} ${r.last_name}`], ['NRC', (r) => r.nrc_number],
-        ['Date of birth', (r) => r.date_of_birth?.slice(0, 10)], ['Contact', (r) => <>{r.email}<br />{r.phone}</>],
-        ['Ward', (r) => `${r.ward}, ${r.constituency}, ${r.district}, ${r.province}`]],
+    membership: [['Membership no.', (r) => r.membership_no],
+        ['Name', (r) => <>{[r.first_name, r.middle_name, r.last_name].filter(Boolean).join(' ')}{r.gender && <><br /><small>{r.gender}{r.occupation ? ` · ${r.occupation}` : ''}</small></>}</>],
+        ['NRC', (r) => r.nrc_number],
+        ['Born', (r) => <>{r.date_of_birth?.slice(0, 10)}{r.place_of_birth && <><br /><small>{r.place_of_birth}{r.birth_district ? `, ${r.birth_district}` : ''}{r.birth_province ? `, ${r.birth_province}` : ''}</small></>}</>],
+        ['Contact', (r) => <>{r.email}<br />{r.phone}{r.address && <><br /><small>{r.address}</small></>}</>],
+        ['Location', (r) => <>{`${r.ward}, ${r.constituency}, ${r.district}, ${r.province}`}{r.polling_station && <><br /><small>Polling station: {r.polling_station}</small></>}</>],
+        ['Village & chief', (r) => (r.village || r.chief_name) ? <>{r.village}{r.chief_name && <><br /><small>Chief {r.chief_name}{r.chiefdom ? ` (${r.chiefdom})` : ''}</small></>}</> : '—']],
     cooperative: [['Reference', (r) => r.reference_no], ['Name', (r) => r.name], ['Activity', (r) => r.activity],
         ['Chief', (r) => `${r.chief_name}${r.chiefdom ? ` (${r.chiefdom})` : ''}`], ['Chairperson', (r) => <>{r.chair_membership_no}<br />{r.chair_phone}</>],
         ['Ward', (r) => `${r.ward}, ${r.district}`], ['Members', (r) => r.member_nos?.join(', ')]],
