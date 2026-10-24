@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import '../header/navFit.css';
 import { useSelector } from 'react-redux'
 import HeaderTopbar from '../HeaderTopbar/HeaderTopbar'
 import MobileMenu from '../MobileMenu/MobileMenu'
@@ -46,6 +47,7 @@ const Header2 = (props) => {
                                             </ul>
                                         </li>
                                         <li><Link onClick={ClickHandler} to="/about">About Vincent</Link></li>
+                                        <li><Link onClick={ClickHandler} to="/manifesto-watch">Manifesto Watch</Link></li>
                                         <li className="menu-item-has-children">
                                             <Link onClick={ClickHandler} to="/">Campaign</Link>
                                             <ul className="sub-menu">

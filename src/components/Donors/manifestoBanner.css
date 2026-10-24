@@ -1,0 +1,8 @@
+.mw-home-banner { padding: 60px 0 0; }
+.mw-home-banner .wpo-donors-wrap { background: linear-gradient(120deg, #11281c 0%, #1e6b3a 100%); }
+.mw-home-banner .wpo-donors-wrap h2 { font-size: 30px; line-height: 1.35; }
+.mw-home-banner .donors-btn { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
+.mw-home-banner .donors-btn a { display: inline-block; font-size: 17px; }
+.mw-home-banner .donors-btn a:first-child { background: #ED6B37; }
+@media (max-width: 991px) { .mw-home-banner .donors-btn { justify-content: center; } }
+@media (max-width: 575px) { .mw-home-banner .wpo-donors-wrap h2 { font-size: 22px; } }

@@ -1,0 +1,15 @@
+/* Keep the main menu on one line now that it has seven top-level items. */
+@media (min-width: 992px) and (max-width: 1500px) {
+    .wpo-site-header #navbar > ul > li > a { padding-left: 9px; padding-right: 9px; font-size: 16px; }
+}
+/* Inner-page header gives the menu less room (shares the row with language and social links). */
+@media (min-width: 992px) {
+    .wpo-site-header-s2 #navbar > ul > li > a { padding-left: 8px; padding-right: 8px; font-size: 16px; }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+    .wpo-site-header #navbar > ul > li > a,
+    .wpo-site-header-s2 #navbar > ul > li > a { padding-left: 5px; padding-right: 5px; font-size: 14px; }
+}
+@media (min-width: 1201px) and (max-width: 1500px) {
+    .wpo-site-header-s2 #navbar > ul > li > a { padding-left: 6px; padding-right: 6px; font-size: 15px; }
+}

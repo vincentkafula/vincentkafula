@@ -29,6 +29,12 @@ const menus = [
     },
 
     {
+        id: 8,
+        title: 'Manifesto Watch',
+        link: '/manifesto-watch',
+    },
+
+    {
         id: 6,
         title: 'Campaign',
         link: '/campaign',

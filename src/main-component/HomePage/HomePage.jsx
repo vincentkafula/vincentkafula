@@ -10,6 +10,7 @@ import FunFact from '../../components/FunFact/FunFact';
 import TeamSection from '../../components/TeamSection/TeamSection';
 import BlogSection from '../../components/BlogSection/BlogSection';
 import Donors from '../../components/Donors/Donors';
+import ManifestoBanner from '../../components/Donors/ManifestoBanner';
 import InstagramSection from '../../components/InstagramSection/InstagramSection';
 import Footer from '../../components/footer/Footer';
 import PartnerSection from '../../components/PartnerSection/PartnerSection';
@@ -23,6 +24,7 @@ const HomePage =() => {
             <Navbar hclass={'wpo-site-header-s1'} topbarNone={'topbar-none'} Logo={Logo}/>
             <Hero/>
             <Features/>
+            <ManifestoBanner/>
             <About abimg={abimg} fullBio={true}/>
             <ServiceSection/>
             <CampaignSection/>
