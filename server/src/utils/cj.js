@@ -20,6 +20,35 @@ export class CjError extends Error {
   constructor(message, code) { super(message); this.code = code; }
 }
 
+// CJ allows one request per second per account. Every call goes through this queue,
+// spaced ~1.2 s apart, and is retried with a back-off when CJ still says "Too Many Requests".
+const GAP_MS = 1200;
+let queue = Promise.resolve();
+let lastCall = 0;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function throttled(fn) {
+  const run = queue.then(async () => {
+    const wait = lastCall + GAP_MS - Date.now();
+    if (wait > 0) await sleep(wait);
+    lastCall = Date.now();
+    return fn();
+  });
+  queue = run.catch(() => {});
+  return run;
+}
+const isRateLimited = (status, json) => status === 429 || json?.code === 1600200 || /too many requests|qps limit/i.test(json?.message || '');
+
+async function cjFetch(url, init) {
+  for (let attempt = 0; ; attempt += 1) {
+    const { res, json } = await throttled(async () => {
+      const r = await fetch(url, init);
+      return { res: r, json: await r.json().catch(() => ({})) };
+    });
+    if (isRateLimited(res.status, json) && attempt < 4) { await sleep(2000 * (attempt + 1)); continue; }
+    return { res, json };
+  }
+}
+
 let memoryToken = null;
 let lastTokenRequest = 0;
 
@@ -48,12 +77,11 @@ async function saveToken(d) {
 }
 
 async function rawPost(path, body, token) {
-  const res = await fetch(`${BASE}${path}`, {
+  const { res, json } = await cjFetch(`${BASE}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...(token ? { 'CJ-Access-Token': token } : {}) },
     body: JSON.stringify(body),
   });
-  const json = await res.json().catch(() => ({}));
   if (!res.ok || json.result === false || (json.code && json.code !== 200)) {
     throw new CjError(json.message || `CJ request failed (${res.status})`, json.code);
   }
@@ -77,19 +105,18 @@ async function getAccessToken(force = false) {
     throw new CjError('CJ only allows a new login every 5 minutes. Please try again shortly.');
   }
   lastTokenRequest = now;
-  return (await saveToken(await rawPost('/authentication/getAccessToken', { apiKey: process.env.CJ_API_KEY }))).access_token;
+  return (await saveToken(await rawPost('/authentication/getAccessToken', { apiKey: String(process.env.CJ_API_KEY).trim().replace(/^["']|["']$/g, '') }))).access_token;
 }
 
 // Generic call. Retries once with a fresh token if CJ reports an authentication failure.
 export async function cj(method, path, { query, body } = {}, retried = false) {
   const token = await getAccessToken();
   const qs = query ? `?${new URLSearchParams(Object.entries(query).filter(([, v]) => v !== undefined && v !== null && v !== ''))}` : '';
-  const res = await fetch(`${BASE}${path}${qs}`, {
+  const { res, json } = await cjFetch(`${BASE}${path}${qs}`, {
     method,
     headers: { 'Content-Type': 'application/json', 'CJ-Access-Token': token },
     body: body ? JSON.stringify(body) : undefined,
   });
-  const json = await res.json().catch(() => ({}));
   const authFailed = res.status === 401 || [1600001, 1600003].includes(json.code);
   if (authFailed && !retried) {
     memoryToken = null;

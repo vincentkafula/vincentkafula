@@ -207,9 +207,15 @@ export async function maybeRunScheduledSync() {
   if (!isCjConfigured()) return;
   const s = await getSettings();
   if (!s.enabled) return;
-  const { rows } = await pool.query(`SELECT max(started_at) AS last FROM shop_sync_runs`);
-  const last = rows[0].last ? new Date(rows[0].last).getTime() : 0;
-  if (Date.now() - last < s.intervalHours * 3600 * 1000) return;
+  const { rows } = await pool.query(
+    `SELECT started_at, added, cardinality(errors) AS problems,
+            (SELECT count(*) FROM products WHERE source = 'cj' AND status = 'active')::int AS on_sale
+     FROM shop_sync_runs ORDER BY started_at DESC LIMIT 1`);
+  const lastRun = rows[0];
+  const since = lastRun ? Date.now() - new Date(lastRun.started_at).getTime() : Infinity;
+  // Normally wait the full interval; retry after 15 minutes if the last run failed or the shop is still empty.
+  const struggling = lastRun && (lastRun.problems > 0 || lastRun.on_sale === 0);
+  if (since < s.intervalHours * 3600 * 1000 && !(struggling && since >= 15 * 60 * 1000)) return;
   await runCatalogSync('schedule');
 }
 

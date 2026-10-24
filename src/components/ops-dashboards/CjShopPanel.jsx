@@ -286,12 +286,29 @@ const AutoCatalog = ({ onChanged }) => {
         setSaving(true);
         try { const s = await shopApi.admin.saveCatalog(form); setForm(s); toast.success('Automatic catalogue settings saved'); load(); } catch (e) { toast.error(e.message); } finally { setSaving(false); }
     };
+    // While a sync runs, check progress every 5 seconds and report when it finishes.
+    useEffect(() => {
+        if (!data?.running) return undefined;
+        const t = setInterval(async () => {
+            try {
+                const d = await shopApi.admin.catalog();
+                setData(d);
+                if (!d.running) {
+                    const r = d.runs[0];
+                    if (r) toast[r.errors.length && !r.added ? 'error' : 'success'](`Sync finished: ${r.added} added, ${r.updated} refreshed, ${r.hidden} taken off sale${r.errors.length ? `, ${r.errors.length} problem${r.errors.length > 1 ? 's' : ''}` : ''}`);
+                    onChanged();
+                }
+            } catch { /* keep polling */ }
+        }, 5000);
+        return () => clearInterval(t);
+    }, [data?.running]); // eslint-disable-line react-hooks/exhaustive-deps
+
     const runNow = async () => {
         setRunning(true);
         try {
-            const r = await shopApi.admin.runCatalog();
-            toast.success(`Sync finished: ${r.added} added, ${r.updated} refreshed, ${r.hidden} taken off sale`);
-            load(); onChanged();
+            await shopApi.admin.runCatalog();
+            toast.info('Sync started. CJ allows one request per second, so this can take a few minutes.');
+            await load();
         } catch (e) { toast.error(e.message); } finally { setRunning(false); }
     };
     const last = data.runs[0];

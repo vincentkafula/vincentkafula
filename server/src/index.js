@@ -68,10 +68,10 @@ async function start() {
   // Pull CJ order status and tracking numbers every 30 minutes.
   if (process.env.CJ_API_KEY) {
     setInterval(() => syncOpenOrders().catch((e) => console.warn("CJ sync:", e.message)), 30 * 60 * 1000).unref();
-    // Automatic catalogue: check hourly whether a product sync is due (first check two minutes after start).
+    // Automatic catalogue: check every 15 minutes whether a product sync is due (first check two minutes after start).
     const catalogTick = () => maybeRunScheduledSync().catch((e) => console.warn("CJ catalogue sync:", e.message));
     setTimeout(catalogTick, 2 * 60 * 1000).unref();
-    setInterval(catalogTick, 60 * 60 * 1000).unref();
+    setInterval(catalogTick, 15 * 60 * 1000).unref();
   }
   app.listen(PORT, () => {
     console.log(`Politian backend listening on port ${PORT}`);

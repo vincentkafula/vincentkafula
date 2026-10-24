@@ -458,8 +458,11 @@ router.put('/admin/catalog', requireAuth(MANAGERS), async (req, res) => {
   try { res.json(await saveSettings(req.body || {})); } catch (err) { res.status(400).json({ error: err.message }); }
 });
 
+// Starts a sync in the background (CJ allows one request per second, so a full run can take minutes).
 router.post('/admin/catalog/run', requireAuth(MANAGERS), async (req, res) => {
-  try { res.json(await runCatalogSync(`manual: ${req.user.display_name}`)); } catch (err) { res.status(409).json({ error: err.message }); }
+  if (isSyncRunning()) return res.status(409).json({ error: 'A catalogue sync is already running.' });
+  runCatalogSync(`manual: ${req.user.display_name}`).catch((err) => console.error('Catalogue sync failed:', err.message));
+  res.status(202).json({ started: true });
 });
 
 // Refresh CJ costs for one product, keeping the shop's retail prices.
