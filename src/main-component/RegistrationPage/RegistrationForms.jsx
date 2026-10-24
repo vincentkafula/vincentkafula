@@ -5,6 +5,7 @@ import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import eczData from '../../data/ecz-locations.json';
 import { formatStation } from '../../data/eczFormat';
+import chiefsByDistrict from '../../data/chiefs.json';
 import { registrationsApi, readFileAsBase64 } from '../../api/registrationsApi';
 import { RegistrationHero } from './RegistrationPage';
 import './registration.css';
@@ -83,6 +84,50 @@ const LocationFields = ({ value, onChange, withStation = false }) => {
             </select>
         </Field>
     ));
+};
+
+const OTHER = '__other__';
+const chiefLabel = (c) => `${c.title} ${c.name}`;
+const peopleLabel = (c) => (c.people ? `${c.people} people` : '');
+
+// Chief picker for the selected district (from the Build One Zambia chiefs list), with a typed fallback.
+const ChiefFields = ({ district, value, onChange, label = 'Chief' }) => {
+    const chiefs = chiefsByDistrict[district] || [];
+    const listed = chiefs.findIndex((c) => chiefLabel(c) === value.chief_name);
+    const [other, setOther] = useState(false);
+    const typing = !chiefs.length || other || (value.chief_name && listed < 0);
+    const pick = (v) => {
+        if (v === OTHER) { setOther(true); onChange({ ...value, chief_name: '', chiefdom: '' }); return; }
+        setOther(false);
+        const c = chiefs[Number(v)];
+        onChange({ ...value, chief_name: c ? chiefLabel(c) : '', chiefdom: c ? peopleLabel(c) : '' });
+    };
+    if (!district) {
+        return <Field label={label} hint="Select your district first to see the chiefs for your area."><select disabled><option>Select chief</option></select></Field>;
+    }
+    return (
+        <>
+            {chiefs.length > 0 && (
+                <Field label={label} hint={`${chiefs.length === 1 ? 'Chief' : 'Chiefs'} listed for ${titleCase(district)} district`}>
+                    <select value={typing ? OTHER : listed >= 0 ? String(listed) : ''} onChange={(e) => pick(e.target.value)}>
+                        <option value="">Select chief</option>
+                        {chiefs.map((c, i) => <option key={i} value={i}>{chiefLabel(c)}{c.people ? ` — ${c.people} people` : ''}</option>)}
+                        <option value={OTHER}>My chief is not listed</option>
+                    </select>
+                </Field>
+            )}
+            {typing && (
+                <>
+                    <Field label={chiefs.length ? 'Name of your chief' : label} hint={chiefs.length ? 'Type the title and name, e.g. Chief Mukuni' : 'No chiefs are listed for this district yet. Type the title and name, e.g. Chief Mukuni'}>
+                        <input value={value.chief_name} onChange={(e) => onChange({ ...value, chief_name: e.target.value })} />
+                    </Field>
+                    <Field label="Chiefdom or people (optional)">
+                        <input value={value.chiefdom} onChange={(e) => onChange({ ...value, chiefdom: e.target.value })} />
+                    </Field>
+                </>
+            )}
+        </>
+    );
 };
 
 // Province + district dropdowns for place of birth.
@@ -205,7 +250,7 @@ export const MembershipForm = () => {
         if (step === 1) {
             if (!loc.province || !loc.district || !loc.constituency || !loc.ward) return 'Select your province, district, constituency and ward.';
             if (!loc.polling_station) return 'Select your polling station.';
-            if (!f.chief_name.trim()) return 'Enter the name of the chief for your area.';
+            if (!f.chief_name.trim()) return 'Select or type the name of the chief for your area.';
             if (!f.village.trim()) return 'Type the name of your village or area.';
         }
         if (step === 2 && !files.nrc_front) return 'Upload a copy of the front of your NRC.';
@@ -261,9 +306,8 @@ export const MembershipForm = () => {
             )}
             {step === 1 && (
                 <div className="rg-grid">
-                    <LocationFields value={loc} onChange={setLoc} withStation />
-                    <Field label="Chief" hint="The traditional leader for your area"><input name="chief_name" value={f.chief_name} onChange={ch} /></Field>
-                    <Field label="Chiefdom (optional)"><input name="chiefdom" value={f.chiefdom} onChange={ch} /></Field>
+                    <LocationFields value={loc} withStation onChange={(l) => { if (l.district !== loc.district) setF((x) => ({ ...x, chief_name: '', chiefdom: '' })); setLoc(l); }} />
+                    <ChiefFields district={loc.district} value={f} onChange={setF} />
                     <Field label="Village / area name"><input name="village" value={f.village} onChange={ch} placeholder="Type your village, compound or area" /></Field>
                     <Field label="Residential address (optional)"><input name="address" value={f.address} onChange={ch} autoComplete="street-address" /></Field>
                 </div>
@@ -325,7 +369,7 @@ export const CooperativeForm = () => {
             if (!loc.province || !loc.district || !loc.constituency || !loc.ward) return 'Select the province, district, constituency and ward.';
         }
         if (step === 1) {
-            if (!f.chief_name.trim()) return 'Enter the name of the chief for the area.';
+            if (!f.chief_name.trim()) return 'Select or type the name of the chief for the area.';
             if (!MEMBER_NO_RE.test(chair)) return 'Enter the chairperson’s membership number, for example BOZ-123456.';
             if (checked[chair] && checked[chair].valid === false) return 'The chairperson’s membership number was not found.';
             if (!/^[+\d\s()-]{9,20}$/.test(f.chair_phone.trim())) return 'Enter the chairperson’s phone number.';
@@ -376,13 +420,12 @@ export const CooperativeForm = () => {
                 <div className="rg-grid">
                     <Field label="Cooperative name"><input name="name" value={f.name} onChange={ch} /></Field>
                     <Field label="Main activity" hint="For example: maize and vegetables, poultry"><input name="activity" value={f.activity} onChange={ch} /></Field>
-                    <LocationFields value={loc} onChange={setLoc} />
+                    <LocationFields value={loc} onChange={(l) => { if (l.district !== loc.district) setF((x) => ({ ...x, chief_name: "", chiefdom: "" })); setLoc(l); }} />
                 </div>
             )}
             {step === 1 && (
                 <div className="rg-grid">
-                    <Field label="Name of the chief for the area"><input name="chief_name" value={f.chief_name} onChange={ch} /></Field>
-                    <Field label="Chiefdom (optional)"><input name="chiefdom" value={f.chiefdom} onChange={ch} /></Field>
+                    <ChiefFields district={loc.district} value={f} onChange={setF} label="Chief for the cooperative’s area" />
                     <Field label="Chairperson’s membership number" hint={status(f.chair_membership_no) || 'For example BOZ-123456'}>
                         <input name="chair_membership_no" value={f.chair_membership_no} onChange={ch} onBlur={() => check(f.chair_membership_no)} placeholder="BOZ-123456" style={{ textTransform: 'uppercase' }} />
                     </Field>
