@@ -7,6 +7,9 @@ import {
   isCjConfigured, shipFrom, searchProducts, getProduct, freightQuote, createOrder, getOrder, getBalance,
 } from '../utils/cj.js';
 import { sendBulkEmail, isEmailConfigured } from '../utils/resend.js';
+import {
+  retailFromCost, upsertCjProduct, getSettings, saveSettings, runCatalogSync, isSyncRunning,
+} from '../services/catalogSync.js';
 import { buildLetterheadEmail, textToHtml } from '../utils/letterhead.js';
 
 // Campaign shop, fulfilled by CJdropshipping. Profit from every order funds the campaign.
@@ -29,12 +32,6 @@ const defaultMarkup = () => Math.max(1, Number(process.env.SHOP_MARKUP) || 2.5);
 const money = (n) => Math.round(Number(n || 0) * 100) / 100;
 const clean = (v, max = 200) => (v === undefined || v === null ? null : String(v).trim().slice(0, max) || null);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Retail price from cost: cost × markup, rounded up to .99.
-export const retailFromCost = (cost, markup = defaultMarkup()) => {
-  const raw = Number(cost) * markup;
-  return Math.max(0.99, Math.ceil(raw) - 0.01);
-};
 
 const PUBLIC_STATUS = {
   pending_payment: 'Awaiting payment',
@@ -428,52 +425,41 @@ router.get('/admin/cj/product/:pid', requireAuth(MANAGERS), async (req, res) => 
   }
 });
 
-const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '').slice(0, 70) || 'product';
-async function uniqueSlug(base) {
-  for (let n = 1; ; n += 1) {
-    const slug = n === 1 ? base : `${base}-${n}`;
-    const { rows } = await pool.query('SELECT 1 FROM products WHERE slug = $1', [slug]);
-    if (!rows.length) return slug;
-  }
-}
-const plainText = (html) => String(html || '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<br\s*\/?>/gi, '\n')
-  .replace(/<\/(p|div|li|h\d)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
-  .replace(/\n{3,}/g, '\n\n').trim().slice(0, 4000);
-
-// Import (or refresh) a CJ product into the shop.
+// Import (or refresh) a CJ product into the shop by hand.
 router.post('/admin/cj/import', requireAuth(MANAGERS), async (req, res) => {
   try {
     const pid = clean(req.body?.pid, 100);
     if (!pid) return res.status(400).json({ error: 'Missing product id.' });
     const markup = Math.max(1, Number(req.body?.markup) || defaultMarkup());
-    const p = await getProduct(pid);
-    if (!p.variants.length) return res.status(422).json({ error: 'This CJ product has no orderable options.' });
-    const variants = p.variants.map((v) => ({ ...v, price: retailFromCost(v.cost, markup), active: true }));
-    const price = Math.min(...variants.map((v) => v.price));
-    const cost = Math.min(...variants.map((v) => v.cost));
-    const name = clean(req.body?.name, 150) || p.name;
-    const existing = await pool.query('SELECT id, variants FROM products WHERE cj_pid = $1', [pid]);
-    let row;
-    if (existing.rows[0]) {
-      // Already in the shop: refresh costs and images but keep the prices the manager set.
-      const old = new Map((existing.rows[0].variants || []).map((v) => [v.vid, v]));
-      variants.forEach((v) => { const prev = old.get(v.vid); if (prev) { v.price = prev.price; v.active = prev.active !== false; } });
-      row = (await pool.query(
-        `UPDATE products SET variants = $2, cost = $3, images = $4, last_synced_at = now(), updated_at = now() WHERE id = $1 RETURNING *`,
-        [existing.rows[0].id, JSON.stringify(variants), cost, JSON.stringify(p.images)])).rows[0];
-    } else {
-      row = (await pool.query(
-        `INSERT INTO products (name, slug, description, price, image_url, stock_quantity, status, created_by, source, cj_pid, images, variants, cost, ship_from, last_synced_at)
-         VALUES ($1,$2,$3,$4,$5,0,$6,$7,'cj',$8,$9,$10,$11,$12,now()) RETURNING *`,
-        [name, await uniqueSlug(slugify(name)), plainText(p.description), price, p.images[0] || null,
-          req.body?.publish === false ? 'inactive' : 'active', req.user.display_name, pid, JSON.stringify(p.images),
-          JSON.stringify(variants), cost, shipFrom()])).rows[0];
-    }
-    res.status(existing.rows[0] ? 200 : 201).json(row);
+    const { row, created } = await upsertCjProduct(pid, {
+      markup, publish: req.body?.publish !== false, source: 'manual', createdBy: req.user.display_name, name: clean(req.body?.name, 150),
+    });
+    res.status(created ? 201 : 200).json(row);
   } catch (err) {
     console.error(err);
     res.status(502).json({ error: err.message });
   }
+});
+
+// Automatic catalogue settings and runs.
+router.get('/admin/catalog', requireAuth(MANAGERS), async (req, res) => {
+  const [settings, runs, counts] = await Promise.all([
+    getSettings(),
+    pool.query('SELECT * FROM shop_sync_runs ORDER BY started_at DESC LIMIT 10'),
+    pool.query(`SELECT count(*) FILTER (WHERE status = 'active')::int AS on_sale, count(*)::int AS total,
+                       count(*) FILTER (WHERE auto_source = 'my-products')::int AS my_products,
+                       count(*) FILTER (WHERE auto_source LIKE 'rule:%')::int AS from_rules
+                FROM products WHERE source = 'cj'`),
+  ]);
+  res.json({ settings, runs: runs.rows, counts: counts.rows[0], running: isSyncRunning(), defaultMarkup: defaultMarkup() });
+});
+
+router.put('/admin/catalog', requireAuth(MANAGERS), async (req, res) => {
+  try { res.json(await saveSettings(req.body || {})); } catch (err) { res.status(400).json({ error: err.message }); }
+});
+
+router.post('/admin/catalog/run', requireAuth(MANAGERS), async (req, res) => {
+  try { res.json(await runCatalogSync(`manual: ${req.user.display_name}`)); } catch (err) { res.status(409).json({ error: err.message }); }
 });
 
 // Refresh CJ costs for one product, keeping the shop's retail prices.
@@ -485,7 +471,7 @@ router.post('/admin/products/:id/sync', requireAuth(MANAGERS), async (req, res) 
     const old = new Map((rows[0].variants || []).map((v) => [v.vid, v]));
     const variants = p.variants.map((v) => {
       const prev = old.get(v.vid);
-      return { ...v, price: prev?.price ?? retailFromCost(v.cost), active: prev ? prev.active !== false : true };
+      return { ...v, price: prev?.price ?? retailFromCost(v.cost), price_locked: prev?.price_locked || false, active: prev ? prev.active !== false : true };
     });
     const active = variants.filter((v) => v.active);
     const r = await pool.query(
@@ -508,7 +494,7 @@ router.patch('/admin/products/:id/variants', requireAuth(MANAGERS), async (req, 
     if (!c) return v;
     const price = c.price !== undefined ? money(c.price) : v.price;
     if (!(price > 0)) throw new Error('Prices must be above zero.');
-    return { ...v, price, active: c.active !== undefined ? Boolean(c.active) : v.active };
+    return { ...v, price, price_locked: c.price !== undefined ? true : v.price_locked, active: c.active !== undefined ? Boolean(c.active) : v.active };
   });
   const active = variants.filter((v) => v.active !== false);
   if (!active.length) return res.status(400).json({ error: 'Keep at least one option on sale, or unpublish the product instead.' });

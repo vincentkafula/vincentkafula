@@ -38,6 +38,11 @@ export const shopApi = {
         setVariants: (id, variants) => fetch(`${base}/admin/products/${id}/variants`, {
             method: 'PATCH', headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify({ variants }),
         }).then(handle),
+        catalog: () => get('/admin/catalog', true),
+        saveCatalog: (settings) => fetch(`${base}/admin/catalog`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(settings),
+        }).then(handle),
+        runCatalog: () => post('/admin/catalog/run', {}, true),
         orders: (status = '') => get(`/admin/orders?${new URLSearchParams({ status })}`, true),
         retry: (id) => post(`/admin/orders/${id}/retry`, {}, true),
         syncOrders: () => post('/admin/orders/sync', {}, true),

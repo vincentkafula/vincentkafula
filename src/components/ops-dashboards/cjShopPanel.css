@@ -55,3 +55,18 @@
     .cjp-prod-head .cjp-actions { grid-column: 1 / -1; }
     .cjp-search { flex-direction: column; }
 }
+.cjp-auto { display: grid; gap: 16px; }
+.cjp-auto-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.cjp-auto-head h4, .cjp-h4 { margin: 0 0 4px; font-size: 17px; }
+.cjp-auto-head .cjp-actions { margin-top: 0; align-items: center; }
+.cjp-switch { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #12351b; }
+.cjp-auto-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.cjp-check { display: flex; gap: 10px; align-items: flex-start; border: 1px solid #e3e9e3; border-radius: 10px; padding: 12px; font-size: 14px; }
+.cjp-check input { margin-top: 4px; }
+.cjp-check small, .cjp-num small { display: block; color: #7a8a7d; font-size: 12.5px; margin-top: 2px; font-weight: 400; }
+.cjp-num { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px; }
+.cjp-num input, .cjp-rules input:not([type=checkbox]) { border: 1px solid #d9e2da; border-radius: 6px; padding: 7px 10px; font-size: 14px; font-weight: 400; }
+.cjp-rules td input:not([type=checkbox]) { width: 100%; min-width: 90px; }
+.cjp-rules td.num input { width: 90px; text-align: right; }
+.cjp-note { display: block; color: #a3690f; font-weight: 600; font-size: 12.5px; }
+.cjp-lock { font-size: 11px; color: #a3690f; font-weight: 700; }

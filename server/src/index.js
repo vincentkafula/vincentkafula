@@ -22,6 +22,7 @@ import donationsRouter from "./routes/donations.js";
 import registrationsRouter from "./routes/registrations.js";
 import inboxRouter from "./routes/inbox.js";
 import shopRouter, { syncOpenOrders } from "./routes/shop.js";
+import { maybeRunScheduledSync } from "./services/catalogSync.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -67,6 +68,10 @@ async function start() {
   // Pull CJ order status and tracking numbers every 30 minutes.
   if (process.env.CJ_API_KEY) {
     setInterval(() => syncOpenOrders().catch((e) => console.warn("CJ sync:", e.message)), 30 * 60 * 1000).unref();
+    // Automatic catalogue: check hourly whether a product sync is due (first check two minutes after start).
+    const catalogTick = () => maybeRunScheduledSync().catch((e) => console.warn("CJ catalogue sync:", e.message));
+    setTimeout(catalogTick, 2 * 60 * 1000).unref();
+    setInterval(catalogTick, 60 * 60 * 1000).unref();
   }
   app.listen(PORT, () => {
     console.log(`Politian backend listening on port ${PORT}`);

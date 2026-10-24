@@ -107,9 +107,10 @@ const firstNumber = (v) => {
   return m ? Number(m[0]) : null;
 };
 
-// Search the CJ catalogue by keyword.
-export async function searchProducts(keyword, page = 1) {
-  const data = await cj('GET', '/product/listV2', { query: { keyWord: keyword, page, size: 20 } });
+// Search the CJ catalogue by keyword. `filters` may hold any listV2 filter
+// (categoryId, startSellPrice, endSellPrice, orderBy, sort, startWarehouseInventory, countryCode, size).
+export async function searchProducts(keyword, page = 1, filters = {}) {
+  const data = await cj('GET', '/product/listV2', { query: { keyWord: keyword, page, size: 20, ...filters } });
   const content = Array.isArray(data?.content) ? data.content : [];
   const list = content.flatMap((c) => c.productList || []);
   return {
@@ -121,6 +122,7 @@ export async function searchProducts(keyword, page = 1) {
       image: p.bigImage || p.productImage,
       cost: firstNumber(p.nowPrice) ?? firstNumber(p.sellPrice),
       listed: p.listedNum ?? null,
+      stock: p.warehouseInventoryNum ?? null,
     })).filter((p) => p.pid),
   };
 }
@@ -176,4 +178,14 @@ export async function getOrder(orderId) {
 export async function getBalance() {
   const d = await cj('GET', '/shopping/pay/getBalance');
   return { amount: Number(d?.amount ?? 0), frozen: Number(d?.freezeAmount ?? d?.frozenAmount ?? 0) };
+}
+
+// Products saved to "My Products" in the CJ account (one page).
+export async function listMyProducts(page = 1, size = 50) {
+  const data = await cj('GET', '/product/myProduct/query', { query: { pageNumber: page, pageSize: size } });
+  const content = Array.isArray(data?.content) ? data.content : [];
+  return {
+    totalPages: Number(data?.totalPages) || 1,
+    products: content.map((p) => ({ pid: p.productId, name: p.nameEn, image: p.bigImage, cost: Number(p.totalPrice || p.sellPrice) || null })).filter((p) => p.pid),
+  };
 }

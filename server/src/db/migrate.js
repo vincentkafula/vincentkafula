@@ -296,6 +296,24 @@ const DEMO_PASSWORD = 'Demo@2026';
 // Statements applied to databases that already had the old schema before news/shop/roles existed.
 // Each is safe to re-run every boot.
 const COMPAT_MIGRATIONS = [
+  // Automatic catalogue sync from CJ.
+  `ALTER TABLE products ADD COLUMN IF NOT EXISTS auto_source TEXT`,
+  `ALTER TABLE products ADD COLUMN IF NOT EXISTS sync_note TEXT`,
+  `CREATE TABLE IF NOT EXISTS shop_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE TABLE IF NOT EXISTS shop_sync_runs (
+    id SERIAL PRIMARY KEY,
+    trigger TEXT NOT NULL,
+    started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    finished_at TIMESTAMPTZ,
+    added INTEGER NOT NULL DEFAULT 0,
+    updated INTEGER NOT NULL DEFAULT 0,
+    hidden INTEGER NOT NULL DEFAULT 0,
+    errors TEXT[] NOT NULL DEFAULT '{}'
+  )`,
   // Shop + CJdropshipping fulfilment.
   `CREATE TABLE IF NOT EXISTS cj_auth (
     id INTEGER PRIMARY KEY,

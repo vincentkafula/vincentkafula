@@ -229,7 +229,8 @@ const Prices = ({ refreshKey, onChanged }) => {
                         <div>
                             <h4>{p.name}</h4>
                             <DashBadge tone={p.status === 'active' ? 'success' : 'neutral'}>{p.status === 'active' ? 'On sale' : 'Hidden'}</DashBadge>
-                            {p.last_synced_at && <small className="cjp-muted"> Costs checked {new Date(p.last_synced_at).toLocaleDateString('en-GB')}</small>}
+                            <small className="cjp-muted"> {SOURCE_LABEL(p.auto_source)}{p.last_synced_at ? ` · costs checked ${new Date(p.last_synced_at).toLocaleDateString('en-GB')}` : ''}</small>
+                            {p.sync_note && <small className="cjp-note">{p.sync_note}</small>}
                         </div>
                         <div className="cjp-actions">
                             <DashButton variant="subtle" onClick={() => sync(p)} disabled={busy === p.id}>Refresh costs</DashButton>
@@ -248,7 +249,7 @@ const Prices = ({ refreshKey, onChanged }) => {
                                     <tr key={v.vid}>
                                         <td>{v.name}<small>{v.sku}</small></td>
                                         <td className="num">{formatMoney(v.cost, 'usd')}</td>
-                                        <td className="num"><input className="cjp-price" type="number" step="0.01" min="0.5" value={e.price ?? v.price} onChange={(ev) => edit(p.id, v.vid, 'price', ev.target.value)} aria-label={`Price for ${v.name}`} /></td>
+                                        <td className="num">{v.price_locked && <span className="cjp-lock" title="Set by hand; automatic repricing leaves it alone">fixed </span>}<input className="cjp-price" type="number" step="0.01" min="0.5" value={e.price ?? v.price} onChange={(ev) => edit(p.id, v.vid, 'price', ev.target.value)} aria-label={`Price for ${v.name}`} /></td>
                                         <td className={`num ${m < 30 ? 'neg' : 'pos'}`}>{m}%</td>
                                         <td><input type="checkbox" checked={active} onChange={(ev) => edit(p.id, v.vid, 'active', ev.target.checked)} aria-label={`Sell ${v.name}`} /></td>
                                     </tr>
@@ -262,6 +263,111 @@ const Prices = ({ refreshKey, onChanged }) => {
                     )}
                 </DashCard>
             ))}
+        </div>
+    );
+};
+
+
+// ---------- Automatic catalogue ----------
+const SOURCE_LABEL = (s) => (s === 'my-products' ? 'My Products in CJ' : s?.startsWith('rule:') ? `Rule: ${s.slice(5)}` : 'Added by hand');
+
+const AutoCatalog = ({ onChanged }) => {
+    const [data, setData] = useState(null);
+    const [form, setForm] = useState(null);
+    const [saving, setSaving] = useState(false);
+    const [running, setRunning] = useState(false);
+    const load = () => shopApi.admin.catalog().then((d) => { setData(d); setForm(d.settings); }).catch((e) => toast.error(e.message));
+    useEffect(() => { load(); }, []);
+    if (!form) return <DashCard><p className="cjp-muted">Loading…</p></DashCard>;
+
+    const set = (k, v) => setForm({ ...form, [k]: v });
+    const setRule = (i, k, v) => set('rules', form.rules.map((r, n) => (n === i ? { ...r, [k]: v } : r)));
+    const save = async () => {
+        setSaving(true);
+        try { const s = await shopApi.admin.saveCatalog(form); setForm(s); toast.success('Automatic catalogue settings saved'); load(); } catch (e) { toast.error(e.message); } finally { setSaving(false); }
+    };
+    const runNow = async () => {
+        setRunning(true);
+        try {
+            const r = await shopApi.admin.runCatalog();
+            toast.success(`Sync finished: ${r.added} added, ${r.updated} refreshed, ${r.hidden} taken off sale`);
+            load(); onChanged();
+        } catch (e) { toast.error(e.message); } finally { setRunning(false); }
+    };
+    const last = data.runs[0];
+    const dirty = JSON.stringify(form) !== JSON.stringify(data.settings);
+
+    return (
+        <div className="cjp-auto">
+            <DashCard>
+                <div className="cjp-auto-head">
+                    <div>
+                        <h4>Products are pulled from CJ automatically</h4>
+                        <p className="cjp-muted">
+                            {form.enabled ? `Every ${form.intervalHours} hour${form.intervalHours === 1 ? '' : 's'}` : 'Paused'} ·{' '}
+                            {last ? `last run ${new Date(last.started_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}` : 'not run yet'} ·{' '}
+                            {data.counts.on_sale} CJ products on sale ({data.counts.my_products} from My Products, {data.counts.from_rules} from rules)
+                        </p>
+                    </div>
+                    <div className="cjp-actions">
+                        <label className="cjp-switch"><input type="checkbox" checked={form.enabled} onChange={(e) => set('enabled', e.target.checked)} /> Automatic sync on</label>
+                        <DashButton onClick={runNow} disabled={running || data.running}>{running || data.running ? 'Syncing…' : 'Sync now'}</DashButton>
+                    </div>
+                </div>
+
+                <div className="cjp-auto-grid">
+                    <label className="cjp-check"><input type="checkbox" checked={form.myProducts} onChange={(e) => set('myProducts', e.target.checked)} />
+                        <span><strong>Follow “My Products” in CJ</strong><small>Anything you save to My Products in the CJ app appears in the shop; anything you remove there is taken off sale.</small></span></label>
+                    <label className="cjp-check"><input type="checkbox" checked={form.autoPublish} onChange={(e) => set('autoPublish', e.target.checked)} />
+                        <span><strong>Put new products on sale straight away</strong><small>Untick to review new products first; they arrive hidden.</small></span></label>
+                    <label className="cjp-num">Price multiplier<input type="number" step="0.1" min="1" max="10" value={form.markup ?? ''} placeholder={String(data.defaultMarkup)} onChange={(e) => set('markup', e.target.value === '' ? null : e.target.value)} /><small>× CJ cost. Prices you set by hand are never changed.</small></label>
+                    <label className="cjp-num">Check every (hours)<input type="number" min="1" max="168" value={form.intervalHours} onChange={(e) => set('intervalHours', e.target.value)} /></label>
+                    <label className="cjp-num">Most CJ products in the shop<input type="number" min="1" max="1000" value={form.maxProducts} onChange={(e) => set('maxProducts', e.target.value)} /></label>
+                    <label className="cjp-num">Minimum CJ stock<input type="number" min="0" value={form.minStock} onChange={(e) => set('minStock', e.target.value)} /></label>
+                </div>
+            </DashCard>
+
+            <DashCard>
+                <h4 className="cjp-h4">Keyword rules</h4>
+                <p className="cjp-muted">Each rule adds CJ’s most-listed, in-stock products for that word, up to the number you set. Leave the cost limit empty for no limit.</p>
+                <div className="cjp-table-wrap">
+                    <table className="cjp-table cjp-rules">
+                        <thead><tr><th>Search word</th><th className="num">Max CJ cost ($)</th><th className="num">Products</th><th>On</th><th /></tr></thead>
+                        <tbody>
+                            {form.rules.map((r, i) => (
+                                <tr key={i}>
+                                    <td><input value={r.keyword} onChange={(e) => setRule(i, 'keyword', e.target.value)} aria-label="Search word" /></td>
+                                    <td className="num"><input type="number" step="0.5" min="0" value={r.maxCost ?? ''} onChange={(e) => setRule(i, 'maxCost', e.target.value === '' ? null : e.target.value)} aria-label="Maximum CJ cost" /></td>
+                                    <td className="num"><input type="number" min="1" max="50" value={r.perRule} onChange={(e) => setRule(i, 'perRule', e.target.value)} aria-label="Number of products" /></td>
+                                    <td><input type="checkbox" checked={r.enabled !== false} onChange={(e) => setRule(i, 'enabled', e.target.checked)} aria-label="Rule on" /></td>
+                                    <td><button type="button" className="cjp-link" onClick={() => set('rules', form.rules.filter((_, n) => n !== i))}>Remove</button></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="cjp-actions">
+                    <DashButton variant="subtle" onClick={() => set('rules', [...form.rules, { keyword: '', maxCost: null, perRule: 5, enabled: true }])} disabled={form.rules.length >= 20}>Add a rule</DashButton>
+                    <DashButton onClick={save} disabled={saving || !dirty}>{saving ? 'Saving…' : 'Save settings'}</DashButton>
+                </div>
+            </DashCard>
+
+            <DashCard>
+                <h4 className="cjp-h4">Recent syncs</h4>
+                {!data.runs.length ? <p className="cjp-muted">No syncs yet. Press “Sync now” to pull products for the first time.</p> : (
+                    <table className="cjp-table">
+                        <thead><tr><th>Started</th><th>By</th><th className="num">Added</th><th className="num">Refreshed</th><th className="num">Taken off sale</th><th>Problems</th></tr></thead>
+                        <tbody>{data.runs.map((r) => (
+                            <tr key={r.id}>
+                                <td>{new Date(r.started_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}{!r.finished_at && <small>running</small>}</td>
+                                <td>{r.trigger === 'schedule' ? 'Automatic' : r.trigger.replace(/^manual: /, '')}</td>
+                                <td className="num">{r.added}</td><td className="num">{r.updated}</td><td className="num">{r.hidden}</td>
+                                <td>{r.errors.length ? <details><summary>{r.errors.length}</summary><ul>{r.errors.map((e, n) => <li key={n}>{e}</li>)}</ul></details> : '—'}</td>
+                            </tr>
+                        ))}</tbody>
+                    </table>
+                )}
+            </DashCard>
         </div>
     );
 };
@@ -302,10 +408,12 @@ const CjShopPanel = ({ onProductsChanged }) => {
 
             <div className="cjp-tabs" role="group" aria-label="Shop sections">
                 <Tab active={tab === 'orders'} onClick={() => setTab('orders')} count={summary?.attention}>Orders</Tab>
+                <Tab active={tab === 'auto'} onClick={() => setTab('auto')}>Automatic catalogue</Tab>
                 <Tab active={tab === 'find'} onClick={() => setTab('find')}>Find products on CJ</Tab>
                 <Tab active={tab === 'prices'} onClick={() => setTab('prices')}>CJ products and prices</Tab>
             </div>
             {tab === 'orders' && <Orders currency={cur} onChanged={loadSummary} />}
+            {tab === 'auto' && <AutoCatalog onChanged={changed} />}
             {tab === 'find' && <Finder markup={status?.settings?.markup || 2.5} onImported={changed} />}
             {tab === 'prices' && <Prices refreshKey={refreshKey} onChanged={changed} />}
         </section>
