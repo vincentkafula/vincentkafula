@@ -20,26 +20,32 @@ export const headlineFacts = [
 export const weaknesses = [
     {
         title: 'Promises without deadlines',
+        quote: 'All major commitments translated into specific, measurable targets with clear timelines',
         text: 'The manifesto says every major commitment will have “clear timelines”. Yet its 15 headline targets carry almost no dates. Double the economy — by when? 2 million jobs — counted how, and from what starting point? A promise without a deadline cannot be broken, and that is exactly the problem.',
     },
     {
         title: 'Not a single cost figure',
+        quote: 'every developmental target is fully funded',
         text: 'Pillar 5 claims every target will be “fully funded”. But the document never says what anything will cost, or where the money will come from. Ten thousand megawatts, six new universities, 500,000 hectares of irrigation — none of it is priced. Zambians are being asked to trust a budget they are not allowed to see.',
     },
     {
         title: 'Handing delivery to someone else',
+        quote: 'In partnership with the Zambian private sector',
         text: '“The private sector” appears 27 times. Jobs, power, irrigation, storage, mines, housing and water are all to be delivered “in partnership with the private sector”. If investors do not come, or do not hire Zambians, the promise quietly fails — and government will say the market decided. We believe the state must own the tools of development, not just invite others to use them.',
     },
     {
         title: 'Escape clauses written in',
+        quote: 'subject to local and global demand',
         text: 'The maize target of 10 million tonnes is “subject to local and global demand”. Water tariffs are to become “cost-reflective”, which in plain language means higher bills. The cost-of-living section sets no price targets at all — not for mealie meal, fuel, electricity or rent.',
     },
     {
         title: 'Targets the numbers do not support',
+        quote: '3M MT copper production target — more than tripling current output',
         text: 'Copper must more than triple, from 890,346 tonnes in 2025 to 3 million tonnes — after missing the government’s own 1-million-tonne target for 2025. Wheat must grow more than twelvefold, from about 82,000 tonnes this season to 1 million. Average maize yields must rise from 1.7 to 10 tonnes per hectare. Ambition is good; arithmetic matters more.',
     },
     {
         title: 'The same old contract model',
+        quote: 'Accelerate PPP concessions',
         text: 'Roads, rail, power and mines are to be built through PPP concessions and joint ventures. This is the contract-and-tender system that has let middlemen and foreign firms take the profits while Zambian workers get little. More of the same will deliver more of the same.',
     },
 ];
@@ -182,4 +188,33 @@ export const sources = [
     { label: 'Al Jazeera — Hichilema wins second term (18 August 2026)', url: 'https://www.aljazeera.com/news/2026/8/18/zambias-hichilema-wins-second-term-as-president' },
     { label: 'Ecofin Agency — 2025 copper output rises 8%, misses 1 million-tonne target', url: 'https://www.ecofinagency.com/news-industry/2801-52339-zambias-2025-copper-output-rises-8-misses-1-million-tonne-target' },
     { label: 'Zambia Monitor — 2025/26 Crop Forecasting Survey: 4.94 million tonnes maize, 81,822 tonnes wheat', url: 'https://www.zambiamonitor.com/?p=86922' },
+];
+
+// "The gap": where Zambia is today against what was promised, for the targets that can be measured.
+export const gaps = [
+    { label: 'Copper', unit: 'million tonnes', now: 0.89, target: 3, nowText: '0.89', targetText: '3', note: '2025 output' },
+    { label: 'Electricity', unit: 'megawatts', now: 3400, target: 10000, nowText: '3,400', targetText: '10,000', note: 'installed capacity' },
+    { label: 'Maize', unit: 'million tonnes', now: 4.94, target: 10, nowText: '4.94', targetText: '10', note: '2025/26 record' },
+    { label: 'Wheat', unit: 'tonnes', now: 81822, target: 1000000, nowText: '81,822', targetText: '1,000,000', note: '2025/26 forecast' },
+    { label: 'Tourists', unit: 'million a year', now: 2, target: 5, nowText: '2', targetText: '5', note: '2025 arrivals' },
+];
+
+// The two approaches side by side.
+export const comparison = [
+    { topic: 'Jobs', upnd: '2 million jobs, created “in partnership with the private sector”. No baseline, no way of counting.', boz: 'Government-owned machinery in every municipality, operated by Zambians on public works — jobs the state creates and can count.' },
+    { topic: 'Mining', upnd: 'Triple copper output to 3 million tonnes; value addition encouraged but raw exports continue.', boz: 'New mines 100% Zambian-owned. Existing mines sell their ore to Zambian processing companies — no raw exports.' },
+    { topic: 'Farming', upnd: '10 million tonnes of maize “subject to demand”; inputs delivered by the private sector through e-FISP.', boz: 'Tractors, planters and solar irrigation owned by 20-member farmer cooperatives, with no middlemen.' },
+    { topic: 'Power', upnd: '10,000+ MW through private power producers and PPPs, with no plant list or dates.', boz: 'Ten public power plants, one in every province, plus generation capacity in every district.' },
+    { topic: 'Education', upnd: 'Six new public universities and 100,000 TEVET trainees, with no sites, budgets or dates.', boz: 'A UNZA campus in all ten provinces, a technical college in every district, a modern school in every ward.' },
+    { topic: 'Building', upnd: 'PPP concessions for roads, rail and housing.', boz: 'No tenders to middlemen: the state buys the machinery, Zambians build, materials are made in Zambia.' },
+    { topic: 'Paying for it', upnd: 'Capital markets, bonds and PPPs; no cost given for any target.', boz: 'Borrow only for productive equipment that creates jobs and exports — never for consumption or private contracts.' },
+];
+
+// Accountability calendar for the 2026–2031 term.
+export const timeline = [
+    { when: 'October 2026', what: 'Scorecard launched', detail: 'All 15 UPND targets published with baselines, and gaps in the government’s own figures identified.' },
+    { when: 'Every quarter', what: 'Scorecard update', detail: 'New official figures added and every status reviewed. Citizen reports from the wards included.' },
+    { when: 'August 2027', what: 'First Promise Report', detail: 'One year on: what was delivered, what was delayed, and what the government refused to disclose.' },
+    { when: 'August 2029', what: 'Mid-term review', detail: 'Halfway through the term. Targets that cannot now be met will be named as broken promises.' },
+    { when: 'August 2031', what: 'Final verdict before the vote', detail: 'A full account of all 15 targets ahead of the general election on 14 August 2031.' },
 ];
