@@ -7,6 +7,7 @@ import Scrollbar from '../../components/scrollbar/scrollbar'
 import vImg from '../../images/volunteer.jpg'
 import TeamSection from '../../components/TeamSection/TeamSection';
 import eczData from '../../data/ecz-locations.json'
+import { formatStation } from '../../data/eczFormat'
 
 const titleCase = (str) => str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase());
 
@@ -203,7 +204,7 @@ const VolunteerPage = (props) => {
                                                             onChange={(e) => changeHandler(e)}>
                                                             <option value="">Select Polling Station</option>
                                                             {pollingStations.map((s) => (
-                                                                <option key={s} value={s}>{titleCase(s)}</option>
+                                                                <option key={s} value={s}>{formatStation(s)}</option>
                                                             ))}
                                                         </select>
                                                         {validator.message('pollingStation', forms.pollingStation, 'required')}

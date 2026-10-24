@@ -4,6 +4,7 @@ import Navbar2 from '../../components/Navbar2/Navbar2';
 import Footer from '../../components/footer/Footer';
 import Scrollbar from '../../components/scrollbar/scrollbar';
 import eczData from '../../data/ecz-locations.json';
+import { formatStation } from '../../data/eczFormat';
 import { registrationsApi, readFileAsBase64 } from '../../api/registrationsApi';
 import { RegistrationHero } from './RegistrationPage';
 import './registration.css';
@@ -53,7 +54,6 @@ const Field = ({ label, hint, full, children }) => (
 );
 
 const LEVELS = ['province', 'district', 'constituency', 'ward', 'polling_station'];
-const stationLabel = (st) => st.replace(/-0*(\d+)$/, ' (stream $1)');
 
 // Cascading ECZ location dropdowns. With `withStation`, adds the polling station level.
 const LocationFields = ({ value, onChange, withStation = false }) => {
@@ -79,7 +79,7 @@ const LocationFields = ({ value, onChange, withStation = false }) => {
             hint={key === 'polling_station' ? 'The polling station where you are registered (or intend to register) to vote, from the ECZ register.' : undefined}>
             <select value={value[key] || ''} onChange={(e) => set(key, e.target.value)} disabled={!options[key].length}>
                 <option value="">Select {labels[key].toLowerCase()}</option>
-                {options[key].map((o) => <option key={o} value={o}>{key === 'polling_station' ? stationLabel(o) : titleCase(o)}</option>)}
+                {options[key].map((o) => <option key={o} value={o}>{key === 'polling_station' ? formatStation(o) : titleCase(o)}</option>)}
             </select>
         </Field>
     ));

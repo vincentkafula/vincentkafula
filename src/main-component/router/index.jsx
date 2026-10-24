@@ -28,7 +28,11 @@ import ErrorPage from '../ErrorPage/ErrorPage';
 import LoginPage from '../LoginPage';
 import DashboardPage from '../DashboardPage';
 import RegistrationPage from '../RegistrationPage/RegistrationPage';
-import { MembershipForm, CooperativeForm, InternshipForm } from '../RegistrationPage/RegistrationForms';
+// Registration forms carry the full ECZ polling-station list, so they load on demand.
+const loadForm = (name) => lazy(() => import('../RegistrationPage/RegistrationForms').then((m) => ({ default: m[name] })));
+const MembershipForm = loadForm('MembershipForm');
+const CooperativeForm = loadForm('CooperativeForm');
+const InternshipForm = loadForm('InternshipForm');
 import ForgotPassword from '../ForgotPassword';
 import ResetPasswordPage from '../ResetPasswordPage';
 import AccountSettingsPage from '../AccountSettingsPage';
@@ -87,9 +91,9 @@ const AllRoute = () => {
           <Route path='login' element={<LoginPage />} />
           <Route path='dashboard/:role' element={<DashboardPage />} />
           <Route path='register' element={<RegistrationPage />} />
-          <Route path='register/membership' element={<MembershipForm />} />
-          <Route path='register/cooperative' element={<CooperativeForm />} />
-          <Route path='register/internship' element={<InternshipForm />} />
+          <Route path='register/membership' element={<Suspense fallback={<div />}><MembershipForm /></Suspense>} />
+          <Route path='register/cooperative' element={<Suspense fallback={<div />}><CooperativeForm /></Suspense>} />
+          <Route path='register/internship' element={<Suspense fallback={<div />}><InternshipForm /></Suspense>} />
           <Route path='forgot-password' element={<ForgotPassword />} />
           <Route path='reset-password/:token' element={<ResetPasswordPage />} />
           <Route path='account-settings' element={<RequireAuth><AccountSettingsPage /></RequireAuth>} />
