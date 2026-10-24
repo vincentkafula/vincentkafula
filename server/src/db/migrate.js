@@ -296,6 +296,13 @@ const DEMO_PASSWORD = 'Demo@2026';
 // Statements applied to databases that already had the old schema before news/shop/roles existed.
 // Each is safe to re-run every boot.
 const COMPAT_MIGRATIONS = [
+  // Large catalogue: listings first, details on demand.
+  `ALTER TABLE products ADD COLUMN IF NOT EXISTS category TEXT`,
+  `ALTER TABLE products ADD COLUMN IF NOT EXISTS listed_num INTEGER`,
+  `ALTER TABLE products ADD COLUMN IF NOT EXISTS details_loaded_at TIMESTAMPTZ`,
+  `UPDATE products SET details_loaded_at = last_synced_at WHERE source = 'cj' AND details_loaded_at IS NULL AND jsonb_array_length(variants) > 0`,
+  `CREATE INDEX IF NOT EXISTS products_status_created_idx ON products (status, created_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS products_category_idx ON products (category)`,
   // Automatic catalogue sync from CJ.
   `ALTER TABLE products ADD COLUMN IF NOT EXISTS auto_source TEXT`,
   `ALTER TABLE products ADD COLUMN IF NOT EXISTS sync_note TEXT`,

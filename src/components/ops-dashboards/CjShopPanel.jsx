@@ -200,8 +200,20 @@ const Prices = ({ refreshKey, onChanged }) => {
     const [products, setProducts] = useState(null);
     const [edits, setEdits] = useState({});
     const [busy, setBusy] = useState(null);
-    const load = () => productsApi.listAll().then((rows) => setProducts(rows.filter((p) => p.source === 'cj'))).catch((e) => toast.error(e.message));
-    useEffect(() => { load(); }, [refreshKey]);
+    const [page, setPage] = useState(1);
+    const [pages, setPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [q, setQ] = useState('');
+    const [search, setSearch] = useState('');
+    const [status, setStatus] = useState('');
+    const load = () => shopApi.admin.products({ q: search, page, status })
+        .then((d) => { setProducts(d.items); setPages(d.pages); setTotal(d.total); }).catch((e) => toast.error(e.message));
+    useEffect(() => { load(); }, [refreshKey, page, search, status]); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(() => { const t = setTimeout(() => { setSearch(q.trim()); setPage(1); }, 400); return () => clearTimeout(t); }, [q]);
+    const details = async (p) => {
+        setBusy(p.id);
+        try { await shopApi.admin.syncProduct(p.id); load(); } catch (e) { toast.error(e.message); } finally { setBusy(null); }
+    };
 
     const save = async (p) => {
         const changes = Object.entries(edits[p.id] || {}).map(([vid, c]) => ({ vid, ...c }));
@@ -218,10 +230,28 @@ const Prices = ({ refreshKey, onChanged }) => {
     };
     const edit = (pid, vid, field, value) => setEdits((e) => ({ ...e, [pid]: { ...(e[pid] || {}), [vid]: { ...(e[pid]?.[vid] || {}), [field]: value } } }));
 
+    const toolbar = (
+        <DashCard>
+            <div className="cjp-bar" style={{ marginBottom: 0 }}>
+                <input className="cjp-filter-input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search CJ products in the shop" aria-label="Search products" />
+                <div className="cjp-filters">
+                    {[['', 'All'], ['active', 'On sale'], ['inactive', 'Hidden']].map(([k, l]) => (
+                        <button key={k || 'all'} type="button" className={status === k ? 'active' : ''} onClick={() => { setStatus(k); setPage(1); }}>{l}</button>
+                    ))}
+                </div>
+                <span className="cjp-muted">{total.toLocaleString()} products · page {page} of {pages}</span>
+                <div className="cjp-actions" style={{ marginTop: 0 }}>
+                    <DashButton variant="subtle" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</DashButton>
+                    <DashButton variant="subtle" disabled={page >= pages} onClick={() => setPage(page + 1)}>Next</DashButton>
+                </div>
+            </div>
+        </DashCard>
+    );
     if (!products) return <DashCard><p className="cjp-muted">Loading…</p></DashCard>;
-    if (!products.length) return <DashCard><p className="cjp-muted">No CJ products yet. Use “Find products” to add some.</p></DashCard>;
+    if (!products.length) return <div className="cjp-prices">{toolbar}<DashCard><p className="cjp-muted">No products found.</p></DashCard></div>;
     return (
         <div className="cjp-prices">
+            {toolbar}
             {products.map((p) => (
                 <DashCard key={p.id}>
                     <div className="cjp-prod-head">
@@ -237,6 +267,10 @@ const Prices = ({ refreshKey, onChanged }) => {
                             <DashButton variant="subtle" onClick={() => toggle(p)}>{p.status === 'active' ? 'Hide' : 'Put on sale'}</DashButton>
                         </div>
                     </div>
+                    {!(p.variants || []).length ? (
+                        <p className="cjp-muted">Listed at {formatMoney(p.price, 'usd')} (CJ cost from {formatMoney(p.cost, 'usd')}). Sizes and colours load the first time a customer opens it.{' '}
+                            <button type="button" className="cjp-link" onClick={() => details(p)} disabled={busy === p.id}>{busy === p.id ? 'Loading…' : 'Load options now'}</button></p>
+                    ) : (
                     <div className="cjp-table-wrap">
                         <table className="cjp-table">
                             <thead><tr><th>Option</th><th className="num">CJ cost</th><th className="num">Your price</th><th className="num">Margin</th><th>On sale</th></tr></thead>
@@ -257,6 +291,7 @@ const Prices = ({ refreshKey, onChanged }) => {
                             })}</tbody>
                         </table>
                     </div>
+                    )}
                     {Object.keys(edits[p.id] || {}).length > 0 && (
                         <div className="cjp-actions"><DashButton onClick={() => save(p)} disabled={busy === p.id}>Save prices</DashButton>
                             <DashButton variant="subtle" onClick={() => setEdits((x) => ({ ...x, [p.id]: {} }))}>Undo</DashButton></div>
@@ -323,8 +358,9 @@ const AutoCatalog = ({ onChanged }) => {
                         <p className="cjp-muted">
                             {form.enabled ? `Every ${form.intervalHours} hour${form.intervalHours === 1 ? '' : 's'}` : 'Paused'} ·{' '}
                             {last ? `last run ${new Date(last.started_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}` : 'not run yet'} ·{' '}
-                            {data.counts.on_sale} CJ products on sale ({data.counts.my_products} from My Products, {data.counts.from_rules} from rules)
+                            {data.counts.on_sale.toLocaleString()} CJ products on sale ({data.counts.my_products} from My Products, {data.counts.from_rules.toLocaleString()} from rules)
                         </p>
+                        {data.running && data.progress && <p className="cjp-progress">Syncing {data.progress.stage}: {data.progress.added} added so far, {data.progress.seen} checked…</p>}
                     </div>
                     <div className="cjp-actions">
                         <label className="cjp-switch"><input type="checkbox" checked={form.enabled} onChange={(e) => set('enabled', e.target.checked)} /> Automatic sync on</label>
@@ -339,7 +375,8 @@ const AutoCatalog = ({ onChanged }) => {
                         <span><strong>Put new products on sale straight away</strong><small>Untick to review new products first; they arrive hidden.</small></span></label>
                     <label className="cjp-num">Price multiplier<input type="number" step="0.1" min="1" max="10" value={form.markup ?? ''} placeholder={String(data.defaultMarkup)} onChange={(e) => set('markup', e.target.value === '' ? null : e.target.value)} /><small>× CJ cost. Prices you set by hand are never changed.</small></label>
                     <label className="cjp-num">Check every (hours)<input type="number" min="1" max="168" value={form.intervalHours} onChange={(e) => set('intervalHours', e.target.value)} /></label>
-                    <label className="cjp-num">Most CJ products in the shop<input type="number" min="1" max="1000" value={form.maxProducts} onChange={(e) => set('maxProducts', e.target.value)} /></label>
+                    <label className="cjp-num">Most CJ products in the shop<input type="number" min="1" max="20000" value={form.maxProducts} onChange={(e) => set('maxProducts', e.target.value)} /></label>
+                    <label className="cjp-num">Skip items cheaper than ($)<input type="number" step="0.1" min="0" value={form.minCost} onChange={(e) => set('minCost', e.target.value)} /><small>Very cheap items often cost more to ship than they earn.</small></label>
                     <label className="cjp-num">Minimum CJ stock<input type="number" min="0" value={form.minStock} onChange={(e) => set('minStock', e.target.value)} /></label>
                 </div>
             </DashCard>
@@ -355,7 +392,7 @@ const AutoCatalog = ({ onChanged }) => {
                                 <tr key={i}>
                                     <td><input value={r.keyword} onChange={(e) => setRule(i, 'keyword', e.target.value)} aria-label="Search word" /></td>
                                     <td className="num"><input type="number" step="0.5" min="0" value={r.maxCost ?? ''} onChange={(e) => setRule(i, 'maxCost', e.target.value === '' ? null : e.target.value)} aria-label="Maximum CJ cost" /></td>
-                                    <td className="num"><input type="number" min="1" max="50" value={r.perRule} onChange={(e) => setRule(i, 'perRule', e.target.value)} aria-label="Number of products" /></td>
+                                    <td className="num"><input type="number" min="1" max="1000" value={r.perRule} onChange={(e) => setRule(i, 'perRule', e.target.value)} aria-label="Number of products" /></td>
                                     <td><input type="checkbox" checked={r.enabled !== false} onChange={(e) => setRule(i, 'enabled', e.target.checked)} aria-label="Rule on" /></td>
                                     <td><button type="button" className="cjp-link" onClick={() => set('rules', form.rules.filter((_, n) => n !== i))}>Remove</button></td>
                                 </tr>
@@ -367,6 +404,14 @@ const AutoCatalog = ({ onChanged }) => {
                     <DashButton variant="subtle" onClick={() => set('rules', [...form.rules, { keyword: '', maxCost: null, perRule: 5, enabled: true }])} disabled={form.rules.length >= 20}>Add a rule</DashButton>
                     <DashButton onClick={save} disabled={saving || !dirty}>{saving ? 'Saving…' : 'Save settings'}</DashButton>
                 </div>
+            </DashCard>
+
+            <DashCard>
+                <h4 className="cjp-h4">Never add products containing these words</h4>
+                <p className="cjp-muted">Keeps unsuitable items off a campaign shop. One word or phrase per line. Products already in the shop that match are taken off sale at the next sync.</p>
+                <textarea className="cjp-blocked" rows={6} value={(form.blockedWords || []).join('\n')}
+                    onChange={(e) => set('blockedWords', e.target.value.split('\n'))} aria-label="Blocked words" />
+                <div className="cjp-actions"><DashButton onClick={save} disabled={saving || !dirty}>{saving ? 'Saving…' : 'Save settings'}</DashButton></div>
             </DashCard>
 
             <DashCard>

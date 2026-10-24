@@ -20,7 +20,7 @@ const jsonHeaders = () => ({ 'Content-Type': 'application/json', ...authHeaders(
 
 export const productsApi = {
     listActive: () => fetch(`${API_URL}/api/products`).then(handle),
-    listAll: () => fetch(`${API_URL}/api/products?all=1`, { headers: authHeaders() }).then(handle),
+    listAll: (source) => fetch(`${API_URL}/api/products?all=1${source ? `&source=${source}` : ''}`, { headers: authHeaders() }).then(handle),
     getBySlug: (slug) => fetch(`${API_URL}/api/products/${slug}`).then(handle),
     create: (payload) =>
         fetch(`${API_URL}/api/products`, { method: 'POST', headers: jsonHeaders(), body: JSON.stringify(payload) }).then(handle),

@@ -8,7 +8,7 @@ import {
 } from '../utils/cj.js';
 import { sendBulkEmail, isEmailConfigured } from '../utils/resend.js';
 import {
-  retailFromCost, upsertCjProduct, getSettings, saveSettings, runCatalogSync, isSyncRunning,
+  retailFromCost, upsertCjProduct, getSettings, saveSettings, runCatalogSync, isSyncRunning, ensureDetails, syncProgress,
 } from '../services/catalogSync.js';
 import { buildLetterheadEmail, textToHtml } from '../utils/letterhead.js';
 
@@ -53,7 +53,10 @@ async function resolveItems(lines) {
   if (lines.length > 30) throw new Error('Too many different items in one order.');
   const ids = [...new Set(lines.map((l) => Number(l.product_id)).filter(Boolean))];
   const { rows } = await pool.query(`SELECT * FROM products WHERE id = ANY($1) AND status = 'active'`, [ids]);
-  const byId = new Map(rows.map((r) => [r.id, r]));
+  // Re-check CJ products bought from cached details older than a day, so the price and options are current.
+  const fresh = [];
+  for (const r of rows) { const f = await ensureDetails(r, 24); if (f) fresh.push(f); }
+  const byId = new Map(fresh.map((r) => [r.id, r]));
   return lines.map((l) => {
     const p = byId.get(Number(l.product_id));
     if (!p) throw new Error('An item in your cart is no longer available. Please remove it and try again.');
@@ -259,6 +262,46 @@ router.get('/fund', async (req, res) => {
   res.json({ raised: Number(rows[0].raised), orders: rows[0].orders, currency: currency() });
 });
 
+// Paginated public catalogue: ?page=1&per=24&q=&category=&sort=popular|newest|price_asc|price_desc
+const SORTS = {
+  popular: 'listed_num DESC NULLS LAST, id DESC',
+  newest: 'created_at DESC',
+  price_asc: 'price ASC',
+  price_desc: 'price DESC',
+};
+let categoryCache = { at: 0, list: [] };
+router.get('/catalog', async (req, res) => {
+  try {
+    const per = Math.min(Math.max(parseInt(req.query.per, 10) || 24, 6), 60);
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const where = [`status = 'active'`];
+    const params = [];
+    const q = String(req.query.q || '').trim().slice(0, 80);
+    if (q) { params.push(`%${q}%`); where.push(`(name ILIKE $${params.length} OR category ILIKE $${params.length})`); }
+    if (req.query.category) { params.push(String(req.query.category)); where.push(`category = $${params.length}`); }
+    const order = SORTS[req.query.sort] || SORTS.popular;
+    const { rows } = await pool.query(
+      `SELECT id, name, slug, price, compare_at_price, image_url, source, category,
+              CASE WHEN source = 'cj' THEN jsonb_array_length(variants) ELSE 1 END AS option_count,
+              CASE WHEN source = 'cj' AND jsonb_array_length(variants) = 1 THEN variants->0 ELSE NULL END AS only_option,
+              count(*) OVER () AS total
+       FROM products WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ${per} OFFSET ${(page - 1) * per}`, params);
+    if (Date.now() - categoryCache.at > 10 * 60 * 1000) {
+      const c = await pool.query(`SELECT category AS name, count(*)::int AS count FROM products
+        WHERE status = 'active' AND category IS NOT NULL GROUP BY category ORDER BY count(*) DESC LIMIT 40`);
+      categoryCache = { at: Date.now(), list: c.rows };
+    }
+    const total = rows[0] ? Number(rows[0].total) : 0;
+    res.json({
+      items: rows.map(({ total: _t, ...r }) => r), total, page, per, pages: Math.max(1, Math.ceil(total / per)),
+      categories: categoryCache.list, currency: currency(),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not load products' });
+  }
+});
+
 router.post('/quote', async (req, res) => {
   try {
     const country = String(req.body?.country || '').toUpperCase();
@@ -451,7 +494,7 @@ router.get('/admin/catalog', requireAuth(MANAGERS), async (req, res) => {
                        count(*) FILTER (WHERE auto_source LIKE 'rule:%')::int AS from_rules
                 FROM products WHERE source = 'cj'`),
   ]);
-  res.json({ settings, runs: runs.rows, counts: counts.rows[0], running: isSyncRunning(), defaultMarkup: defaultMarkup() });
+  res.json({ settings, runs: runs.rows, counts: counts.rows[0], running: isSyncRunning(), progress: syncProgress(), defaultMarkup: defaultMarkup() });
 });
 
 router.put('/admin/catalog', requireAuth(MANAGERS), async (req, res) => {
@@ -465,22 +508,27 @@ router.post('/admin/catalog/run', requireAuth(MANAGERS), async (req, res) => {
   res.status(202).json({ started: true });
 });
 
+// Paginated CJ product list for the prices tab: ?q=&page=1&status=active|inactive
+router.get('/admin/products', requireAuth(MANAGERS), async (req, res) => {
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  const per = 15;
+  const where = [`source = 'cj'`];
+  const params = [];
+  const q = String(req.query.q || '').trim();
+  if (q) { params.push(`%${q}%`); where.push(`(name ILIKE $${params.length} OR category ILIKE $${params.length} OR cj_pid ILIKE $${params.length})`); }
+  if (['active', 'inactive'].includes(req.query.status)) { params.push(req.query.status); where.push(`status = $${params.length}`); }
+  const { rows } = await pool.query(
+    `SELECT *, count(*) OVER () AS total FROM products WHERE ${where.join(' AND ')} ORDER BY updated_at DESC LIMIT ${per} OFFSET ${(page - 1) * per}`, params);
+  const total = rows[0] ? Number(rows[0].total) : 0;
+  res.json({ items: rows, total, page, pages: Math.max(1, Math.ceil(total / per)) });
+});
+
 // Refresh CJ costs for one product, keeping the shop's retail prices.
 router.post('/admin/products/:id/sync', requireAuth(MANAGERS), async (req, res) => {
   try {
     const { rows } = await pool.query(`SELECT * FROM products WHERE id = $1 AND source = 'cj'`, [req.params.id]);
     if (!rows[0]) return res.status(404).json({ error: 'Not a CJ product' });
-    const p = await getProduct(rows[0].cj_pid);
-    const old = new Map((rows[0].variants || []).map((v) => [v.vid, v]));
-    const variants = p.variants.map((v) => {
-      const prev = old.get(v.vid);
-      return { ...v, price: prev?.price ?? retailFromCost(v.cost), price_locked: prev?.price_locked || false, active: prev ? prev.active !== false : true };
-    });
-    const active = variants.filter((v) => v.active);
-    const r = await pool.query(
-      `UPDATE products SET variants = $2, cost = $3, price = $4, last_synced_at = now(), updated_at = now() WHERE id = $1 RETURNING *`,
-      [rows[0].id, JSON.stringify(variants), Math.min(...variants.map((v) => v.cost)), Math.min(...(active.length ? active : variants).map((v) => v.price))]);
-    res.json(r.rows[0]);
+    res.json((await upsertCjProduct(rows[0].cj_pid)).row);
   } catch (err) {
     res.status(502).json({ error: err.message });
   }

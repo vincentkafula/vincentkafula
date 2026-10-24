@@ -24,6 +24,7 @@ export const cartLines = (cart) => cart.filter((i) => i.product_id).map((i) => (
 export const shopApi = {
     config: () => get('/config'),
     fund: () => get('/fund'),
+    catalog: (params) => get(`/catalog?${new URLSearchParams(params)}`),
     quote: (country, items) => post('/quote', { country, items }),
     checkout: (payload) => post('/checkout', payload),
     session: (id) => get(`/session/${encodeURIComponent(id)}`),
@@ -39,6 +40,7 @@ export const shopApi = {
             method: 'PATCH', headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify({ variants }),
         }).then(handle),
         catalog: () => get('/admin/catalog', true),
+        products: (params) => get(`/admin/products?${new URLSearchParams(params)}`, true),
         saveCatalog: (settings) => fetch(`${base}/admin/catalog`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(settings),
         }).then(handle),

@@ -70,3 +70,6 @@
 .cjp-rules td.num input { width: 90px; text-align: right; }
 .cjp-note { display: block; color: #a3690f; font-weight: 600; font-size: 12.5px; }
 .cjp-lock { font-size: 11px; color: #a3690f; font-weight: 700; }
+.cjp-progress { margin: 6px 0 0; color: #1e7d34; font-weight: 600; font-size: 14px; }
+.cjp-blocked { width: 100%; border: 1px solid #d9e2da; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: inherit; }
+.cjp-filter-input { flex: 1; min-width: 220px; border: 1px solid #d9e2da; border-radius: 8px; padding: 9px 12px; font-size: 14px; }

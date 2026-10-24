@@ -137,7 +137,7 @@ const firstNumber = (v) => {
 // Search the CJ catalogue by keyword. `filters` may hold any listV2 filter
 // (categoryId, startSellPrice, endSellPrice, orderBy, sort, startWarehouseInventory, countryCode, size).
 export async function searchProducts(keyword, page = 1, filters = {}) {
-  const data = await cj('GET', '/product/listV2', { query: { keyWord: keyword, page, size: 20, ...filters } });
+  const data = await cj('GET', '/product/listV2', { query: { keyWord: keyword, page, size: 20, features: 'enable_category', ...filters } });
   const content = Array.isArray(data?.content) ? data.content : [];
   const list = content.flatMap((c) => c.productList || []);
   return {
@@ -150,7 +150,9 @@ export async function searchProducts(keyword, page = 1, filters = {}) {
       cost: firstNumber(p.nowPrice) ?? firstNumber(p.sellPrice),
       listed: p.listedNum ?? null,
       stock: p.warehouseInventoryNum ?? null,
+      category: p.oneCategoryName || p.twoCategoryName || p.threeCategoryName || null,
     })).filter((p) => p.pid),
+    totalPages: Number(data?.totalPages) || 1,
   };
 }
 

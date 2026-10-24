@@ -1,6 +1,7 @@
 import express from 'express';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/requireAuth.js';
+import { ensureDetails } from '../services/catalogSync.js';
 
 const router = express.Router();
 
@@ -40,10 +41,14 @@ router.get('/', async (req, res) => {
         includeInactive = false;
       }
     }
-    const sql = includeInactive
-      ? 'SELECT * FROM products ORDER BY created_at DESC'
-      : `SELECT * FROM products WHERE status = 'active' ORDER BY created_at DESC`;
-    const { rows } = await pool.query(sql);
+    // ?source=manual|cj narrows the list (the shop page itself uses /api/shop/catalog, which is paginated).
+    const where = [];
+    const params = [];
+    if (!includeInactive) where.push(`status = 'active'`);
+    if (req.query.source) { params.push(String(req.query.source)); where.push(`source = $${params.length}`); }
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 500, 1), 500);
+    const { rows } = await pool.query(
+      `SELECT * FROM products ${where.length ? `WHERE ${where.join(' AND ')}` : ''} ORDER BY created_at DESC LIMIT ${limit}`, params);
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -60,7 +65,10 @@ router.get('/:slug', async (req, res) => {
       : 'SELECT * FROM products WHERE slug = $1';
     const { rows } = await pool.query(sql, [slug]);
     if (!rows.length) return res.status(404).json({ error: 'Not found' });
-    res.json(rows[0]);
+    // CJ products load their sizes, colours and photos the first time they are viewed.
+    const row = rows[0].source === 'cj' && rows[0].status === 'active' ? await ensureDetails(rows[0]) : rows[0];
+    if (!row) return res.status(404).json({ error: 'This product is no longer available' });
+    res.json(row);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch product' });

@@ -26,7 +26,8 @@ const ShopManagerDashboard = () => {
 
     const load = () => {
         setLoading(true);
-        productsApi.listAll()
+        // Only the team's own products here; CJ products are managed in the panel above.
+        productsApi.listAll('manual')
             .then(setProducts)
             .catch((err) => toast.error(err.message))
             .finally(() => setLoading(false));
